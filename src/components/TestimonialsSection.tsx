@@ -46,7 +46,7 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-secondary" id="testimonials">
+    <section className="py-20 bg-secondary/30" id="testimonials">
       <div className="container">
         <h2 className="text-3xl font-bold text-center mb-12">
           Client <span className="text-gradient">Testimonials</span>
@@ -79,11 +79,11 @@ const TestimonialsSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ duration: 0.5 }}
-                className="bg-card rounded-xl p-8 md:p-12 border border-border"
+                className="dark-card rounded-xl p-8 md:p-12 border border-border"
               >
                 <Quote className="h-12 w-12 text-primary/30 mb-6" />
 
-                <p className="text-lg md:text-xl mb-8 italic">
+                <p className="text-lg md:text-xl mb-8 italic text-foreground/90">
                   "{testimonials[currentIndex].content}"
                 </p>
 
@@ -112,7 +112,7 @@ const TestimonialsSection = () => {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full ${
+                className={`w-3 h-3 rounded-full transition-colors ${
                   index === currentIndex ? "bg-primary" : "bg-border"
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}

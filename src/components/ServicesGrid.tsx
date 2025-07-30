@@ -9,6 +9,7 @@ import {
   Database,
   Shield,
 } from "lucide-react";
+import { GlowCard } from "@/components/ui/spotlight-card";
 
 const services = [
   {
@@ -16,39 +17,39 @@ const services = [
     title: "Web Development",
     description:
       "Modern, responsive web applications built with the latest technologies.",
-    color: "from-blue-500/20 to-blue-600/20",
+    color: "blue",
   },
   {
     icon: <Smartphone className="h-8 w-8" />,
     title: "Mobile Development",
     description: "Native and cross-platform mobile apps for iOS and Android.",
-    color: "from-green-500/20 to-green-600/20",
+    color: "green",
   },
   {
     icon: <Bot className="h-8 w-8" />,
     title: "AI Agents",
     description:
       "Intelligent automation solutions powered by machine learning.",
-    color: "from-purple-500/20 to-purple-600/20",
+    color: "purple",
   },
   {
     icon: <Palette className="h-8 w-8" />,
     title: "UX/UI Design",
     description:
       "Beautiful, intuitive interfaces designed for optimal user experience.",
-    color: "from-pink-500/20 to-pink-600/20",
+    color: "red",
   },
   {
     icon: <Database className="h-8 w-8" />,
     title: "Backend Systems",
     description: "Scalable, secure backend infrastructure and API development.",
-    color: "from-amber-500/20 to-amber-600/20",
+    color: "orange",
   },
   {
     icon: <Shield className="h-8 w-8" />,
     title: "Security Solutions",
     description: "Comprehensive security audits and implementation.",
-    color: "from-red-500/20 to-red-600/20",
+    color: "blue",
   },
 ];
 
@@ -86,23 +87,29 @@ const ServicesGrid = () => {
         </div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
         >
           {services.map((service, index) => (
-            <motion.div
-              key={index}
-              className={`bg-gradient-to-br ${service.color} p-6 rounded-lg border border-border backdrop-blur-sm`}
-              variants={itemVariants}
-            >
-              <div className="bg-background/50 backdrop-blur-sm p-8 rounded-md h-full">
-                <div className="mb-4 text-primary">{service.icon}</div>
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground">{service.description}</p>
-              </div>
+            <motion.div key={index} variants={itemVariants}>
+              <GlowCard
+                glowColor={service.color as any}
+                customSize={true}
+                width="100%"
+                height="100%"
+                className="h-full min-h-[280px] bg-card dark-card"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="mb-4 text-primary p-2 rounded-full w-14 h-14 flex items-center justify-center bg-secondary/30">
+                    {service.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+                  <p className="text-muted-foreground">{service.description}</p>
+                </div>
+              </GlowCard>
             </motion.div>
           ))}
         </motion.div>

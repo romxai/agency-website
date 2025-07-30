@@ -6,10 +6,9 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 
 // Import LightRays with SSR disabled to prevent "document is not defined" error
-const LightRays = dynamic(
-  () => import("@/components/blocks/Backgrounds/LightRays/LightRays"),
-  { ssr: false }
-);
+const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
+  ssr: false,
+});
 
 const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
@@ -28,14 +27,14 @@ const HeroSection = () => {
             raysColor="#3b82f6" // primary color
             raysSpeed={0.5}
             lightSpread={1.2}
-            rayLength={1.5}
+            rayLength={2}
             pulsating={false}
             fadeDistance={0.8}
             saturation={0.6}
             followMouse={false}
             mouseInfluence={0}
             noiseAmount={0.05}
-            distortion={0}
+            distortion={1}
             className="w-full h-full"
           />
         )}
@@ -80,13 +79,13 @@ const HeroSection = () => {
           >
             <Link
               href="/portfolio"
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-md hover:bg-primary/90 transition-colors"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:bg-primary/90 transition-colors dark-glow"
             >
               View Portfolio
             </Link>
             <Link
               href="#contact"
-              className="bg-secondary text-secondary-foreground px-6 py-3 rounded-md hover:bg-secondary/90 transition-colors"
+              className="bg-secondary text-secondary-foreground px-6 py-3 rounded-full hover:bg-secondary/80 transition-colors border border-border"
             >
               Contact Us
             </Link>

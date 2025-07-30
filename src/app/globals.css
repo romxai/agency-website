@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712; /* Dark background */
+  --background: #06000e; /* Dark background */
   --foreground: #f8fafc;
   --primary: #3b82f6;
   --primary-foreground: #ffffff;
@@ -16,6 +16,8 @@
   --border: #1e293b;
   --input: #1e293b;
   --ring: #3b82f6;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
 }
 
 @theme inline {
@@ -96,4 +98,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #3b82f6;
+}
+
+/* 3D transforms for the marquee */
+.transform-3d {
+  transform-style: preserve-3d;
+}
+
+/* === NEW MARQUEE ANIMATION (THE FIX) === */
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left var(--duration, 40s) linear infinite;
 }

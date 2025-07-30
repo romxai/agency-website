@@ -127,12 +127,12 @@ const ContactSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="bg-card rounded-xl p-8 border border-border"
+            className="dark-card rounded-xl p-8 border border-border"
           >
             <h3 className="text-xl font-bold mb-6">Send us a message</h3>
 
             {submitSuccess ? (
-              <div className="bg-green-500/10 border border-green-500/30 text-green-700 p-4 rounded-md">
+              <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-md">
                 Thank you for your message! We'll get back to you soon.
               </div>
             ) : (
@@ -151,7 +151,7 @@ const ContactSection = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-input bg-background"
+                    className="w-full px-4 py-2 rounded-md border border-input bg-secondary/30 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="John Doe"
                   />
                 </div>
@@ -170,7 +170,7 @@ const ContactSection = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-2 rounded-md border border-input bg-background"
+                    className="w-full px-4 py-2 rounded-md border border-input bg-secondary/30 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -189,7 +189,7 @@ const ContactSection = () => {
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-2 rounded-md border border-input bg-background resize-none"
+                    className="w-full px-4 py-2 rounded-md border border-input bg-secondary/30 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary resize-none"
                     placeholder="Tell us about your project..."
                   />
                 </div>
@@ -197,7 +197,7 @@ const ContactSection = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary text-primary-foreground py-3 rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center"
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center dark-glow"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">

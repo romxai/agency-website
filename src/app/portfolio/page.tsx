@@ -1,16 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Metadata } from "next";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-
-// This is a client component but we still need to export metadata
-export const metadata = {
-  title: "Portfolio | DevAgency",
-  description:
-    "Explore our portfolio of web applications, mobile apps, AI agents, and more.",
-};
 
 // Sample portfolio data (placeholder)
 const portfolioItems = [
@@ -52,14 +44,6 @@ const portfolioItems = [
   },
   {
     id: 5,
-    title: "Social Media Platform",
-    category: "Web & Mobile",
-    tech: ["Next.js", "React Native", "Node.js", "Socket.io"],
-    description: "Full-stack social media platform with real-time messaging.",
-    image: "/placeholder-portfolio-5.jpg",
-  },
-  {
-    id: 6,
     title: "E-Learning Platform",
     category: "Web App",
     tech: ["Next.js", "React", "Node.js", "MongoDB"],
