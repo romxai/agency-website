@@ -1,7 +1,7 @@
 import HeroSection from "@/components/HeroSection";
 import PortfolioPreview from "@/components/PortfolioPreview";
 import ServicesGrid from "@/components/ServicesGrid";
-import TechStack from "@/components/TechStack";
+import TechStackSection from "@/components/TechStackSection";
 import ClientsSection from "@/components/ClientsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
@@ -15,7 +15,7 @@ export default function Home() {
         {" "}
         {/* Add spacing between sections */}
         <ServicesGrid />
-        <TechStack />
+        <TechStackSection />
         <ClientsSection />
         <TestimonialsSection />
         <ContactSection />
