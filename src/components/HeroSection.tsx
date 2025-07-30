@@ -84,7 +84,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <p className="text-lg md:text-xl text-muted-foreground mb-2 font-red-hat-display">
+              <p className="text-xl md:text-xl text-muted-foreground mb-2 font-red-hat-display">
                 Building great technology should be exciting, not complicated.
               </p>
               <p className="text-lg md:text-lg text-muted-foreground font-red-hat-display">
@@ -99,12 +99,6 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <Link
-                href="/portfolio"
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:bg-primary/90 transition-colors dark-glow font-red-hat-display"
-              >
-                View Portfolio
-              </Link>
               <ShimmerButton
                 className="bg-secondary text-secondary-foreground font-red-hat-display"
                 shimmerColor="#ffffff"
@@ -118,19 +112,25 @@ const HeroSection = () => {
                   Contact Us
                 </Link>
               </ShimmerButton>
+              <Link
+                href="/portfolio"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:text-[#d3d3d3] hover:underline transition-colors font-red-hat-display"
+              >
+                View Portfolio
+              </Link>
             </motion.div>
           </motion.div>
 
           {/* Shape Image */}
           <motion.div
-            className="flex-shrink-0"
+            className="flex-shrink-0 mb-20"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 0.75, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <div className="relative">
               <Image
-                src="/shape.png"
+                src="/shape-min.png"
                 alt="Shape"
                 width={400}
                 height={400}
