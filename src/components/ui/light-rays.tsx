@@ -1,6 +1,6 @@
 /*
-	Installed from https://reactbits.dev/ts/tailwind/
-	MODIFIED TO PREVENT FLASHING ON SCROLL
+  Installed from https://reactbits.dev/ts/tailwind/
+  MODIFIED TO PREVENT FLASHING ON SCROLL
 */
 
 import { useRef, useEffect, useState, useCallback } from "react";
@@ -29,6 +29,7 @@ interface LightRaysProps {
   mouseInfluence?: number;
   noiseAmount?: number;
   distortion?: number;
+  glowAmount?: number;
   className?: string;
 }
 
@@ -84,6 +85,7 @@ const LightRays: React.FC<LightRaysProps> = ({
   mouseInfluence = 0.1,
   noiseAmount = 0.0,
   distortion = 0.0,
+  glowAmount = 0.4,
   className = "",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -124,15 +126,13 @@ const LightRays: React.FC<LightRaysProps> = ({
         animationIdRef.current = requestAnimationFrame(loop);
       } catch (error) {
         console.warn("WebGL rendering error:", error);
-        // Stop the loop on error
         if (animationIdRef.current)
           cancelAnimationFrame(animationIdRef.current);
       }
     },
     [followMouse, mouseInfluence]
-  ); // useCallback dependencies for loop
+  );
 
-  // Effect for IntersectionObserver setup
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -152,7 +152,6 @@ const LightRays: React.FC<LightRaysProps> = ({
     };
   }, []);
 
-  // Effect for pausing and resuming animation
   useEffect(() => {
     if (isVisible) {
       if (!animationIdRef.current && rendererRef.current) {
@@ -173,7 +172,6 @@ const LightRays: React.FC<LightRaysProps> = ({
     };
   }, [isVisible, loop]);
 
-  // Effect for ONE-TIME WebGL Initialization
   useEffect(() => {
     const container = containerRef.current;
     if (!container || rendererRef.current) return;
@@ -198,7 +196,6 @@ const LightRays: React.FC<LightRaysProps> = ({
       }`;
 
     const frag = `precision highp float;
-      // ... (Your fragment shader code remains unchanged) ...
       uniform float iTime;
       uniform vec2  iResolution;
       uniform vec2  rayPos;
@@ -214,17 +211,18 @@ const LightRays: React.FC<LightRaysProps> = ({
       uniform float mouseInfluence;
       uniform float noiseAmount;
       uniform float distortion;
+      uniform float glowAmount;
       varying vec2 vUv;
       float noise(vec2 st) {
         return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
       }
       float rayStrength(vec2 raySource, vec2 rayRefDirection, vec2 coord,
-                        float seedA, float seedB, float speed) {
+                        float seedA, float seedB, float speed, float spread) {
         vec2 sourceToCoord = coord - raySource;
         vec2 dirNorm = normalize(sourceToCoord);
         float cosAngle = dot(dirNorm, rayRefDirection);
         float distortedAngle = cosAngle + distortion * sin(iTime * 2.0 + length(sourceToCoord) * 0.01) * 0.2;
-        float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(lightSpread, 0.001));
+        float spreadFactor = pow(max(distortedAngle, 0.0), 1.0 / max(spread, 0.001));
         float distance = length(sourceToCoord);
         float maxDistance = iResolution.x * rayLength;
         float lengthFalloff = clamp((maxDistance - distance) / maxDistance, 0.0, 1.0);
@@ -245,9 +243,12 @@ const LightRays: React.FC<LightRaysProps> = ({
           vec2 mouseDirection = normalize(mouseScreenPos - rayPos);
           finalRayDir = normalize(mix(rayDir, mouseDirection, mouseInfluence));
         }
-        vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed);
-        vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed);
-        fragColor = rays1 * 0.5 + rays2 * 0.4;
+        vec4 rays1 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 36.2214, 21.11349, 1.5 * raysSpeed, lightSpread);
+        vec4 rays2 = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 22.3991, 18.0234, 1.1 * raysSpeed, lightSpread);
+        vec4 mainRays = rays1 * 0.5 + rays2 * 0.4;
+        float glowSpread = lightSpread * 0.2;
+        vec4 glow = vec4(1.0) * rayStrength(rayPos, finalRayDir, coord, 5.39, 10.02, 0.5 * raysSpeed, glowSpread);
+        fragColor = mainRays + glow * glowAmount * 1.5;
         if (noiseAmount > 0.0) {
           float n = noise(coord * 0.01 + iTime * 0.1);
           fragColor.rgb *= (1.0 - noiseAmount + noiseAmount * n);
@@ -284,6 +285,7 @@ const LightRays: React.FC<LightRaysProps> = ({
       mouseInfluence: { value: 0 },
       noiseAmount: { value: 0 },
       distortion: { value: 0 },
+      glowAmount: { value: glowAmount },
     };
 
     const geometry = new Triangle(gl);
@@ -307,7 +309,6 @@ const LightRays: React.FC<LightRaysProps> = ({
     window.addEventListener("resize", updatePlacement);
     updatePlacement();
 
-    // This is the real cleanup function for when the component unmounts
     return () => {
       window.removeEventListener("resize", updatePlacement);
       if (rendererRef.current) {
@@ -324,9 +325,8 @@ const LightRays: React.FC<LightRaysProps> = ({
         }
       }
     };
-  }, []); // Empty array ensures this runs only once on mount
+  }, []);
 
-  // Effect for updating uniforms when props change
   useEffect(() => {
     if (!uniformsRef.current || !containerRef.current || !rendererRef.current)
       return;
@@ -342,6 +342,7 @@ const LightRays: React.FC<LightRaysProps> = ({
     u.mouseInfluence.value = mouseInfluence;
     u.noiseAmount.value = noiseAmount;
     u.distortion.value = distortion;
+    u.glowAmount.value = glowAmount;
 
     const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current;
     const dpr = rendererRef.current.dpr;
@@ -360,9 +361,9 @@ const LightRays: React.FC<LightRaysProps> = ({
     mouseInfluence,
     noiseAmount,
     distortion,
+    glowAmount,
   ]);
 
-  // Effect for mouse tracking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
@@ -379,6 +380,7 @@ const LightRays: React.FC<LightRaysProps> = ({
     }
   }, [followMouse]);
 
+  // --- THIS WAS THE MISSING PIECE ---
   return (
     <div
       ref={containerRef}

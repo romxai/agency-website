@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
+import { GradientHeading } from "@/components/ui/gradient-heading";
+import { ShimmerButton } from "@/components/magicui/shimmer-button";
+import Image from "next/image";
 
 // Import LightRays with SSR disabled to prevent "document is not defined" error
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
@@ -23,18 +26,18 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0 bg-black">
         {mounted && (
           <LightRays
-            raysOrigin="top-center"
-            raysColor="#3b82f6" // primary color
-            raysSpeed={0.8}
-            lightSpread={1.2}
-            rayLength={2.5}
+            raysOrigin="top-left"
+            raysSpeed={0.5}
+            lightSpread={16}
+            rayLength={1.1}
             pulsating={false}
-            fadeDistance={0.9}
+            fadeDistance={0.2}
             saturation={0.6}
             followMouse={false}
             mouseInfluence={0}
             noiseAmount={0.05}
-            distortion={0}
+            distortion={0.02}
+            glowAmount={0.2}
             className="w-full h-full"
           />
         )}
@@ -45,52 +48,98 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="container relative z-10">
-        <motion.div
-          className="max-w-3xl mx-auto text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            We Build <span className="text-gradient">Digital Experiences</span>{" "}
-            That Drive Results
-          </motion.h1>
-
-          <motion.p
-            className="text-lg md:text-xl text-muted-foreground mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Premium software development agency specializing in web
-            applications, mobile apps, AI agents, and UX/UI design.
-          </motion.p>
-
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="max-w-4xl text-left flex-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            <Link
-              href="/portfolio"
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:bg-primary/90 transition-colors dark-glow"
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
-              View Portfolio
-            </Link>
-            <Link
-              href="#contact"
-              className="bg-secondary text-secondary-foreground px-6 py-3 rounded-full hover:bg-secondary/80 transition-colors border border-border"
+              <GradientHeading
+                size="xxxl"
+                weight="semi"
+                variant="default"
+                className="font-monesta-semibold leading-none mb-0"
+              >
+                Your Vision
+              </GradientHeading>
+              <GradientHeading
+                size="xxxl"
+                weight="semi"
+                variant="pink"
+                className="font-monesta-semibold leading-none mb-2"
+              >
+                Perfected
+              </GradientHeading>
+            </motion.div>
+
+            <motion.div
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Contact Us
-            </Link>
+              <p className="text-lg md:text-xl text-muted-foreground mb-2 font-red-hat-display">
+                Building great technology should be exciting, not complicated.
+              </p>
+              <p className="text-lg md:text-lg text-muted-foreground font-red-hat-display">
+                We build high-performance websites, software, and AI solutions
+                for ambitious brands.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <Link
+                href="/portfolio"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:bg-primary/90 transition-colors dark-glow font-red-hat-display"
+              >
+                View Portfolio
+              </Link>
+              <ShimmerButton
+                className="bg-secondary text-secondary-foreground font-red-hat-display"
+                shimmerColor="#ffffff"
+                background="rgb(13, 13, 13)"
+                borderRadius="100px"
+              >
+                <Link
+                  href="#contact"
+                  className="block w-full h-full text-white"
+                >
+                  Contact Us
+                </Link>
+              </ShimmerButton>
+            </motion.div>
           </motion.div>
-        </motion.div>
+
+          {/* Shape Image */}
+          <motion.div
+            className="flex-shrink-0"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 0.75, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <div className="relative">
+              <Image
+                src="/shape.png"
+                alt="Shape"
+                width={400}
+                height={400}
+                className="transform rotate-[45deg] w-90 h-90 lg:w-110 lg:h-110"
+                priority
+              />
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

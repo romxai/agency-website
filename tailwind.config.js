@@ -8,6 +8,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "red-hat-display": ["var(--font-red-hat-display)", "sans-serif"],
+        "monesta-semibold": ["var(--font-monesta-semibold)", "serif"],
+      },
     },
   },
   plugins: [],
