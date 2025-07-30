@@ -25,7 +25,7 @@ const HeroSection = () => {
           <LightRays
             raysOrigin="top-center"
             raysColor="#3b82f6" // primary color
-            raysSpeed={0.5}
+            raysSpeed={0.8}
             lightSpread={1.2}
             rayLength={2}
             pulsating={false}
@@ -34,7 +34,7 @@ const HeroSection = () => {
             followMouse={false}
             mouseInfluence={0}
             noiseAmount={0.05}
-            distortion={1}
+            distortion={0}
             className="w-full h-full"
           />
         )}

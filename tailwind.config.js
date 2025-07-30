@@ -8,7 +8,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // No animation or keyframes needed here anymore
     },
   },
   plugins: [],
