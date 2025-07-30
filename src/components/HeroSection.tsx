@@ -27,9 +27,9 @@ const HeroSection = () => {
             raysColor="#3b82f6" // primary color
             raysSpeed={0.8}
             lightSpread={1.2}
-            rayLength={2}
+            rayLength={2.5}
             pulsating={false}
-            fadeDistance={0.8}
+            fadeDistance={0.9}
             saturation={0.6}
             followMouse={false}
             mouseInfluence={0}
