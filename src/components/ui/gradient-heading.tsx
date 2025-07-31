@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const headingVariants = cva(
-  "tracking-tight pb-30 bg-clip-text text-transparent",
+  "tracking-tight pb-24 bg-clip-text text-transparent",
   {
     variants: {
       variant: {
@@ -15,6 +15,7 @@ const headingVariants = cva(
         pink: "bg-gradient-to-t from-text-darker from-5% to-white",
 
         light: "bg-gradient-to-t from-neutral-200 to-neutral-300",
+        accent1: "bg-gradient-to-t from-yellow-900/60 to-white",
         secondary:
           "bg-gradient-to-t from-neutral-500 to-neutral-600 dark:from-stone-200 dark:to-neutral-200",
       },
