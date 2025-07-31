@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
+import { GradientHeading } from "./ui/gradient-heading";
 
 // Sample testimonial data
 const testimonials = [
@@ -12,7 +13,6 @@ const testimonials = [
     role: "CEO, TechCorp",
     content:
       "Working with DevAgency transformed our digital presence. Their team delivered a stunning website and mobile app that exceeded our expectations.",
-    company: "TechCorp",
   },
   {
     id: 2,
@@ -20,7 +20,6 @@ const testimonials = [
     role: "CTO, InnovateSoft",
     content:
       "The AI solution developed by DevAgency has automated our customer service operations, reducing costs by 40% while improving customer satisfaction.",
-    company: "InnovateSoft",
   },
   {
     id: 3,
@@ -28,26 +27,30 @@ const testimonials = [
     role: "Product Manager, DataSystems",
     content:
       "DevAgency's attention to detail and commitment to quality is unmatched. They're true partners in our digital journey.",
-    company: "DataSystems",
   },
 ];
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Function to move to the next testimonial
   const nextTestimonial = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
   };
 
-  const prevTestimonial = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
-    );
-  };
+  // Auto-scrolling logic using useEffect and setInterval
+  useEffect(() => {
+    // Set the auto-scroll interval (e.g., 5 seconds)
+    const scrollInterval = 5000;
+    const interval = setInterval(nextTestimonial, scrollInterval);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [currentIndex]); // The effect re-runs when the current index changes to reset the timer
 
   return (
     <section
-      className="py-20 bg-secondary/30 relative"
+      className="py-20 relative font-sans"
       id="testimonials"
       style={{
         backgroundImage: "url('/polygon-scatter-haikei.svg')",
@@ -56,79 +59,66 @@ const TestimonialsSection = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
+      {/* Background Overlay */}
       <div className="absolute inset-0 bg-background/40"></div>
-      <div className="container relative z-10">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          Client <span className="text-gradient">Testimonials</span>
-        </h2>
 
-        <div className="relative max-w-4xl mx-auto">
-          {/* Navigation Buttons */}
-          <button
-            onClick={prevTestimonial}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-10 bg-background p-2 rounded-full border border-border"
-            aria-label="Previous testimonial"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <GradientHeading
+          size="xl"
+          weight="semi"
+          variant="accent1"
+          className="font-monesta-semibold leading-none mb-14"
+        >
+          Client Testimonials
+        </GradientHeading>
 
-          <button
-            onClick={nextTestimonial}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-10 bg-background p-2 rounded-full border border-border"
-            aria-label="Next testimonial"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-
-          {/* Testimonials Carousel */}
-          <div className="overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentIndex}
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.5 }}
-                className="dark-card rounded-xl p-8 md:p-12 border border-border"
-              >
-                <Quote className="h-12 w-12 text-primary/30 mb-6" />
-
-                <p className="text-lg md:text-xl mb-8 italic text-foreground/90">
+        {/* Testimonial card with animation */}
+        <div className="overflow-hidden ">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.5 }}
+              className="bg-gray-900/20 text-white rounded-xl p-8 md:p-12 shadow-2xl"
+            >
+              <div className="text-center">
+                <Quote className="h-10 w-10 text-gray-700 mx-auto mb-6" />
+                <p className="text-lg md:text-xl font-light italic leading-relaxed text-gray-300">
                   "{testimonials[currentIndex].content}"
                 </p>
+              </div>
 
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
-                    <span className="font-bold text-lg">
-                      {testimonials[currentIndex].name.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="ml-4">
-                    <h4 className="font-bold">
-                      {testimonials[currentIndex].name}
-                    </h4>
-                    <p className="text-muted-foreground text-sm">
-                      {testimonials[currentIndex].role}
-                    </p>
-                  </div>
+              <div className="mt-8 flex flex-col items-center">
+                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-amber-600 text-white font-bold text-xl ring-2 ring-amber-500">
+                  {testimonials[currentIndex].name.charAt(0)}
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                <div className="mt-4 text-center">
+                  <h4 className="font-semibold text-lg text-white">
+                    {testimonials[currentIndex].name}
+                  </h4>
+                  <p className="text-sm text-gray-400">
+                    {testimonials[currentIndex].role}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-          {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 gap-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-colors ${
-                  index === currentIndex ? "bg-primary" : "bg-border"
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
+        {/* Dots Indicator */}
+        <div className="flex justify-center mt-12 gap-2">
+          {testimonials.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                index === currentIndex ? "bg-amber-500 w-6" : "bg-gray-600"
+              }`}
+              aria-label={`Go to testimonial ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

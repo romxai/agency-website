@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send } from "lucide-react";
+import { Send, Mail, Phone, MapPin } from "lucide-react";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -40,91 +41,63 @@ const ContactSection = () => {
   };
 
   return (
-    <section
-      className="py-20 bg-background relative"
-      id="contact"
-      style={{
-        backgroundImage: "url('/polygon-scatter-haikei.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="absolute inset-0 bg-background/40"></div>
+    <section id="contact" className="py-20 bg-background">
       <div className="container relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <GradientHeading
+            size="xl"
+            weight="semi"
+            variant="accent1"
+            className="font-monesta-semibold leading-none mb-4"
+          >
+            Get In Touch
+          </GradientHeading>
+          <p className="text-muted-foreground text-lg font-red-hat-display max-w-2xl mx-auto">
+            Ready to start your next project? We'd love to hear from you.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
+            className="space-y-8"
           >
-            <h2 className="text-3xl font-bold mb-6">
-              Get In <span className="text-gradient">Touch</span>
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Ready to start your next project? Have questions about our
-              services? We'd love to hear from you. Fill out the form and we'll
-              be in touch as soon as possible.
+            <p className="text-muted-foreground text-base font-red-hat-display">
+              Fill out the form and we'll be in touch as soon as possible. Our
+              team is dedicated to providing the best solutions for your
+              software needs.
             </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-primary"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
+            <div className="space-y-6">
+              <div className="flex items-start space-x-4">
+                <Mail className="size-5 text-primary mt-1" />
                 <div>
-                  <h3 className="font-medium">Email Us</h3>
-                  <p className="text-muted-foreground">contact@devagency.com</p>
+                  <h3 className="font-semibold text-foreground">Email Us</h3>
+                  <p className="text-muted-foreground text-sm font-redhat-regular">
+                    contact@devagency.com
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-primary"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
-                </div>
+              <div className="flex items-start space-x-4">
+                <Phone className="size-5 text-primary mt-1" />
                 <div>
-                  <h3 className="font-medium">Call Us</h3>
-                  <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                  <h3 className="font-semibold text-foreground">Call Us</h3>
+                  <p className="text-muted-foreground text-sm font-redhat-regular">
+                    +1 (555) 123-4567
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-primary"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
+              <div className="flex items-start space-x-4">
+                <MapPin className="size-5 text-primary mt-1" />
                 <div>
-                  <h3 className="font-medium">Visit Us</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="font-semibold text-foreground">Visit Us</h3>
+                  <p className="text-muted-foreground text-sm font-redhat-regular">
                     123 Tech Street, San Francisco, CA 94105
                   </p>
                 </div>
@@ -137,10 +110,8 @@ const ContactSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="dark-card rounded-xl p-8 border border-border"
+            className="dark-card rounded-xl p-8 border border-border dark-glow"
           >
-            <h3 className="text-xl font-bold mb-6">Send us a message</h3>
-
             {submitSuccess ? (
               <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-md">
                 Thank you for your message! We'll get back to you soon.
@@ -150,7 +121,7 @@ const ContactSection = () => {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium mb-2"
+                    className="block text-sm font-medium mb-2 text-foreground"
                   >
                     Your Name
                   </label>
@@ -169,7 +140,7 @@ const ContactSection = () => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium mb-2"
+                    className="block text-sm font-medium mb-2 text-foreground"
                   >
                     Your Email
                   </label>
@@ -188,7 +159,7 @@ const ContactSection = () => {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium mb-2"
+                    className="block text-sm font-medium mb-2 text-foreground"
                   >
                     Your Message
                   </label>

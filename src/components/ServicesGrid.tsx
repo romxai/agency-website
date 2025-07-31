@@ -10,6 +10,7 @@ import {
   Shield,
 } from "lucide-react";
 import { GlowCard } from "@/components/ui/spotlight-card";
+import { GradientHeading } from "./ui/gradient-heading";
 
 const services = [
   {
@@ -98,10 +99,16 @@ const ServicesGrid = () => {
       <div className="absolute inset-0 bg-background/40"></div>
       <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">
-            Our <span className="text-gradient">Services</span>
-          </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <GradientHeading
+            size="xl"
+            weight="semi"
+            variant="accent1"
+            className="font-monesta-semibold leading-none mb-0"
+          >
+            Our Services
+          </GradientHeading>
+
+          <p className="text-gray-200 max-w-2xl mx-auto mb-8 font-redhat-regular opacity-70">
             We offer a comprehensive range of software development services to
             help businesses transform their digital presence and operations.
           </p>
@@ -123,12 +130,16 @@ const ServicesGrid = () => {
                 height="100%"
                 className="h-full min-h-[280px] bg-card dark-card"
               >
-                <div className="flex flex-col h-full">
-                  <div className="mb-4 text-primary p-2 rounded-full w-14 h-14 flex items-center justify-center bg-secondary/30">
+                <div className="flex flex-col h-full p-6">
+                  <div className="mb-6 text-primary p-3 rounded-full w-16 h-16 flex items-center justify-center bg-secondary/30">
                     {service.icon}
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-muted-foreground">{service.description}</p>
+                  <h3 className="text-xl font-bold mb-4 font-redhat-regular text-foreground">
+                    {service.title}
+                  </h3>
+                  <p className="text-muted-foreground font-redhat-regular leading-relaxed text-sm">
+                    {service.description}
+                  </p>
                 </div>
               </GlowCard>
             </motion.div>
