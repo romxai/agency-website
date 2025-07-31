@@ -6,7 +6,7 @@ import { Marquee } from "@/components/magicui/marquee";
 const techStack = [
   {
     name: "React",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    logo: "/react-svgrepo-com.svg",
   },
   {
     name: "Next.js",
@@ -17,16 +17,16 @@ const techStack = [
     logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
   },
   {
-    name: "Node.js",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    name: "Javascript",
+    logo: "/js-svgrepo-com.svg",
   },
   {
     name: "Python",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    logo: "/python-svgrepo-com.svg",
   },
   {
     name: "MongoDB",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    logo: "/icons8-c-sharp-logo.svg",
   },
   {
     name: "PostgreSQL",
@@ -34,7 +34,7 @@ const techStack = [
   },
   {
     name: "AWS",
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg",
+    logo: "/aws-svgrepo-com.svg",
   },
   {
     name: "Docker",
@@ -55,9 +55,33 @@ const techStack = [
 ];
 
 const TechStackSection = () => {
+  const PAGE_BACKGROUND_COLOR = "#000000"; // <--- CHANGE THIS TO YOUR ACTUAL PAGE BACKGROUND COLOR
+
   return (
-    <section className="py-20 bg-background" id="tech-stack">
-      <div className="container">
+    <section
+      id="portfolio-preview"
+      className="relative"
+      style={{
+        // Stack the linear gradient on top of your background image
+        background: `
+          linear-gradient(to bottom, 
+            ${PAGE_BACKGROUND_COLOR} 0%, 
+            rgba(0, 0, 0, 0) 5%, 
+            rgba(0, 0, 0, 0) 95%, 
+            ${PAGE_BACKGROUND_COLOR} 100%
+          ),
+          url('/polygon-scatter-haikei.svg')
+        `,
+        backgroundSize: "cover, cover", // One for gradient, one for image
+        backgroundPosition: "center, center", // One for gradient, one for image
+        backgroundRepeat: "no-repeat, no-repeat",
+        paddingTop: "100px",
+        paddingBottom: "100px",
+        // One for gradient, one for image
+      }}
+    >
+      <div className="absolute inset-0 bg-background/40"></div>
+      <div className="container relative z-10">
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
@@ -76,7 +100,7 @@ const TechStackSection = () => {
       </div>
 
       {/* Full-width marquee */}
-      <div className="w-full">
+      <div className="w-full relative z-10">
         <Marquee className="w-full [--duration:30s]" pauseOnHover={true}>
           {techStack.map((tech, index) => (
             <div

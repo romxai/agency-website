@@ -11,15 +11,12 @@ export default function Home() {
     <main>
       <HeroSection />
       <PortfolioPreview />
-      <div className="space-y-16 md:space-y-24">
-        {" "}
-        {/* Add spacing between sections */}
         <ServicesGrid />
         <TechStackSection />
         <ClientsSection />
         <TestimonialsSection />
         <ContactSection />
-      </div>
+
     </main>
   );
 }

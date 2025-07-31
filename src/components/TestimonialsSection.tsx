@@ -46,8 +46,18 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-secondary/30" id="testimonials">
-      <div className="container">
+    <section
+      className="py-20 bg-secondary/30 relative"
+      id="testimonials"
+      style={{
+        backgroundImage: "url('/polygon-scatter-haikei.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="absolute inset-0 bg-background/40"></div>
+      <div className="container relative z-10">
         <h2 className="text-3xl font-bold text-center mb-12">
           Client <span className="text-gradient">Testimonials</span>
         </h2>

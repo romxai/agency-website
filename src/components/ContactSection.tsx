@@ -40,8 +40,18 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="py-20 bg-background" id="contact">
-      <div className="container">
+    <section
+      className="py-20 bg-background relative"
+      id="contact"
+      style={{
+        backgroundImage: "url('/polygon-scatter-haikei.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="absolute inset-0 bg-background/40"></div>
+      <div className="container relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

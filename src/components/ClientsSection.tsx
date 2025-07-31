@@ -321,15 +321,25 @@ const ClientsSection = () => {
       setTimeout(() => {
         setCurrentSet((prev) => (prev + 1) % clientLogos.length);
         setIsVisible(true);
-      }, 800); // Slower fade out
-    }, 4000); // Change every 4 seconds
+      }, 1000); // Slower fade out
+    }, 3000); // Change every 3 seconds
 
     return () => clearInterval(interval);
   }, [clientLogos.length]);
 
   return (
-    <section className="py-20 bg-background" id="clients">
-      <div className="container max-w-4xl">
+    <section
+      className="py-20 bg-background relative"
+      id="clients"
+      style={{
+        backgroundImage: "url('/polygon-scatter-haikei.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="absolute inset-0 bg-background/40"></div>
+      <div className="container max-w-4xl relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <GradientHeading
@@ -348,7 +358,7 @@ const ClientsSection = () => {
         {/* Client Logos Grid */}
         <div className="relative">
           <div
-            className={`grid grid-cols-3 gap-12 md:gap-16 transition-all duration-1000 ease-out ${
+            className={`grid grid-cols-3 gap-10 md:gap-12 transition-all duration-1000 ease-out ${
               isVisible
                 ? "opacity-100 transform translate-y-0"
                 : "opacity-0 transform translate-y-4"
@@ -357,10 +367,10 @@ const ClientsSection = () => {
             {clientLogos[currentSet].map((client, index) => (
               <div
                 key={`${currentSet}-${index}`}
-                className="flex items-center justify-center p-8 transition-all duration-300 hover:scale-110"
+                className="flex items-center justify-center p-8 transition-all duration-300 hover:scale-150"
               >
                 {/* SVG Logo */}
-                <div className="text-gray-500 hover:text-gray-400 transition-colors duration-300 filter grayscale hover:grayscale-0">
+                <div className="text-gray-500 hover:text-amber-100/80 transition-colors duration-300 filter grayscale hover:grayscale-0">
                   {client.logo}
                 </div>
               </div>

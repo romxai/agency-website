@@ -73,9 +73,30 @@ const ServicesGrid = () => {
     },
   };
 
+  const PAGE_BACKGROUND_COLOR = "#000000"; // <--- CHANGE THIS TO YOUR ACTUAL PAGE BACKGROUND COLOR
+
   return (
-    <section className="py-20 bg-background" id="services">
-      <div className="container">
+    <section
+      id="portfolio-preview"
+      className="relative"
+      style={{
+        // Stack the linear gradient on top of your background image
+        background: `
+          linear-gradient(to bottom, 
+            ${PAGE_BACKGROUND_COLOR} 0%, 
+            rgba(0, 0, 0, 0) 5%, 
+            rgba(0, 0, 0, 0) 95%, 
+            ${PAGE_BACKGROUND_COLOR} 100%
+          ),
+          url('/polygon-scatter-haikei.svg')
+        `,
+        backgroundSize: "cover, cover", // One for gradient, one for image
+        backgroundPosition: "center, center", // One for gradient, one for image
+        backgroundRepeat: "no-repeat, no-repeat", // One for gradient, one for image
+      }}
+    >
+      <div className="absolute inset-0 bg-background/40"></div>
+      <div className="container relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-4">
             Our <span className="text-gradient">Services</span>
