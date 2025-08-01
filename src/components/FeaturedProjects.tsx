@@ -117,10 +117,14 @@ const FeaturedProjects = () => {
               variant="accent3"
               className="font-monesta-semibold leading-none mb-0"
             >
-              Showcasing Our
+              Our Impact in
               <br />
-              Work
+              Action
             </GradientHeading>
+            <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl">
+              See how our tailored software solutions have empowered businesses
+              to achieve their goals and optimize operations.
+            </p>
           </motion.div>
 
           {/* This is the div containing the ShimmerButton */}
@@ -144,7 +148,10 @@ const FeaturedProjects = () => {
                 See All Work
                 <span className="absolute right-0 opacity-0 group-hover:opacity-100 translate-x-full group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none h-full flex items-center">
                   {/* Increased size for height, and added scale-x-150 for horizontal stretching */}
-                  <ArrowRight size={24} className="transform scale-x-130 scale-y-90" />{" "}
+                  <ArrowRight
+                    size={24}
+                    className="transform scale-x-130 scale-y-90"
+                  />{" "}
                   {/* <--- Main change here */}
                 </span>
               </Link>
