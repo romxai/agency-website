@@ -12,7 +12,6 @@ export default function Home() {
     <main>
       <HeroSection />
       <FeaturedProjects />
-      <PortfolioPreview />
       <ServicesGrid />
       <TechStackSection />
       <ClientsSection />

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { GradientHeading } from "@/components/ui/gradient-heading";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react"; // <--- Add this import
 
 // Import LightRays with SSR disabled to prevent "document is not defined" error
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
@@ -101,12 +102,11 @@ const FeaturedProjects = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10">
+      <div className="container relative z-10 ">
         {/* Header */}
-        {/* The parent div is a flex container, which is good */}
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8 mb-10">
           <motion.div
-            className="flex-1" // This div will take up available horizontal space
+            className="flex-1"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -125,31 +125,35 @@ const FeaturedProjects = () => {
 
           {/* This is the div containing the ShimmerButton */}
           <motion.div
-            // Added `self-end` to align itself to the bottom within the parent flex container
-            // `items-end` makes its *own content* align to the right (useful if it had multiple items)
             className="flex flex-col justify-end items-end self-end"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <ShimmerButton
-              className="bg-secondary text-secondary-foreground font-red-hat-display"
-              shimmerColor="#ffffff"
+              className="bg-secondary text-secondary-foreground font-red-hat-display inline-flex overflow-hidden"
+              shimmerColor="#FFD700"
               background="rgb(13, 13, 13)"
               borderRadius="100px"
             >
               <Link
                 href="/portfolio"
-                className="block w-full h-full text-white"
+                // Adjusted group-hover:pr-14 to accommodate the longer arrow
+                className="text-white flex items-center whitespace-nowrap relative group-hover:pr-10 transition-all duration-300 ease-out"
               >
                 See All Work
+                <span className="absolute right-0 opacity-0 group-hover:opacity-100 translate-x-full group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none h-full flex items-center">
+                  {/* Increased size for height, and added scale-x-150 for horizontal stretching */}
+                  <ArrowRight size={24} className="transform scale-x-130 scale-y-90" />{" "}
+                  {/* <--- Main change here */}
+                </span>
               </Link>
             </ShimmerButton>
           </motion.div>
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 pb-10">
           {/* Left Column */}
           <div className="space-y-6 lg:space-y-8">
             {featuredProjects.slice(0, 2).map((project, index) => (
@@ -159,10 +163,10 @@ const FeaturedProjects = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 + index * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.02 }}
               >
                 {/* Hover Effect Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-50% to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                 {/* Image Section */}
                 <div className="relative h-48 overflow-hidden">
@@ -211,10 +215,10 @@ const FeaturedProjects = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 + index * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.02 }}
               >
                 {/* Hover Effect Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-50% to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                 {/* Image Section */}
                 <div className="relative h-48 overflow-hidden">
