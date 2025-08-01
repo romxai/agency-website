@@ -6,13 +6,14 @@ import TechStackSection from "@/components/TechStackSection";
 import ClientsSection from "@/components/ClientsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
+import SolutionsSection from "@/components/SolutionsSection";
 
 export default function Home() {
   return (
     <main>
       <HeroSection />
       <FeaturedProjects />
-      <ServicesGrid />
+      <SolutionsSection />
       <TechStackSection />
       <ClientsSection />
       <TestimonialsSection />
