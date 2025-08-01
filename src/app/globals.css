@@ -168,3 +168,53 @@ body {
 .animate-scroll-left {
   animation: scroll-left var(--duration, 40s) linear infinite;
 }
+
+@font-face {
+  font-family: 'Charm Bold';
+  src: url('/Charm-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-charm-bold {
+  font-family: 'Charm Bold', cursive;
+  /* Apply a different gradient */
+  background: linear-gradient(to bottom, #ffefc4, #646038); /* Example: a blue-green gradient */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* Fallback for non-webkit browsers */
+  /* You might need !important if the GradientHeading applies very specific styles */
+  /* background: linear-gradient(to right, #6EE7B7, #3B82F6) !important; */
+  /* -webkit-background-clip: text !important; */
+  /* -webkit-text-fill-color: transparent !important; */
+}
+
+.top-fading-border {
+  position: relative;
+  /* Add some top padding to the container itself if not already present,
+     so the border has space to sit below it.
+     The 'container' class likely has horizontal padding.
+     You might need to adjust this value based on your exact 'container' padding. */
+  padding-top: 4rem; /* Example: Adjust this if your header needs more space above it. */
+}
+
+.top-fading-border::before {
+  content: "";
+  position: absolute;
+  top: 0; /* Changed from 'top: 0' to 'top: 0' to explicitly place it at the container's top edge */
+  left: 0;
+  width: 100%;
+  height: 1px; /* Adjust thickness as needed */
+  /* This creates the golden gradient that fades to transparent */
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 20%, /* Start fading in later */
+    #FFED99 50%, /* Golden color at center */
+    transparent 80%, /* Start fading out earlier */
+    transparent 100%
+  );
+  z-index: 20; /* Ensure it's above other content */
+}

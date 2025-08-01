@@ -3,7 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
-import { GradientHeading } from "./ui/gradient-heading";
+import { GradientHeading } from "@/components/ui/gradient-heading"; // Assuming path is corrected for the project
+import dynamic from "next/dynamic";
+
+// Import LightRays with SSR disabled
+const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
+  ssr: false,
+});
 
 // Sample testimonial data
 const testimonials = [
@@ -32,6 +38,7 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   // Function to move to the next testimonial
   const nextTestimonial = () => {
@@ -48,57 +55,87 @@ const TestimonialsSection = () => {
     return () => clearInterval(interval);
   }, [currentIndex]); // The effect re-runs when the current index changes to reset the timer
 
+  // Mount the component on the client-side to render LightRays
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <section
-      className="py-20 relative font-sans"
       id="testimonials"
-      style={{
-        backgroundImage: "url('/polygon-scatter-haikei.svg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      className="relative py-20 overflow-hidden bg-black"
     >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-background/40"></div>
+      {/* LightRays Background - Left side */}
+      <div className="absolute inset-0 z-0">
+        {mounted && (
+          <LightRays
+            raysSpeed={1}
+            lightSpread={3}
+            rayLength={0.9}
+            pulsating={false}
+            fadeDistance={0.4}
+            saturation={1}
+            followMouse={false}
+            mouseInfluence={0.1}
+            noiseAmount={0.05}
+            distortion={0}
+            glowAmount={0}
+            className="w-full h-full"
+          />
+        )}
+      </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <GradientHeading
-          size="xl"
-          weight="semi"
-          variant="accent1"
-          className="font-monesta-semibold leading-none mb-14"
+      {/* Top fading border with gold color */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent z-20"></div>
+
+      <div className="container relative z-10">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          Client Testimonials
-        </GradientHeading>
+          <GradientHeading
+            size="xl"
+            weight="semi"
+            variant="accent3"
+            className="font-monesta-semibold leading-none mb-6"
+          >
+            Client Testimonials
+          </GradientHeading>
+          <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
+            What our amazing clients are saying about our work.
+          </p>
+        </motion.div>
 
-        {/* Testimonial card with animation */}
-        <div className="overflow-hidden ">
+        {/* Testimonial carousel with fade animation */}
+        <div className="max-w-3xl mx-auto overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="bg-gray-900/20 text-white rounded-xl p-8 md:p-12 shadow-2xl"
+              className="bg-zinc-900 rounded-2xl p-8 md:p-12 shadow-2xl border border-zinc-800"
             >
               <div className="text-center">
-                <Quote className="h-10 w-10 text-gray-700 mx-auto mb-6" />
-                <p className="text-lg md:text-xl font-light italic leading-relaxed text-gray-300">
+                <Quote className="h-10 w-10 text-zinc-600 mx-auto mb-6" />
+                <p className="text-lg md:text-xl font-light italic leading-relaxed text-zinc-300">
                   "{testimonials[currentIndex].content}"
                 </p>
               </div>
 
               <div className="mt-8 flex flex-col items-center">
-                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-amber-600 text-white font-bold text-xl ring-2 ring-amber-500">
+                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-zinc-700 text-amber-500 font-bold text-xl ring-2 ring-amber-500">
                   {testimonials[currentIndex].name.charAt(0)}
                 </div>
                 <div className="mt-4 text-center">
                   <h4 className="font-semibold text-lg text-white">
                     {testimonials[currentIndex].name}
                   </h4>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-zinc-400">
                     {testimonials[currentIndex].role}
                   </p>
                 </div>
@@ -114,7 +151,7 @@ const TestimonialsSection = () => {
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === currentIndex ? "bg-amber-500 w-6" : "bg-gray-600"
+                index === currentIndex ? "bg-amber-500 w-6" : "bg-zinc-600"
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />

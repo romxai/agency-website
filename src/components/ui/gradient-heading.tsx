@@ -12,12 +12,15 @@ const headingVariants = cva(
         default: "bg-gradient-to-t from-text-dark from-1% to-white",
 
         // MODIFIED: This gradient is now 90% white, with a small dark part at the top.
-        pink: "bg-gradient-to-t from-text-darker from-5% to-white",
+        pink: "bg-gradient-to-t from-text-darker from-35% to-white",
 
         light: "bg-gradient-to-t from-neutral-200 to-neutral-300",
-        accent1: "bg-gradient-to-t from-yellow-900/10 via-white/60 to-white",
+        accent1:
+          "bg-gradient-to-t from-yellow-900 from-30% via-yellow-500/30 via-10% to-white",
         accent2:
           "bg-gradient-to-t from-yellow-900 via-yellow-500/60 via-60% to-white",
+        accent3:
+          "bg-gradient-to-t from-yellow-700 via-yellow-500/60 via-30% to-white",
         secondary:
           "bg-gradient-to-t from-neutral-500 to-neutral-600 dark:from-stone-200 dark:to-neutral-200",
       },

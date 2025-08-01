@@ -9,7 +9,7 @@ import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 
-// Import LightRays with SSR disabled to prevent "document is not defined" error
+// Import LightRays with SSR disabled to prevent "document is defined" error
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
   ssr: false,
 });
@@ -22,12 +22,11 @@ const SolutionsSection = () => {
   }, []);
 
   return (
-    <section className="relative py-20 overflow-hidden bg-black">
+    <section className="relative py-20 overflow-hidden bg-black top-fading-border">
       {/* LightRays Background */}
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
-            raysOrigin="top-left"
             raysSpeed={0.5}
             lightSpread={20}
             rayLength={1.1}
@@ -48,8 +47,11 @@ const SolutionsSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10">
-        {/* Header */}
+      <div className="container relative z-10 ">
+        {/* New div for the fading top border */}
+        
+
+        {/* Header - No changes needed here */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -59,13 +61,14 @@ const SolutionsSection = () => {
           <GradientHeading
             size="xl"
             weight="semi"
-            variant="accent2"
+            variant="accent3"
             className="font-monesta-semibold leading-none mb-6"
           >
-            Tailored solutions for all <br /> your business needs
+            Tailored <span className="font-charm-bold">solutions</span> for all{" "}
+            <br /> your business needs
           </GradientHeading>
 
-          <p className="text-lg text-muted-foreground font-red-hat-display max-w-2xl mx-auto">
+          <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
             We offer a comprehensive range of software development services to
             help businesses focus better on business.
           </p>
@@ -81,7 +84,7 @@ const SolutionsSection = () => {
           >
             <CometCard className="w-full">
               <div className="bg-black border border-[#FFED99]/20 rounded-2xl h-96 relative overflow-hidden">
-                {/* Golden accent line */}
+                {/* Golden accent line (This one is for the card, keep it) */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
 
                 <div className="flex h-full">
@@ -94,11 +97,11 @@ const SolutionsSection = () => {
                     >
                       AI Agents & Intelligent Automation
                     </GradientHeading>
-                    <p className="text-muted-foreground mb-6 font-red-hat-display">
+                    <p className="text-zinc-400 mb-6 font-red-hat-display">
                       Leverage cutting-edge AI to automate complex workflows and
                       create intelligent agents that work 24/7.
                     </p>
-                    <ul className="space-y-2 text-sm text-muted-foreground font-red-hat-display">
+                    <ul className="space-y-2 text-sm text-zinc-400 font-red-hat-display">
                       <li className="flex items-center">
                         <span className="w-2 h-2 bg-[#FFED99] rounded-full mr-3"></span>
                         Custom AI agent development
@@ -161,7 +164,7 @@ const SolutionsSection = () => {
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
 
                   <div className="flex flex-col h-full">
-                    <div className="flex-1 p-6">
+                    <div className="flex-1 px-6 pt-10" >
                       <GradientHeading
                         size="xs"
                         weight="semi"
@@ -170,16 +173,16 @@ const SolutionsSection = () => {
                       >
                         Fullstack websites & Mobile Applications
                       </GradientHeading>
-                      <p className="text-muted-foreground text-sm font-red-hat-display">
+                      <p className="text-zinc-400 text-sm font-red-hat-display">
                         Modern, responsive web applications and mobile apps
                         built with cutting-edge technologies for optimal
                         performance and user experience.
                       </p>
                     </div>
 
-                    <div className="w-full flex-1 relative mt-4">
+                    <div className="w-full flex-1 relative ">
                       <Image
-                        src="/shape-min.png"
+                        src="/web-mock.png"
                         alt="Web Development"
                         fill
                         className="object-cover"
@@ -222,7 +225,7 @@ const SolutionsSection = () => {
                       >
                         Bespoke enterprise ready solution
                       </GradientHeading>
-                      <p className="text-muted-foreground text-sm mb-4 font-red-hat-display">
+                      <p className="text-zinc-400 text-sm mb-4 font-red-hat-display">
                         Custom enterprise solutions designed to scale with your
                         business, featuring robust architecture and
                         comprehensive support.

@@ -54,7 +54,7 @@ const FeaturedProjects = () => {
   }, []);
 
   return (
-    <section className="relative py-20 overflow-hidden bg-black">
+    <section className="relative py-20 overflow-hidden bg-black top-fading-border">
       {/* LightRays Background */}
       <div className="absolute inset-0 z-0">
         {mounted && (
@@ -114,7 +114,7 @@ const FeaturedProjects = () => {
             <GradientHeading
               size="xl"
               weight="semi"
-              variant="accent2"
+              variant="accent3"
               className="font-monesta-semibold leading-none mb-0"
             >
               Showcasing Our
@@ -193,12 +193,17 @@ const FeaturedProjects = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-semibold text-white mb-2 font-red-hat-display">
+                  <GradientHeading
+                    size="xs"
+                    weight="semi"
+                    variant="accent2"
+                    className="font-red-hat-display mb-4"
+                  >
                     {project.title}
-                  </h3>
+                  </GradientHeading>
 
                   {/* Description */}
-                  <p className="text-sm text-white/70 font-red-hat-display">
+                  <p className="text-sm text-zinc-500 font-red-hat-display">
                     {project.description}
                   </p>
                 </div>
@@ -245,12 +250,17 @@ const FeaturedProjects = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-xl font-semibold text-white mb-2 font-red-hat-display">
+                  <GradientHeading
+                    size="xs"
+                    weight="semi"
+                    variant="accent2"
+                    className="font-red-hat-display mb-4"
+                  >
                     {project.title}
-                  </h3>
+                  </GradientHeading>
 
                   {/* Description */}
-                  <p className="text-sm text-white/70 font-red-hat-display">
+                  <p className="text-sm text-zinc-500 font-red-hat-display">
                     {project.description}
                   </p>
                 </div>
