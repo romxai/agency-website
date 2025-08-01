@@ -125,9 +125,9 @@ const SolutionsSection = () => {
                     </ul>
                   </div>
 
-                  <div className="w-3/5 h-full relative">
+                  <div className="w-3/5 h-full relative p-10 mt-1">
                     <Image
-                      src="/workflow.webp"
+                      src="/flow.png"
                       alt="AI Automation"
                       fill
                       className="object-cover"

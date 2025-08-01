@@ -48,7 +48,7 @@ const TestimonialsSection = () => {
   // Auto-scrolling logic using useEffect and setInterval
   useEffect(() => {
     // Set the auto-scroll interval (e.g., 5 seconds)
-    const scrollInterval = 5000;
+    const scrollInterval = 7000;
     const interval = setInterval(nextTestimonial, scrollInterval);
 
     // Clean up the interval when the component unmounts
@@ -69,13 +69,14 @@ const TestimonialsSection = () => {
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
+            raysOrigin="left"
             raysSpeed={1}
             lightSpread={3}
             rayLength={0.9}
             pulsating={false}
-            fadeDistance={0.4}
+            fadeDistance={0.5}
             saturation={1}
-            followMouse={false}
+            followMouse={true}
             mouseInfluence={0.1}
             noiseAmount={0.05}
             distortion={0}
@@ -85,9 +86,34 @@ const TestimonialsSection = () => {
         )}
       </div>
 
-      {/* Top fading border with gold color */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent z-20"></div>
+      {/* LightRays Background - Right side */}
+      <div className="absolute inset-0 z-0">
+        {mounted && (
+          <LightRays
+            raysOrigin="right"
+            raysSpeed={1}
+            lightSpread={3}
+            rayLength={0.9}
+            pulsating={false}
+            fadeDistance={0.5}
+            saturation={1}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0.05}
+            distortion={0}
+            glowAmount={0}
+            className="w-full h-full"
+          />
+        )}
+        {/* Fallback for when not mounted */}
+        {!mounted && (
+          <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
+        )}
+      </div>
 
+      {/* Top fading border with gold color */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
+      
       <div className="container relative z-10">
         <motion.div
           className="text-center mb-16"
@@ -109,26 +135,32 @@ const TestimonialsSection = () => {
           </p>
         </motion.div>
 
-        {/* Testimonial carousel with fade animation */}
+        {/* Testimonial carousel with horizontal slide animation */}
         <div className="max-w-3xl mx-auto overflow-hidden">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={currentIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, x: 50 }} // Slide in from the right
+              animate={{ opacity: 1, x: 0 }} // Slide to the center
+              exit={{ opacity: 0, x: -50 }} // Slide out to the left
               transition={{ duration: 0.5 }}
-              className="bg-zinc-900 rounded-2xl p-8 md:p-12 shadow-2xl border border-zinc-800"
+              className="bg-black rounded-2xl p-8 md:p-12 shadow-2xl border border-[#FFED99]/20 relative"
             >
+              {/* Gold fading border on the testimonial card */}
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-[#FFED99]/50 to-transparent"></div>
+              <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
+              <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-[#FFED99]/50 to-transparent"></div>
+
               <div className="text-center">
-                <Quote className="h-10 w-10 text-zinc-600 mx-auto mb-6" />
+                <Quote className="h-10 w-10 text-[#FFED99]/60 mx-auto mb-6" />
                 <p className="text-lg md:text-xl font-light italic leading-relaxed text-zinc-300">
                   "{testimonials[currentIndex].content}"
                 </p>
               </div>
 
               <div className="mt-8 flex flex-col items-center">
-                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-zinc-700 text-amber-500 font-bold text-xl ring-2 ring-amber-500">
+                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-zinc-700 text-[#FFED99]/60 font-bold text-xl ring-2 ring-[#FFED99]/50">
                   {testimonials[currentIndex].name.charAt(0)}
                 </div>
                 <div className="mt-4 text-center">
@@ -151,7 +183,7 @@ const TestimonialsSection = () => {
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === currentIndex ? "bg-amber-500 w-6" : "bg-zinc-600"
+                index === currentIndex ? "bg-[#FFED99]/60 w-6" : "bg-zinc-600"
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />
