@@ -69,14 +69,13 @@ const TestimonialsSection = () => {
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
-            raysOrigin="left"
             raysSpeed={1}
             lightSpread={3}
-            rayLength={0.9}
+            rayLength={0.4}
             pulsating={false}
             fadeDistance={0.5}
             saturation={1}
-            followMouse={true}
+            followMouse={false}
             mouseInfluence={0.1}
             noiseAmount={0.05}
             distortion={0}
@@ -86,34 +85,11 @@ const TestimonialsSection = () => {
         )}
       </div>
 
-      {/* LightRays Background - Right side */}
-      <div className="absolute inset-0 z-0">
-        {mounted && (
-          <LightRays
-            raysOrigin="right"
-            raysSpeed={1}
-            lightSpread={3}
-            rayLength={0.9}
-            pulsating={false}
-            fadeDistance={0.5}
-            saturation={1}
-            followMouse={true}
-            mouseInfluence={0.1}
-            noiseAmount={0.05}
-            distortion={0}
-            glowAmount={0}
-            className="w-full h-full"
-          />
-        )}
-        {/* Fallback for when not mounted */}
-        {!mounted && (
-          <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
-        )}
-      </div>
+      
 
       {/* Top fading border with gold color */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
-      
+
       <div className="container relative z-10">
         <motion.div
           className="text-center mb-16"
