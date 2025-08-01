@@ -28,7 +28,7 @@ const HeroSection = () => {
           <LightRays
             raysOrigin="top-left"
             raysSpeed={0.5}
-            lightSpread={16}
+            lightSpread={20}
             rayLength={1.1}
             pulsating={false}
             fadeDistance={0.2}
@@ -37,7 +37,7 @@ const HeroSection = () => {
             mouseInfluence={0}
             noiseAmount={0.05}
             distortion={0.02}
-            glowAmount={0.2}
+            glowAmount={0.1}
             className="w-full h-full"
           />
         )}
@@ -45,7 +45,6 @@ const HeroSection = () => {
           <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
         )}
       </div>
-
       {/* Content */}
       <div className="container relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">

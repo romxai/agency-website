@@ -1,4 +1,5 @@
 import HeroSection from "@/components/HeroSection";
+import FeaturedProjects from "@/components/FeaturedProjects";
 import PortfolioPreview from "@/components/PortfolioPreview";
 import ServicesGrid from "@/components/ServicesGrid";
 import TechStackSection from "@/components/TechStackSection";
@@ -10,13 +11,13 @@ export default function Home() {
   return (
     <main>
       <HeroSection />
+      <FeaturedProjects />
       <PortfolioPreview />
-        <ServicesGrid />
-        <TechStackSection />
-        <ClientsSection />
-        <TestimonialsSection />
-        <ContactSection />
-
+      <ServicesGrid />
+      <TechStackSection />
+      <ClientsSection />
+      <TestimonialsSection />
+      <ContactSection />
     </main>
   );
 }
