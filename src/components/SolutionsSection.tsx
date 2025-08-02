@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { GradientHeading } from "@/components/ui/gradient-heading";
-import { CometCard } from "@/components/ui/comet-card";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
@@ -13,6 +12,33 @@ import { Calendar } from "lucide-react";
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
   ssr: false,
 });
+
+// A reusable card wrapper for consistent hover effects.
+// It only provides the motion and hover glow, preserving the children's layout.
+const InteractiveCard = ({ children, className }: { children: React.ReactNode; className: string }) => (
+  <motion.div
+    className={`group relative ${className}`}
+    whileHover={{ scale: 1.02, y: -5 }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
+  >
+    {/* Animated gradient border glow that appears on hover.
+        It uses multiple radial gradients to create a glow from the center of each side,
+        which fades towards the corners, as requested. */}
+    <div
+      className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      style={{
+        background: `
+          radial-gradient(400px circle at 50% 0%, rgba(255, 237, 153, 0.3), transparent 40%),
+          radial-gradient(400px circle at 50% 100%, rgba(255, 237, 153, 0.3), transparent 40%),
+          radial-gradient(400px circle at 0% 50%, rgba(255, 237, 153, 0.3), transparent 40%),
+          radial-gradient(400px circle at 100% 50%, rgba(255, 237, 153, 0.3), transparent 40%)
+        `,
+      }}
+      aria-hidden="true"
+    />
+    {children}
+  </motion.div>
+);
 
 const SolutionsSection = () => {
   const [mounted, setMounted] = useState(false);
@@ -47,10 +73,7 @@ const SolutionsSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container relative z-10 ">
-        {/* New div for the fading top border */}
-        
-
+      <div className="container relative z-10">
         {/* Header - No changes needed here */}
         <motion.div
           className="text-center mb-16"
@@ -67,7 +90,6 @@ const SolutionsSection = () => {
             Tailored <span className="font-charm-bold">solutions</span> for all{" "}
             <br /> your business needs
           </GradientHeading>
-
           <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
             We offer a comprehensive range of software development services to
             help businesses focus better on business.
@@ -82,7 +104,7 @@ const SolutionsSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <CometCard className="w-full">
+            <InteractiveCard className="w-full">
               <div className="bg-black border border-[#FFED99]/20 rounded-2xl h-96 relative overflow-hidden">
                 {/* Golden accent line (This one is for the card, keep it) */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
@@ -127,10 +149,10 @@ const SolutionsSection = () => {
 
                   <div className="w-3/5 h-full relative p-10 mt-1">
                     <Image
-                      src="/flow.png"
+                      src="/flow2.png"
                       alt="AI Automation"
                       fill
-                      className="object-cover"
+                      className="object-contain scale-105"
                     />
                     {/* Vignette effect overlay - Customized for left fade */}
                     <div
@@ -146,7 +168,7 @@ const SolutionsSection = () => {
                   </div>
                 </div>
               </div>
-            </CometCard>
+            </InteractiveCard>
           </motion.div>
 
           {/* Second Row - Split Cards */}
@@ -158,13 +180,13 @@ const SolutionsSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <CometCard className="w-full">
+              <InteractiveCard className="w-full">
                 <div className="bg-black border border-[#FFED99]/20 rounded-2xl h-96 relative overflow-hidden">
                   {/* Golden accent line */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
 
                   <div className="flex flex-col h-full">
-                    <div className="flex-1 px-6 pt-10" >
+                    <div className="flex-1 px-6 pt-10">
                       <GradientHeading
                         size="xs"
                         weight="semi"
@@ -200,7 +222,7 @@ const SolutionsSection = () => {
                     </div>
                   </div>
                 </div>
-              </CometCard>
+              </InteractiveCard>
             </motion.div>
 
             {/* Second Card - 3/5 width */}
@@ -210,7 +232,7 @@ const SolutionsSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              <CometCard className="w-full">
+              <InteractiveCard className="w-full">
                 <div className="bg-black border border-[#FFED99]/20 rounded-2xl h-96 relative overflow-hidden">
                   {/* Golden accent line */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
@@ -264,7 +286,7 @@ const SolutionsSection = () => {
                     </div>
                   </div>
                 </div>
-              </CometCard>
+              </InteractiveCard>
             </motion.div>
           </div>
         </div>
