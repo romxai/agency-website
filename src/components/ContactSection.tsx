@@ -121,7 +121,7 @@ const ContactSection = () => {
       </div>
 
       {/* Top fading border with gold color */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent z-20"></div>
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
 
       <div className="container relative z-10">
         {/* Header */}
