@@ -20,7 +20,7 @@ const headingVariants = cva(
         accent2:
           "bg-gradient-to-t from-yellow-900 via-yellow-500/60 via-60% to-white",
         accent3:
-          "bg-gradient-to-t from-yellow-700 via-yellow-500/60 via-30% to-white",
+          "bg-gradient-to-t from-yellow-900 via-yellow-600/70 via-50% to-white",
         secondary:
           "bg-gradient-to-t from-neutral-500 to-neutral-600 dark:from-stone-200 dark:to-neutral-200",
       },
