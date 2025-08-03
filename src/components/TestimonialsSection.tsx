@@ -66,26 +66,52 @@ const TestimonialsSection = () => {
       className="relative py-20 overflow-hidden bg-black"
     >
       {/* LightRays Background - Left side */}
+      
+
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
+            raysOrigin="left"
             raysSpeed={1}
-            lightSpread={3}
-            rayLength={0.4}
+            lightSpread={2}
+            rayLength={1}
             pulsating={false}
-            fadeDistance={0.5}
+            fadeDistance={0.6}
             saturation={1}
-            followMouse={false}
+            followMouse={true}
             mouseInfluence={0.1}
             noiseAmount={0.05}
             distortion={0}
-            glowAmount={0}
+            glowAmount={0.05}
             className="w-full h-full"
           />
         )}
       </div>
 
-      
+      {/* LightRays Background - Right side */}
+      <div className="absolute inset-0 z-0">
+        {mounted && (
+          <LightRays
+            raysOrigin="right"
+            raysSpeed={1}
+            lightSpread={2}
+            rayLength={1}
+            pulsating={false}
+            fadeDistance={0.6}
+            saturation={1}
+            followMouse={true}
+            mouseInfluence={0.1}
+            noiseAmount={0.05}
+            distortion={0}
+            glowAmount={0.05}
+            className="w-full h-full"
+          />
+        )}
+        {/* Fallback for when not mounted */}
+        {!mounted && (
+          <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
+        )}
+      </div>
 
       {/* Top fading border with gold color */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>

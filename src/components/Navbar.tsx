@@ -30,7 +30,7 @@ const useScrollDirection = () => {
   return scrollDirection;
 };
 
-// Animated Nav Link Component (translated from React code)
+// Animated Nav Link Component
 const AnimatedNavLink = ({
   href,
   children,
@@ -39,7 +39,7 @@ const AnimatedNavLink = ({
   children: React.ReactNode;
 }) => {
   const defaultTextColor = "text-gray-300";
-  const hoverTextColor = "text-white";
+  const hoverTextColor = "text-amber-200";
   const textSizeClass = "text-sm";
 
   return (
@@ -55,7 +55,7 @@ const AnimatedNavLink = ({
   );
 };
 
-// Main FloatingNav Component (integrating new design)
+// Main FloatingNav Component
 export const FloatingNav = ({
   navItems,
   className,
@@ -129,7 +129,6 @@ export const FloatingNav = ({
     </div>
   );
 
-  // Filter out button items for nav links
   const navLinks = navItems.filter((item) => !item.isButton && !item.isSignup);
   const buttonItems = navItems.filter((item) => item.isButton || item.isSignup);
 
@@ -151,9 +150,9 @@ export const FloatingNav = ({
       <div
         className={cn(
           `flex flex-col items-center pl-6 pr-6 py-3 backdrop-blur-sm
-          ${headerShapeClass}
-          border border-[#333] bg-[#1f1f1f57]
-          transition-[border-radius] duration-300 ease-in-out`
+           ${headerShapeClass}
+           border border-[#333] bg-[#1f1f1f57]
+           transition-[border-radius] duration-300 ease-in-out`
         )}
       >
         <div className="flex items-center gap-x-6 sm:gap-x-8">
@@ -176,14 +175,14 @@ export const FloatingNav = ({
                 >
                   <div
                     className="absolute inset-0 -m-2 rounded-full
-                                hidden sm:block
-                                bg-gray-100
-                                opacity-40 filter blur-lg pointer-events-none
-                                transition-all duration-300 ease-out
-                                group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+                                   hidden sm:block
+                                   bg-amber-200
+                                   opacity-40 filter blur-lg pointer-events-none
+                                   transition-all duration-300 ease-out
+                                   group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
                   ></div>
                   <Link href={item.link}>
-                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-black bg-gradient-to-br from-gray-100 to-gray-300 rounded-full hover:from-gray-200 hover:to-gray-400 transition-all duration-200 w-full sm:w-auto">
+                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
                       {item.name}
                     </button>
                   </Link>
@@ -239,11 +238,11 @@ export const FloatingNav = ({
 
         <div
           className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
-                         ${
-                           isOpen
-                             ? "max-h-[1000px] opacity-100 pt-4"
-                             : "max-h-0 opacity-0 pt-0 pointer-events-none"
-                         }`}
+                       ${
+                         isOpen
+                           ? "max-h-[1000px] opacity-100 pt-4"
+                           : "max-h-0 opacity-0 pt-0 pointer-events-none"
+                       }`}
         >
           <nav className="flex flex-col items-center space-y-4 text-base w-full">
             {navLinks.map((link, idx) => (
@@ -265,14 +264,14 @@ export const FloatingNav = ({
                 >
                   <div
                     className="absolute inset-0 -m-2 rounded-full
-                                hidden sm:block
-                                bg-gray-100
-                                opacity-40 filter blur-lg pointer-events-none
-                                transition-all duration-300 ease-out
-                                group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+                                   hidden sm:block
+                                   bg-amber-200
+                                   opacity-40 filter blur-lg pointer-events-none
+                                   transition-all duration-300 ease-out
+                                   group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
                   ></div>
                   <Link href={item.link}>
-                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-black bg-gradient-to-br from-gray-100 to-gray-300 rounded-full hover:from-gray-200 hover:to-gray-400 transition-all duration-200 w-full sm:w-auto">
+                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900/90 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/70 hover:bg-amber-200">
                       {item.name}
                     </button>
                   </Link>

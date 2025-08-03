@@ -69,7 +69,7 @@ const Footer = () => {
   ];
 
   return (
-    <section className="relative bg-black">
+    <section className="relative bg-black pt-10">
       {/* Container for the large interactive text */}
       <div
         ref={textContainerRef}

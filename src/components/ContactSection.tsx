@@ -78,45 +78,19 @@ const ContactSection = () => {
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
-            raysOrigin="left"
             raysSpeed={1}
             lightSpread={3}
             rayLength={0.9}
             pulsating={false}
             fadeDistance={0.5}
             saturation={1}
-            followMouse={true}
+            followMouse={false}
             mouseInfluence={0.1}
             noiseAmount={0.05}
             distortion={0}
             glowAmount={0}
             className="w-full h-full"
           />
-        )}
-      </div>
-
-      {/* LightRays Background - Right side */}
-      <div className="absolute inset-0 z-0">
-        {mounted && (
-          <LightRays
-            raysOrigin="right"
-            raysSpeed={1}
-            lightSpread={3}
-            rayLength={0.9}
-            pulsating={false}
-            fadeDistance={0.5}
-            saturation={1}
-            followMouse={true}
-            mouseInfluence={0.1}
-            noiseAmount={0.05}
-            distortion={0}
-            glowAmount={0}
-            className="w-full h-full"
-          />
-        )}
-        {/* Fallback for when not mounted */}
-        {!mounted && (
-          <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
         )}
       </div>
 
