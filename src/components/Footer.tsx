@@ -2,23 +2,25 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, useScroll, useTransform } from "framer-motion";
 import { Globe, Github, Twitter, Linkedin } from "lucide-react";
 
-/**
- * A modern, clean, and minimalist footer section.
- * It features a large interactive text element and a centered layout
- * for navigation and social links, matching the website's aesthetic.
- */
 const Footer = () => {
-  // Ref for the text container to calculate mouse position relative to the element.
   const textContainerRef = useRef<HTMLDivElement>(null);
-
-  // State to hold the mouse position.
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Effect to add and clean up the mouse move event listener.
+  const { scrollYProgress } = useScroll({
+    target: textContainerRef,
+    offset: ["start end", "end start"],
+  });
+  const mobileTextOpacity = useTransform(scrollYProgress, [0.1, 0.5], [0.2, 1]);
+
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const handleMouseMove = (event: MouseEvent) => {
       if (textContainerRef.current) {
         const rect = textContainerRef.current.getBoundingClientRect();
@@ -29,13 +31,33 @@ const Footer = () => {
       }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
+    if (!isMobile) {
+      window.addEventListener("mousemove", handleMouseMove);
+    }
 
-  // Animation variants for the footer content to fade in gracefully.
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      if (!isMobile) {
+        window.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, [isMobile]);
+
+  const spotlightSize = isMobile ? 150 : 400;
+
+  const highlightTextStyle = isMobile
+    ? {
+        opacity: mobileTextOpacity,
+        color: "#e7c95c",
+      }
+    : {
+        backgroundImage: `radial-gradient(${spotlightSize}px circle at var(--mouse-x) var(--mouse-y), #e7c95c 0%, transparent 80%)`,
+        WebkitBackgroundClip: "text",
+        backgroundClip: "text",
+        color: "transparent",
+        transition: "background-image 0.2s ease-out",
+      };
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -47,17 +69,9 @@ const Footer = () => {
     },
   };
 
-  // Animation variants for individual items to slide up and fade in.
   const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
+    visible: { y: 0, opacity: 1 },
   };
 
   const footerLinks = [
@@ -70,46 +84,31 @@ const Footer = () => {
 
   return (
     <section className="relative bg-black pt-5">
-      {/* Container for the large interactive text */}
       <div
         ref={textContainerRef}
-        className="relative w-full select-none mb-5"
+        className="relative w-full select-none mb-5 overflow-hidden"
         style={
           {
-            // Pass mouse coordinates as CSS custom properties
             "--mouse-x": `${mousePosition.x}px`,
             "--mouse-y": `${mousePosition.y}px`,
           } as React.CSSProperties
         }
       >
-        {/* Base layer for the text (the dark, non-highlighted version) */}
-        <h1 className="text-center text-[22vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tighter">
+        {/* MODIFIED: Adjusted vw font size to prevent overflow on small screens */}
+        <h1 className="text-center text-[20vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tight md:tracking-tighter">
           DevAgency
         </h1>
-
-        {/* Top layer with the interactive golden spotlight effect */}
-        <h1
-          className="absolute inset-0 text-center text-[22vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase tracking-tighter"
-          style={{
-            // A radial gradient centered on the mouse position creates the spotlight.
-            background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), #e7c95c 0%, transparent 80%)`,
-            // Clipping the background to the text shape makes the gradient visible only through the letters.
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-            // A subtle transition for the spotlight effect
-            transition: "background 0.2s ease-out",
-          }}
+        <motion.h1
+          // MODIFIED: Matched the adjusted vw font size here as well
+          className="absolute inset-0 text-center text-[20vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase tracking-tight md:tracking-tighter"
+          style={highlightTextStyle}
         >
           DevAgency
-        </h1>
+        </motion.h1>
       </div>
 
-      {/* The footer content, now with a solid black background, positioned to overlap the large text */}
-      <footer className="relative z-10 bg-black -mt-[10vw] md:-mt-[7vw] lg:-mt-[5vw] pt-8 pb-16">
-        {/* Top fading border with gold color */}
+      <footer className="relative z-10 bg-black -mt-[1vw] md:-mt-[7vw] lg:-mt-[5vw] pt-8 pb-8 md:pb-16">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
-
         <div className="container relative z-10 mx-auto px-4">
           <motion.div
             className="flex flex-col items-center gap-8"
@@ -118,23 +117,24 @@ const Footer = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {/* Brand Logo */}
-            <motion.div variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
               <Link
                 href="/"
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
               >
-                <Globe className="size-8 text-[#e7c95c]" />
-                <span className="text-2xl font-bold text-white font-monesta-semibold">
+                <Globe className="size-6 md:size-8 text-[#e7c95c]" />
+                <span className="text-xl md:text-2xl font-bold text-white font-monesta-semibold">
                   DevAgency
                 </span>
               </Link>
             </motion.div>
-
-            {/* Core Navigation Links */}
             <motion.nav
               className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-red-hat-display"
               variants={itemVariants}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
               {footerLinks.map((link) => (
                 <Link
@@ -146,11 +146,10 @@ const Footer = () => {
                 </Link>
               ))}
             </motion.nav>
-
-            {/* Social Media Icons */}
             <motion.div
-              className="flex items-center space-x-6"
+              className="flex items-center space-x-4 md:space-x-6"
               variants={itemVariants}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
               <a
                 href="https://github.com"
@@ -180,11 +179,10 @@ const Footer = () => {
                 <Linkedin className="size-5" />
               </a>
             </motion.div>
-
-            {/* Copyright Notice */}
             <motion.p
               className="text-xs text-zinc-500 font-red-hat-display mt-4"
               variants={itemVariants}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
               © {new Date().getFullYear()} DevAgency. All rights reserved.
             </motion.p>
