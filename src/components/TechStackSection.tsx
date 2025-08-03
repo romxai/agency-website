@@ -27,7 +27,7 @@ const CursorTooltip = ({
             top: position.y + 10, // Offset a bit from the cursor
             left: position.x + 10,
           }}
-          className="pointer-events-none fixed z-50 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white shadow-lg"
+          className="pointer-events-none fixed z-50 rounded-md bg-black px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-white shadow-lg"
         >
           {content}
         </motion.div>
@@ -114,7 +114,7 @@ const TechStackSection = () => {
   return (
     <section
       id="tech-stack-section"
-      className="relative py-20 overflow-hidden bg-black"
+      className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black"
     >
       {/* Render the tooltip component */}
       <CursorTooltip
@@ -129,21 +129,21 @@ const TechStackSection = () => {
 
       <div className="container relative z-10">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
           <GradientHeading
-            size="xl"
+            size="lg"
             weight="semi"
             variant="accent3"
-            className="font-monesta-semibold leading-none mb-6"
+            className="font-monesta-semibold leading-none mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
           >
             Our Tech Stack
           </GradientHeading>
-          <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto px-4">
             We leverage cutting-edge technologies and robust frameworks to craft
             scalable, high-performance solutions tailored to your unique
             business needs.
@@ -155,11 +155,11 @@ const TechStackSection = () => {
             {languages.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-center p-4 mx-8"
+                className="flex items-center justify-center p-2 sm:p-4 mx-4 sm:mx-8"
                 onMouseEnter={() => handleMouseEnter(tech.name)}
                 onMouseLeave={handleMouseLeave}
               >
-                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-2 sm:p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
                   <img
                     src={tech.logo}
                     alt={tech.name}
@@ -171,18 +171,18 @@ const TechStackSection = () => {
           </Marquee>
 
           <Marquee
-            className="w-full [--duration:35s] mt-8"
+            className="w-full [--duration:35s] mt-6 sm:mt-8"
             reverse={true}
             pauseOnHover={true}
           >
             {services.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-center p-4 mx-8"
+                className="flex items-center justify-center p-2 sm:p-4 mx-4 sm:mx-8"
                 onMouseEnter={() => handleMouseEnter(tech.name)}
                 onMouseLeave={handleMouseLeave}
               >
-                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-2 sm:p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
                   <img
                     src={tech.logo}
                     alt={tech.name}

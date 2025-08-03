@@ -95,23 +95,23 @@ const Footer = () => {
         }
       >
         {/* MODIFIED: Adjusted vw font size to prevent overflow on small screens */}
-        <h1 className="text-center text-[20vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tight md:tracking-tighter">
+        <h1 className="text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tight md:tracking-tighter">
           DevAgency
         </h1>
         <motion.h1
           // MODIFIED: Matched the adjusted vw font size here as well
-          className="absolute inset-0 text-center text-[20vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase tracking-tight md:tracking-tighter"
+          className="absolute inset-0 text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase tracking-tight md:tracking-tighter"
           style={highlightTextStyle}
         >
           DevAgency
         </motion.h1>
       </div>
 
-      <footer className="relative z-10 bg-black -mt-[1vw] md:-mt-[7vw] lg:-mt-[5vw] pt-8 pb-8 md:pb-16">
+      <footer className="relative z-10 bg-black -mt-[1vw] sm:-mt-[3vw] md:-mt-[5vw] lg:-mt-[4vw] pt-6 sm:pt-8 pb-6 sm:pb-8 md:pb-16">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
         <div className="container relative z-10 mx-auto px-4">
           <motion.div
-            className="flex flex-col items-center gap-8"
+            className="flex flex-col items-center gap-6 sm:gap-8"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -125,14 +125,14 @@ const Footer = () => {
                 href="/"
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
               >
-                <Globe className="size-6 md:size-8 text-[#e7c95c]" />
-                <span className="text-xl md:text-2xl font-bold text-white font-monesta-semibold">
+                <Globe className="size-5 sm:size-6 md:size-8 text-[#e7c95c]" />
+                <span className="text-lg sm:text-xl md:text-2xl font-bold text-white font-monesta-semibold">
                   DevAgency
                 </span>
               </Link>
             </motion.div>
             <motion.nav
-              className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-red-hat-display"
+              className="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2 sm:gap-y-3 text-xs sm:text-sm font-red-hat-display"
               variants={itemVariants}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
@@ -147,7 +147,7 @@ const Footer = () => {
               ))}
             </motion.nav>
             <motion.div
-              className="flex items-center space-x-4 md:space-x-6"
+              className="flex items-center space-x-3 sm:space-x-4 md:space-x-6"
               variants={itemVariants}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
@@ -158,7 +158,7 @@ const Footer = () => {
                 aria-label="GitHub"
                 className="text-zinc-500 hover:text-[#FFED99] transition-colors"
               >
-                <Github className="size-5" />
+                <Github className="size-4 sm:size-5" />
               </a>
               <a
                 href="https://twitter.com"
@@ -167,7 +167,7 @@ const Footer = () => {
                 aria-label="Twitter"
                 className="text-zinc-500 hover:text-[#FFED99] transition-colors"
               >
-                <Twitter className="size-5" />
+                <Twitter className="size-4 sm:size-5" />
               </a>
               <a
                 href="https://linkedin.com"
@@ -176,11 +176,11 @@ const Footer = () => {
                 aria-label="LinkedIn"
                 className="text-zinc-500 hover:text-[#FFED99] transition-colors"
               >
-                <Linkedin className="size-5" />
+                <Linkedin className="size-4 sm:size-5" />
               </a>
             </motion.div>
             <motion.p
-              className="text-xs text-zinc-500 font-red-hat-display mt-4"
+              className="text-xs text-zinc-500 font-red-hat-display mt-3 sm:mt-4"
               variants={itemVariants}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >

@@ -63,10 +63,9 @@ const TestimonialsSection = () => {
   return (
     <section
       id="testimonials"
-      className="relative py-20 overflow-hidden bg-black"
+      className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black"
     >
       {/* LightRays Background - Left side */}
-      
 
       <div className="absolute inset-0 z-0">
         {mounted && (
@@ -118,27 +117,27 @@ const TestimonialsSection = () => {
 
       <div className="container relative z-10">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
           <GradientHeading
-            size="xl"
+            size="lg"
             weight="semi"
             variant="accent3"
-            className="font-monesta-semibold leading-none mb-6"
+            className="font-monesta-semibold leading-none mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
           >
             Client Testimonials
           </GradientHeading>
-          <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto px-4">
             What our amazing clients are saying about our work.
           </p>
         </motion.div>
 
         {/* Testimonial carousel with horizontal slide animation */}
-        <div className="max-w-3xl mx-auto overflow-hidden">
+        <div className="max-w-2xl sm:max-w-3xl mx-auto overflow-hidden px-4">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={currentIndex}
@@ -146,7 +145,7 @@ const TestimonialsSection = () => {
               animate={{ opacity: 1, x: 0 }} // Slide to the center
               exit={{ opacity: 0, x: -50 }} // Slide out to the left
               transition={{ duration: 0.5 }}
-              className="bg-black rounded-2xl p-8 md:p-12 shadow-2xl border border-[#FFED99]/20 relative"
+              className="bg-black rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 shadow-2xl border border-[#FFED99]/20 relative"
             >
               {/* Gold fading border on the testimonial card */}
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
@@ -155,21 +154,21 @@ const TestimonialsSection = () => {
               <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-[#FFED99]/50 to-transparent"></div>
 
               <div className="text-center">
-                <Quote className="h-10 w-10 text-[#FFED99]/60 mx-auto mb-6" />
-                <p className="text-lg md:text-xl font-light italic leading-relaxed text-zinc-300">
+                <Quote className="h-8 w-8 sm:h-10 sm:w-10 text-[#FFED99]/60 mx-auto mb-4 sm:mb-6" />
+                <p className="text-base sm:text-lg md:text-xl font-light italic leading-relaxed text-zinc-300">
                   "{testimonials[currentIndex].content}"
                 </p>
               </div>
 
-              <div className="mt-8 flex flex-col items-center">
-                <div className="h-14 w-14 flex items-center justify-center rounded-full bg-zinc-700 text-[#FFED99]/60 font-bold text-xl ring-2 ring-[#FFED99]/50">
+              <div className="mt-6 sm:mt-8 flex flex-col items-center">
+                <div className="h-12 w-12 sm:h-14 sm:w-14 flex items-center justify-center rounded-full bg-zinc-700 text-[#FFED99]/60 font-bold text-lg sm:text-xl ring-2 ring-[#FFED99]/50">
                   {testimonials[currentIndex].name.charAt(0)}
                 </div>
-                <div className="mt-4 text-center">
-                  <h4 className="font-semibold text-lg text-white">
+                <div className="mt-3 sm:mt-4 text-center">
+                  <h4 className="font-semibold text-base sm:text-lg text-white">
                     {testimonials[currentIndex].name}
                   </h4>
-                  <p className="text-sm text-zinc-400">
+                  <p className="text-xs sm:text-sm text-zinc-400">
                     {testimonials[currentIndex].role}
                   </p>
                 </div>
@@ -179,13 +178,15 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Dots Indicator */}
-        <div className="flex justify-center mt-12 gap-2">
+        <div className="flex justify-center mt-8 sm:mt-12 gap-2">
           {testimonials.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === currentIndex ? "bg-[#FFED99]/60 w-6" : "bg-zinc-600"
+              className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? "bg-[#FFED99]/60 w-4 sm:w-6"
+                  : "bg-zinc-600"
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />

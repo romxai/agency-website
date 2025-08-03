@@ -111,11 +111,11 @@ export const FloatingNav = ({
   }, [isOpen]);
 
   const logoElement = (
-    <div className="relative w-5 h-5 flex items-center justify-center">
-      <span className="absolute w-1.5 h-1.5 rounded-full bg-[#e7c95c] top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
-      <span className="absolute w-1.5 h-1.5 rounded-full bg-[#e7c95c] left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-      <span className="absolute w-1.5 h-1.5 rounded-full bg-[#e7c95c] right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
-      <span className="absolute w-1.5 h-1.5 rounded-full bg-[#e7c95c] bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+    <div className="relative w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+      <span className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#e7c95c] top-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
+      <span className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#e7c95c] left-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#e7c95c] right-0 top-1/2 transform -translate-y-1/2 opacity-80"></span>
+      <span className="absolute w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#e7c95c] bottom-0 left-1/2 transform -translate-x-1/2 opacity-80"></span>
     </div>
   );
 
@@ -138,23 +138,24 @@ export const FloatingNav = ({
           ease: "easeInOut",
         }}
         className={cn(
-          "fixed top-6 left-0 right-0 z-50 flex w-full justify-center",
+          "fixed top-2 sm:top-4 md:top-6 left-0 right-0 z-50 flex w-full justify-center px-2 sm:px-4",
           className
         )}
       >
         <div
           className={cn(
-            `flex flex-col items-center pl-6 pr-6 py-3 backdrop-blur-sm
+            `flex flex-col items-center pl-3 pr-3 sm:pl-4 sm:pr-4 md:pl-6 md:pr-6 py-2 sm:py-3 backdrop-blur-sm
              ${headerShapeClass}
              border border-[#333] bg-[#1f1f1f57]
-             transition-[border-radius] duration-300 ease-in-out`
+             transition-[border-radius] duration-300 ease-in-out
+             w-full max-w-4xl`
           )}
         >
           {/* The rest of your navbar's internal JSX remains unchanged */}
-          <div className="flex items-center gap-x-6 sm:gap-x-8">
+          <div className="flex items-center gap-x-3 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 w-full justify-between">
             <div className="flex items-center">{logoElement}</div>
 
-            <nav className="hidden sm:flex items-center space-x-4 sm:space-x-6 text-sm">
+            <nav className="hidden sm:flex items-center space-x-3 md:space-x-4 lg:space-x-6 text-xs sm:text-sm">
               {navLinks.map((link, idx) => (
                 <AnimatedNavLink key={`nav-${idx}`} href={link.link}>
                   {link.name}
@@ -162,7 +163,7 @@ export const FloatingNav = ({
               ))}
             </nav>
 
-            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+            <div className="hidden sm:flex items-center gap-1 sm:gap-2 md:gap-3">
               {buttonItems.map((item, idx) =>
                 item.isSignup ? (
                   <div
@@ -178,14 +179,14 @@ export const FloatingNav = ({
                                      group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
                     ></div>
                     <Link href={item.link}>
-                      <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
+                      <button className="relative z-10 px-2 py-1.5 sm:px-3 md:px-4 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
                         {item.name}
                       </button>
                     </Link>
                   </div>
                 ) : (
                   <Link key={`button-${idx}`} href={item.link}>
-                    <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
+                    <button className="px-2 py-1.5 sm:px-3 md:px-4 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
                       {item.name}
                     </button>
                   </Link>
@@ -194,14 +195,14 @@ export const FloatingNav = ({
             </div>
 
             <button
-              className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none"
+              className="sm:hidden flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-gray-300 focus:outline-none"
               onClick={toggleMenu}
               aria-label={isOpen ? "Close Menu" : "Open Menu"}
             >
               {/* SVG icons for mobile menu toggle */}
               {isOpen ? (
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -217,7 +218,7 @@ export const FloatingNav = ({
                 </svg>
               ) : (
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -249,7 +250,7 @@ export const FloatingNav = ({
                 <Link
                   key={`mobile-nav-${idx}`}
                   href={link.link}
-                  className="text-gray-300 hover:text-white transition-colors w-full text-center"
+                  className="text-gray-300 hover:text-white transition-colors w-full text-center text-sm sm:text-base"
                 >
                   {link.name}
                 </Link>

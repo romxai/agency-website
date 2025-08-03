@@ -31,6 +31,25 @@ export const metadata: Metadata = {
   title: "DevAgency - Modern Software Development",
   description:
     "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  themeColor: "#000000",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "DevAgency - Modern Software Development",
+    description:
+      "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevAgency - Modern Software Development",
+    description:
+      "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
+  },
 };
 
 export default function RootLayout({
@@ -40,11 +59,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=5"
+        />
+        <meta name="theme-color" content="#000000" />
+        <meta name="color-scheme" content="dark" />
+      </head>
       <body
         className={`${redHatDisplay.variable} ${monestaSemibold.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-[#030712] text-white font-red-hat-display`}
       >
         <Navbar />
-        <main>{children}</main>
+        <main className="min-h-screen">{children}</main>
         <Footer />
       </body>
     </html>

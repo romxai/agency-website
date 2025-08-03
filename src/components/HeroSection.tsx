@@ -72,7 +72,7 @@ const HeroSection = () => {
     <section
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 lg:pt-16"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20 md:pt-24 lg:pt-16"
     >
       <div className="absolute inset-0 z-0 bg-black">
         {mounted && (
@@ -98,10 +98,10 @@ const HeroSection = () => {
       </div>
 
       <div className="container relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
           {/* Image is now first in the DOM for mobile stacking, but appears last on lg screens */}
           <motion.div
-            className="flex-shrink-0 mb-8 lg:mb-20 lg:order-last"
+            className="flex-shrink-0 mb-6 sm:mb-8 lg:mb-20 lg:order-last"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 0.75, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -112,7 +112,7 @@ const HeroSection = () => {
                 alt="Shape"
                 width={400}
                 height={400}
-                className="w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96"
+                className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96"
                 priority
               />
             </motion.div>
@@ -130,10 +130,10 @@ const HeroSection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <GradientHeading
-                size="xxl" // Adjusted size for better scaling
+                size="xl"
                 weight="semi"
                 variant="default"
-                className="font-monesta-semibold leading-none mb-0"
+                className="font-monesta-semibold leading-none mb-0 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
               >
                 Your Vision <br />
                 Perfected
@@ -141,42 +141,42 @@ const HeroSection = () => {
             </motion.div>
 
             <motion.div
-              className="my-6 md:my-8"
+              className="my-4 sm:my-6 md:my-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <p className="text-lg md:text-xl text-muted-foreground mb-2 font-red-hat-display">
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-2 font-red-hat-display">
                 Building great technology should be exciting, not complicated.
               </p>
-              <p className="text-base md:text-lg text-muted-foreground font-red-hat-display">
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground font-red-hat-display">
                 We build high-performance websites, software, and AI solutions
                 for ambitious brands.
               </p>
             </motion.div>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
               <ShimmerButton
-                className="bg-secondary text-secondary-foreground font-red-hat-display"
+                className="bg-secondary text-secondary-foreground font-red-hat-display text-sm sm:text-base"
                 shimmerColor="#eed36f"
                 background="rgb(13, 13, 13)"
                 borderRadius="100px"
               >
                 <Link
                   href="#contact"
-                  className="block w-full h-full text-[#eed36f]"
+                  className="block w-full h-full text-[#eed36f] px-4 py-2 sm:px-6 sm:py-3"
                 >
                   Contact Us
                 </Link>
               </ShimmerButton>
               <Link
                 href="/portfolio"
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-full hover:text-[#d3d3d3] hover:underline transition-colors font-red-hat-display"
+                className="bg-primary text-primary-foreground px-4 py-2 sm:px-6 sm:py-3 rounded-full hover:text-[#d3d3d3] hover:underline transition-colors font-red-hat-display text-sm sm:text-base text-center"
               >
                 View Portfolio
               </Link>

@@ -82,6 +82,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 .container {
@@ -91,15 +92,28 @@ body {
   padding: 0 1rem;
 }
 
+/* Responsive container padding */
 @media (min-width: 640px) {
   .container {
     padding: 0 1.5rem;
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .container {
     padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 2.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    padding: 0 3rem;
   }
 }
 
@@ -134,7 +148,7 @@ body {
 
 /* Custom scrollbar for dark mode */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -143,7 +157,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -170,17 +184,21 @@ body {
 }
 
 @font-face {
-  font-family: 'Charm Bold';
-  src: url('/Charm-Bold.ttf') format('truetype');
+  font-family: "Charm Bold";
+  src: url("/Charm-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 .font-charm-bold {
-  font-family: 'Charm Bold', cursive;
+  font-family: "Charm Bold", cursive;
   /* Apply a different gradient */
-  background: linear-gradient(to bottom, #b3ad97, #bda348); /* Example: a blue-green gradient */
+  background: linear-gradient(
+    to bottom,
+    #b3ad97,
+    #bda348
+  ); /* Example: a blue-green gradient */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -197,7 +215,13 @@ body {
      so the border has space to sit below it.
      The 'container' class likely has horizontal padding.
      You might need to adjust this value based on your exact 'container' padding. */
-  padding-top: 4rem; /* Example: Adjust this if your header needs more space above it. */
+  padding-top: 2rem; /* Reduced for mobile */
+}
+
+@media (min-width: 768px) {
+  .top-fading-border {
+    padding-top: 4rem; /* Larger padding for desktop */
+  }
 }
 
 .top-fading-border::before {
@@ -211,10 +235,164 @@ body {
   background: linear-gradient(
     to right,
     transparent 0%,
-    transparent 20%, /* Start fading in later */
-    #FFED99 50%, /* Golden color at center */
-    transparent 80%, /* Start fading out earlier */
-    transparent 100%
+    transparent 20%,
+    /* Start fading in later */ #ffed99 50%,
+    /* Golden color at center */ transparent 80%,
+    /* Start fading out earlier */ transparent 100%
   );
   z-index: 20; /* Ensure it's above other content */
+}
+
+/* Responsive typography utilities */
+.text-responsive-xs {
+  font-size: 0.75rem; /* 12px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive-xs {
+    font-size: 0.875rem; /* 14px */
+  }
+}
+
+.text-responsive-sm {
+  font-size: 0.875rem; /* 14px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive-sm {
+    font-size: 1rem; /* 16px */
+  }
+}
+
+.text-responsive-base {
+  font-size: 1rem; /* 16px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive-base {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+.text-responsive-lg {
+  font-size: 1.125rem; /* 18px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive-lg {
+    font-size: 1.25rem; /* 20px */
+  }
+}
+
+.text-responsive-xl {
+  font-size: 1.25rem; /* 20px */
+}
+
+@media (min-width: 640px) {
+  .text-responsive-xl {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+
+/* Responsive spacing utilities */
+.section-padding {
+  padding: 3rem 0; /* 48px */
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 5rem 0; /* 80px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 6rem 0; /* 96px */
+  }
+}
+
+/* Responsive grid utilities */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+/* Mobile-first responsive utilities */
+.hidden-mobile {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hidden-mobile {
+    display: block;
+  }
+}
+
+.visible-mobile {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .visible-mobile {
+    display: none;
+  }
+}
+
+/* Responsive image handling */
+.img-responsive {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Responsive button sizing */
+.btn-responsive {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .btn-responsive {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive card spacing */
+.card-responsive {
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .card-responsive {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-responsive {
+    padding: 2.5rem;
+  }
 }

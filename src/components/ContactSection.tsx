@@ -21,7 +21,7 @@ const ContactCard = ({
   className: string;
 }) => (
   <div
-    className={`bg-black rounded-2xl p-8 md:p-12 shadow-2xl border border-zinc-800 relative ${className}`}
+    className={`bg-black rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 shadow-2xl border border-zinc-800 relative ${className}`}
   >
     {/* Gold fading border on the contact card */}
     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
@@ -73,7 +73,10 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="relative py-20 overflow-hidden bg-black">
+    <section
+      id="contact"
+      className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black"
+    >
       {/* LightRays Background - Left side */}
       <div className="absolute inset-0 z-0">
         {mounted && (
@@ -100,74 +103,80 @@ const ContactSection = () => {
       <div className="container relative z-10">
         {/* Header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
           <GradientHeading
-            size="xl"
+            size="lg"
             weight="semi"
             variant="accent3"
-            className="font-monesta-semibold leading-none mb-6"
+            className="font-monesta-semibold leading-none mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
           >
             Get In Touch
           </GradientHeading>
-          <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto px-4">
             Ready to start your next project? We'd love to hear from you.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="space-y-8"
+            className="space-y-6 sm:space-y-8"
           >
-            <ContactCard className="border-zinc-800 ">
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <Mail className="size-5 text-[#FFED99]/80 mt-1" />
+            <ContactCard className="border-zinc-800">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex items-start space-x-3 sm:space-x-4">
+                  <Mail className="size-4 sm:size-5 text-[#FFED99]/80 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Email Us</h3>
+                    <h3 className="font-semibold text-white text-sm sm:text-base">
+                      Email Us
+                    </h3>
                     <GradientHeading
                       size="xxxs"
                       weight="semi"
                       variant="accent2"
-                      className="font-red-hat-display mb-3"
+                      className="font-red-hat-display mb-2 sm:mb-3 text-xs sm:text-sm"
                     >
                       contact@devagency.com
                     </GradientHeading>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <Phone className="size-5 text-[#FFED99]/80 mt-1" />
+                <div className="flex items-start space-x-3 sm:space-x-4">
+                  <Phone className="size-4 sm:size-5 text-[#FFED99]/80 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Call Us</h3>
+                    <h3 className="font-semibold text-white text-sm sm:text-base">
+                      Call Us
+                    </h3>
                     <GradientHeading
                       size="xxxs"
                       weight="semi"
                       variant="accent2"
-                      className="font-red-hat-display mb-3"
+                      className="font-red-hat-display mb-2 sm:mb-3 text-xs sm:text-sm"
                     >
                       +91 750 600 7526
                     </GradientHeading>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-4">
-                  <MapPin className="size-5 text-[#FFED99]/80 mt-1" />
+                <div className="flex items-start space-x-3 sm:space-x-4">
+                  <MapPin className="size-4 sm:size-5 text-[#FFED99]/80 mt-1" />
                   <div>
-                    <h3 className="font-semibold text-white">Visit Us</h3>
+                    <h3 className="font-semibold text-white text-sm sm:text-base">
+                      Visit Us
+                    </h3>
                     <GradientHeading
                       size="xxxs"
                       weight="semi"
                       variant="accent2"
-                      className="font-red-hat-display mb-3"
+                      className="font-red-hat-display mb-2 sm:mb-3 text-xs sm:text-sm"
                     >
                       123 Tech Street, San Francisco, CA 94105
                     </GradientHeading>
@@ -185,15 +194,18 @@ const ContactSection = () => {
           >
             <ContactCard className="border-zinc-800">
               {submitSuccess ? (
-                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-md">
+                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-md text-sm sm:text-base">
                   Thank you for your message! We'll get back to you soon.
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 sm:space-y-6"
+                >
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium mb-2 text-white"
+                      className="block text-xs sm:text-sm font-medium mb-2 text-white"
                     >
                       Your Name
                     </label>
@@ -204,7 +216,7 @@ const ContactSection = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm sm:text-base"
                       placeholder="John Doe"
                     />
                   </div>
@@ -212,7 +224,7 @@ const ContactSection = () => {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block text-sm font-medium mb-2 text-white"
+                      className="block text-xs sm:text-sm font-medium mb-2 text-white"
                     >
                       Your Email
                     </label>
@@ -223,7 +235,7 @@ const ContactSection = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-3 py-2 sm:px-4 sm:py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm sm:text-base"
                       placeholder="john@example.com"
                     />
                   </div>
@@ -231,7 +243,7 @@ const ContactSection = () => {
                   <div>
                     <label
                       htmlFor="message"
-                      className="block text-sm font-medium mb-2 text-white"
+                      className="block text-xs sm:text-sm font-medium mb-2 text-white"
                     >
                       Your Message
                     </label>
@@ -241,8 +253,8 @@ const ContactSection = () => {
                       value={formData.message}
                       onChange={handleChange}
                       required
-                      rows={5}
-                      className="w-full px-4 py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none"
+                      rows={4}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-2 rounded-md border border-zinc-700 bg-white/9 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 resize-none text-sm sm:text-base"
                       placeholder="Tell us about your project..."
                     />
                   </div>
@@ -250,12 +262,12 @@ const ContactSection = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[#e7c95c]/80 text-black py-3 rounded-full hover:bg-[#e7c95c] transition-colors flex items-center justify-center font-semibold"
+                    className="w-full bg-[#e7c95c]/80 text-black py-2.5 sm:py-3 rounded-full hover:bg-[#e7c95c] transition-colors flex items-center justify-center font-semibold text-sm sm:text-base"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center">
                         <svg
-                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-black"
+                          className="animate-spin -ml-1 mr-2 h-3 w-3 sm:h-4 sm:w-4 text-black"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -278,13 +290,14 @@ const ContactSection = () => {
                       </span>
                     ) : (
                       <span className="flex items-center">
-                        Send Message <Send className="ml-2 h-4 w-4" />
+                        Send Message{" "}
+                        <Send className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
                       </span>
                     )}
                   </button>
 
                   {submitError && (
-                    <div className="text-red-500 text-sm mt-2">
+                    <div className="text-red-500 text-xs sm:text-sm mt-2">
                       {submitError}
                     </div>
                   )}
