@@ -1,14 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, MouseEvent } from "react";
 import { GradientHeading } from "@/components/ui/gradient-heading";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import Image from "next/image";
 
-// Import LightRays with SSR disabled to prevent "document is not defined" error
+// Import LightRays with SSR disabled
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
   ssr: false,
 });
@@ -20,8 +20,30 @@ const HeroSection = () => {
     setMounted(true);
   }, []);
 
+  // --- MODIFIED ROTATION LOGIC ---
+  const mouseY = useMotionValue(0);
+
+  // MODIFIED: The output range is now flipped and reduced for the new effect.
+  // Top of screen (-0.5) => 55deg, Bottom of screen (0.5) => 35deg.
+  const rotateZ = useTransform(mouseY, [-0.5, 0.5], [55, 35]);
+
+  const rotate = useSpring(rotateZ, { stiffness: 150, damping: 70, mass: 0.5 });
+
+  const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
+    const y = e.clientY / window.innerHeight - 0.5;
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseY.set(0); // Resets to the center (45deg)
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
+    >
       {/* LightRays Background */}
       <div className="absolute inset-0 z-0 bg-black">
         {mounted && (
@@ -120,16 +142,16 @@ const HeroSection = () => {
             animate={{ opacity: 0.75, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <div className="relative">
+            <motion.div style={{ rotate }}>
               <Image
-                src="/shape-min.png"
+                src="/shape-gold.png"
                 alt="Shape"
                 width={400}
                 height={400}
-                className="transform rotate-[45deg] w-90 h-90 lg:w-110 lg:h-110"
+                className="w-90 h-90 lg:w-110 lg:h-110"
                 priority
               />
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>

@@ -2,35 +2,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import { cn } from "@/lib/utils";
 
-// Custom hook to detect scroll direction
-const useScrollDirection = () => {
-  const [scrollDirection, setScrollDirection] = useState<"up" | "down" | null>(
-    null
-  );
-
-  useEffect(() => {
-    let lastScrollY = window.pageYOffset;
-    const updateScrollDirection = () => {
-      const scrollY = window.pageYOffset;
-      const direction = scrollY > lastScrollY ? "down" : "up";
-      if (
-        direction !== scrollDirection &&
-        (scrollY - lastScrollY > 5 || scrollY - lastScrollY < -5)
-      ) {
-        setScrollDirection(direction);
-      }
-      lastScrollY = scrollY > 0 ? scrollY : 0;
-    };
-    window.addEventListener("scroll", updateScrollDirection);
-    return () => window.removeEventListener("scroll", updateScrollDirection);
-  }, [scrollDirection]);
-
-  return scrollDirection;
-};
-
-// Animated Nav Link Component
+// Animated Nav Link Component (no changes needed here)
 const AnimatedNavLink = ({
   href,
   children,
@@ -47,7 +27,7 @@ const AnimatedNavLink = ({
       href={href}
       className={`group relative inline-block overflow-hidden h-5 flex items-center ${textSizeClass}`}
     >
-      <div className="flex flex-col transition-transform duration-400 ease-out transform group-hover:-translate-y-1/2">
+      <div className="flex flex-col transition-transform duration-300 ease-out transform group-hover:-translate-y-1/2">
         <span className={defaultTextColor}>{children}</span>
         <span className={hoverTextColor}>{children}</span>
       </div>
@@ -68,8 +48,33 @@ export const FloatingNav = ({
   }[];
   className?: string;
 }) => {
-  const scrollDirection = useScrollDirection();
-  const [isVisible, setIsVisible] = useState(true);
+  // Framer Motion hooks for scroll detection
+  const { scrollYProgress } = useScroll();
+  const [visible, setVisible] = useState(true); // Start as visible
+
+  // Event listener for scroll changes using Framer Motion
+  useMotionValueEvent(scrollYProgress, "change", (current) => {
+    const previous = scrollYProgress.getPrevious();
+
+    // Check if current is a number
+    if (typeof current === "number" && typeof previous === "number") {
+      const direction = current - previous;
+
+      // Always show the nav when at the top of the page
+      if (scrollYProgress.get() < 0.05) {
+        setVisible(true);
+      } else {
+        // Hide on scroll down, show on scroll up
+        if (direction < 0) {
+          setVisible(true);
+        } else {
+          setVisible(false);
+        }
+      }
+    }
+  });
+
+  // State for mobile menu and shape-shifting animation
   const [isOpen, setIsOpen] = useState(false);
   const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
   const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -78,27 +83,12 @@ export const FloatingNav = ({
     setIsOpen(!isOpen);
   };
 
+  // Logic for hiding the nav now also closes the mobile menu
   useEffect(() => {
-    if (scrollDirection === "down") {
-      setIsVisible(false);
+    if (!visible) {
       setIsOpen(false);
-    } else if (scrollDirection === "up") {
-      setIsVisible(true);
     }
-  }, [scrollDirection]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = window.innerHeight * 0.8;
-      if (window.scrollY > heroHeight) {
-        if (scrollDirection === "down") setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrollDirection]);
+  }, [visible]);
 
   useEffect(() => {
     if (shapeTimeoutRef.current) {
@@ -133,161 +123,165 @@ export const FloatingNav = ({
   const buttonItems = navItems.filter((item) => item.isButton || item.isSignup);
 
   return (
-    <header
-      className={cn(
-        `fixed top-6 left-0 right-0 z-50 w-full flex justify-center`,
-        {
-          "opacity-0 -translate-y-full": !isVisible,
-          "opacity-100 translate-y-0": isVisible,
-        },
-        className
-      )}
-      style={{
-        transform: isVisible ? "translateY(0)" : "translateY(-100%)",
-        transition: "transform 0.2s ease-out",
-      }}
-    >
-      <div
+    <AnimatePresence mode="wait">
+      <motion.header
+        initial={{
+          opacity: 1,
+          y: 0,
+        }}
+        animate={{
+          y: visible ? 0 : -100,
+          opacity: visible ? 1 : 0,
+        }}
+        transition={{
+          duration: 0.2,
+          ease: "easeInOut",
+        }}
         className={cn(
-          `flex flex-col items-center pl-6 pr-6 py-3 backdrop-blur-sm
-           ${headerShapeClass}
-           border border-[#333] bg-[#1f1f1f57]
-           transition-[border-radius] duration-300 ease-in-out`
+          "fixed top-6 left-0 right-0 z-50 flex w-full justify-center",
+          className
         )}
       >
-        <div className="flex items-center gap-x-6 sm:gap-x-8">
-          <div className="flex items-center">{logoElement}</div>
-
-          <nav className="hidden sm:flex items-center space-x-4 sm:space-x-6 text-sm">
-            {navLinks.map((link, idx) => (
-              <AnimatedNavLink key={`nav-${idx}`} href={link.link}>
-                {link.name}
-              </AnimatedNavLink>
-            ))}
-          </nav>
-
-          <div className="hidden sm:flex items-center gap-2 sm:gap-3">
-            {buttonItems.map((item, idx) =>
-              item.isSignup ? (
-                <div
-                  key={`signup-${idx}`}
-                  className="relative group w-full sm:w-auto"
-                >
-                  <div
-                    className="absolute inset-0 -m-2 rounded-full
-                                   hidden sm:block
-                                   bg-amber-200
-                                   opacity-40 filter blur-lg pointer-events-none
-                                   transition-all duration-300 ease-out
-                                   group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
-                  ></div>
-                  <Link href={item.link}>
-                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
-                      {item.name}
-                    </button>
-                  </Link>
-                </div>
-              ) : (
-                <Link key={`button-${idx}`} href={item.link}>
-                  <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
-                    {item.name}
-                  </button>
-                </Link>
-              )
-            )}
-          </div>
-
-          <button
-            className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none"
-            onClick={toggleMenu}
-            aria-label={isOpen ? "Close Menu" : "Open Menu"}
-          >
-            {isOpen ? (
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            ) : (
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            )}
-          </button>
-        </div>
-
         <div
-          className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
-                       ${
-                         isOpen
-                           ? "max-h-[1000px] opacity-100 pt-4"
-                           : "max-h-0 opacity-0 pt-0 pointer-events-none"
-                       }`}
+          className={cn(
+            `flex flex-col items-center pl-6 pr-6 py-3 backdrop-blur-sm
+             ${headerShapeClass}
+             border border-[#333] bg-[#1f1f1f57]
+             transition-[border-radius] duration-300 ease-in-out`
+          )}
         >
-          <nav className="flex flex-col items-center space-y-4 text-base w-full">
-            {navLinks.map((link, idx) => (
-              <Link
-                key={`mobile-nav-${idx}`}
-                href={link.link}
-                className="text-gray-300 hover:text-white transition-colors w-full text-center"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex flex-col items-center space-y-4 mt-4 w-full">
-            {buttonItems.map((item, idx) =>
-              item.isSignup ? (
-                <div
-                  key={`mobile-signup-${idx}`}
-                  className="relative group w-full sm:w-auto"
-                >
+          {/* The rest of your navbar's internal JSX remains unchanged */}
+          <div className="flex items-center gap-x-6 sm:gap-x-8">
+            <div className="flex items-center">{logoElement}</div>
+
+            <nav className="hidden sm:flex items-center space-x-4 sm:space-x-6 text-sm">
+              {navLinks.map((link, idx) => (
+                <AnimatedNavLink key={`nav-${idx}`} href={link.link}>
+                  {link.name}
+                </AnimatedNavLink>
+              ))}
+            </nav>
+
+            <div className="hidden sm:flex items-center gap-2 sm:gap-3">
+              {buttonItems.map((item, idx) =>
+                item.isSignup ? (
                   <div
-                    className="absolute inset-0 -m-2 rounded-full
-                                   hidden sm:block
-                                   bg-amber-200
-                                   opacity-40 filter blur-lg pointer-events-none
-                                   transition-all duration-300 ease-out
-                                   group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
-                  ></div>
-                  <Link href={item.link}>
-                    <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900/90 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/70 hover:bg-amber-200">
+                    key={`signup-${idx}`}
+                    className="relative group w-full sm:w-auto"
+                  >
+                    <div
+                      className="absolute inset-0 -m-2 rounded-full
+                                     hidden sm:block
+                                     bg-amber-200
+                                     opacity-40 filter blur-lg pointer-events-none
+                                     transition-all duration-300 ease-out
+                                     group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+                    ></div>
+                    <Link href={item.link}>
+                      <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
+                        {item.name}
+                      </button>
+                    </Link>
+                  </div>
+                ) : (
+                  <Link key={`button-${idx}`} href={item.link}>
+                    <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
                       {item.name}
                     </button>
                   </Link>
-                </div>
+                )
+              )}
+            </div>
+
+            <button
+              className="sm:hidden flex items-center justify-center w-8 h-8 text-gray-300 focus:outline-none"
+              onClick={toggleMenu}
+              aria-label={isOpen ? "Close Menu" : "Open Menu"}
+            >
+              {/* SVG icons for mobile menu toggle */}
+              {isOpen ? (
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {" "}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>{" "}
+                </svg>
               ) : (
-                <Link key={`mobile-button-${idx}`} href={item.link}>
-                  <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
-                    {item.name}
-                  </button>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {" "}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>{" "}
+                </svg>
+              )}
+            </button>
+          </div>
+
+          <div
+            className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
+                         ${
+                           isOpen
+                             ? "max-h-[1000px] opacity-100 pt-4"
+                             : "max-h-0 opacity-0 pt-0 pointer-events-none"
+                         }`}
+          >
+            {/* Mobile menu content */}
+            <nav className="flex flex-col items-center space-y-4 text-base w-full">
+              {navLinks.map((link, idx) => (
+                <Link
+                  key={`mobile-nav-${idx}`}
+                  href={link.link}
+                  className="text-gray-300 hover:text-white transition-colors w-full text-center"
+                >
+                  {link.name}
                 </Link>
-              )
-            )}
+              ))}
+            </nav>
+            <div className="flex flex-col items-center space-y-4 mt-4 w-full">
+              {buttonItems.map((item, idx) =>
+                item.isSignup ? (
+                  <div
+                    key={`mobile-signup-${idx}`}
+                    className="relative group w-full sm:w-auto"
+                  >
+                    <div className="absolute inset-0 -m-2 rounded-full hidden sm:block bg-amber-200 opacity-40 filter blur-lg pointer-events-none transition-all duration-300 ease-out group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"></div>
+                    <Link href={item.link}>
+                      <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900/90 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/70 hover:bg-amber-200">
+                        {item.name}
+                      </button>
+                    </Link>
+                  </div>
+                ) : (
+                  <Link key={`mobile-button-${idx}`} href={item.link}>
+                    <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
+                      {item.name}
+                    </button>
+                  </Link>
+                )
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </motion.header>
+    </AnimatePresence>
   );
 };
 

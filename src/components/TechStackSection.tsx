@@ -1,97 +1,148 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Marquee } from "@/components/magicui/marquee";
-import { GradientHeading } from "@/components/ui/gradient-heading"; // Assuming you have this component
+import { GradientHeading } from "@/components/ui/gradient-heading";
+
+// NEW: A component for the cursor-following tooltip
+const CursorTooltip = ({
+  content,
+  visible,
+  position,
+}: {
+  content: string;
+  visible: boolean;
+  position: { x: number; y: number };
+}) => {
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.15, ease: "easeInOut" }}
+          style={{
+            top: position.y + 10, // Offset a bit from the cursor
+            left: position.x + 10,
+          }}
+          className="pointer-events-none fixed z-50 rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white shadow-lg"
+        >
+          {content}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
 
 const techStack = [
-  {
-    name: "React",
-    logo: "/svgs/react-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
+  { name: "React", logo: "/svgs/react-svgrepo-com.svg", category: "service" },
   {
     name: "Next.js",
-    logo: "/svgs/next-js-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/next-js-svgrepo-com.svg",
+    category: "service",
   },
   {
     name: "TypeScript",
-    logo: "/svgs/typescript-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/typescript-svgrepo-com.svg",
+    category: "language",
   },
   {
     name: "Javascript",
-    logo: "/svgs/javascript-155-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/javascript-155-svgrepo-com.svg",
+    category: "language",
   },
-  {
-    name: "SQL",
-    logo: "/svgs/sql-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
+  { name: "SQL", logo: "/svgs/sql-svgrepo-com.svg", category: "language" },
   {
     name: "Python",
-    logo: "/svgs/python-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/python-svgrepo-com.svg",
+    category: "language",
   },
   {
     name: "MongoDB",
-    logo: "/svgs/mongodb-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/mongodb-svgrepo-com.svg",
+    category: "service",
   },
-  {
-    name: "Git",
-    logo: "/svgs/github-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
-  {
-    name: "C#",
-    logo: "/svgs/c-sharp-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
-  {
-    name: "C",
-    logo: "/svgs/c-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
-  {
-    name: "AWS",
-    logo: "/svgs/aws-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
-  {
-    name: "Docker",
-    logo: "/svgs/docker-svgrepo-com.svg", // Updated to monochrome SVG path
-  },
+  { name: "Git", logo: "/svgs/github-svgrepo-com.svg", category: "service" },
+  { name: "C#", logo: "/svgs/c-sharp-svgrepo-com.svg", category: "language" },
+  { name: "C", logo: "/svgs/c-svgrepo-com.svg", category: "language" },
+  { name: "AWS", logo: "/svgs/aws-svgrepo-com.svg", category: "service" },
+  { name: "Docker", logo: "/svgs/docker-svgrepo-com.svg", category: "service" },
   {
     name: "Kubernetes",
-    logo: "/svgs/kubernetes-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/kubernetes-svgrepo-com.svg",
+    category: "service",
   },
   {
     name: "Flutter",
-    logo: "/svgs/flutter-svgrepo-com.svg", // Updated to monochrome SVG path
+    logo: "/svgs/flutter-svgrepo-com.svg",
+    category: "service",
   },
 ];
 
 const TechStackSection = () => {
+  const languages = techStack.filter((tech) => tech.category === "language");
+  const services = techStack.filter((tech) => tech.category === "service");
+
+  // NEW: State for tooltip visibility, content, and position
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipContent, setTooltipContent] = useState("");
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+
+  // Effect to track mouse position globally
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setTooltipPosition({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  const handleMouseEnter = (name: string) => {
+    setTooltipContent(name);
+    setTooltipVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setTooltipVisible(false);
+  };
+
   return (
     <section
-      id="tech-stack-section" // Changed ID for clarity
-      className="relative py-20 overflow-hidden bg-black" // Consistent background and padding
+      id="tech-stack-section"
+      className="relative py-20 overflow-hidden bg-black"
     >
-      {/* Background overlay similar to SolutionsSection */}
+      {/* Render the tooltip component */}
+      <CursorTooltip
+        content={tooltipContent}
+        visible={tooltipVisible}
+        position={tooltipPosition}
+      />
+
       <div className="absolute inset-0 z-0">
         <div className="w-full h-full bg-gradient-to-b from-primary/5 to-accent/10"></div>
       </div>
 
       <div className="container relative z-10">
         <motion.div
-          className="text-center mb-16" // Consistent margin-bottom
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }} // Matched transition duration
+          transition={{ duration: 0.8 }}
         >
-          {/* Using GradientHeading for title consistent with SolutionsSection */}
           <GradientHeading
             size="xl"
             weight="semi"
-            variant="accent3" // Use the same variant for consistency
-            className="font-monesta-semibold leading-none mb-6" // Consistent font and spacing
+            variant="accent3"
+            className="font-monesta-semibold leading-none mb-6"
           >
             Our Tech Stack
           </GradientHeading>
-
           <p className="text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto">
             We leverage cutting-edge technologies and robust frameworks to craft
             scalable, high-performance solutions tailored to your unique
@@ -99,54 +150,47 @@ const TechStackSection = () => {
           </p>
         </motion.div>
 
-        {/* Full-width marquee */}
         <div className="w-full relative z-10">
           <Marquee className="w-full [--duration:30s]" pauseOnHover={true}>
-            {techStack.map((tech, index) => (
+            {languages.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center justify-center p-4 mx-8" // Removed flex-col to remove labels
+                className="flex items-center justify-center p-4 mx-8"
+                onMouseEnter={() => handleMouseEnter(tech.name)}
+                onMouseLeave={handleMouseLeave}
               >
-                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-colors duration-300">
-                  {/* Using 'currentColor' for fill to allow CSS control, removed filter/invert */}
+                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
                   <img
                     src={tech.logo}
                     alt={tech.name}
-                    className="w-full h-full object-contain" // Set desired golden color here
-                     // Ensures SVG uses the text color
+                    className="w-full h-full object-contain"
                   />
                 </div>
-                {/* Removed the text label: <span className="text-sm font-medium text-muted-foreground">{tech.name}</span> */}
               </div>
             ))}
           </Marquee>
 
-          {/* Second row in reverse direction */}
           <Marquee
             className="w-full [--duration:35s] mt-8"
             reverse={true}
             pauseOnHover={true}
           >
-            {techStack
-              .slice()
-              .reverse()
-              .map((tech, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-center p-4 mx-8" // Removed flex-col to remove labels
-                >
-                  <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-colors duration-300">
-                    {/* Using 'currentColor' for fill to allow CSS control, removed filter/invert */}
-                    <img
-                      src={tech.logo}
-                      alt={tech.name}
-                      className="w-full h-full object-contain text-[#FFED99]" // Set desired golden color here
-                      style={{ fill: "#FFED99" }} // Ensures SVG uses the text color
-                    />
-                  </div>
-                  {/* Removed the text label: <span className="text-sm font-medium text-muted-foreground">{tech.name}</span> */}
+            {services.map((tech, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-center p-4 mx-8"
+                onMouseEnter={() => handleMouseEnter(tech.name)}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div className="w-16 h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
+                  <img
+                    src={tech.logo}
+                    alt={tech.name}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-              ))}
+              </div>
+            ))}
           </Marquee>
         </div>
       </div>
