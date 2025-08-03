@@ -104,7 +104,8 @@ const FeaturedProjects = () => {
       {/* Content */}
       <div className="container relative z-10">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-6 sm:gap-8 mb-8 sm:mb-10">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-6 sm:gap-8 mb-8 sm:mb-10">
+          {/* Text Content */}
           <motion.div
             className="flex-1"
             initial={{ opacity: 0, y: 20 }}
@@ -121,38 +122,40 @@ const FeaturedProjects = () => {
               <br />
               Action
             </GradientHeading>
-            <p className="text-base sm:text-lg text-zinc-500 font-red-hat-display max-w-2xl mt-3 sm:mt-4">
+            <p className="text-base sm:text-md text-zinc-500 font-red-hat-display max-w-2xl mt-3 sm:mt-4">
               See how our tailored software solutions have empowered businesses
               to achieve their goals and optimize operations.
             </p>
           </motion.div>
 
-          {/* This is the div containing the ShimmerButton */}
+          {/* Button Wrapper */}
           <motion.div
-            className="flex flex-col justify-end items-end self-end"
+            // On mobile: take full width and add top margin.
+            // On sm screens and up: take auto width and remove top margin.
+            className="w-full sm:w-auto mt-4 sm:mt-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <ShimmerButton
-              className="bg-secondary text-secondary-foreground font-red-hat-display inline-flex overflow-hidden text-sm sm:text-base"
+              // Make the button full-width on mobile and auto-width on larger screens.
+              className="w-full sm:w-auto bg-secondary text-secondary-foreground font-red-hat-display inline-flex overflow-hidden text-sm sm:text-base"
               shimmerColor="#FFD700"
               background="rgb(13, 13, 13)"
               borderRadius="100px"
             >
               <Link
                 href="/portfolio"
-                // Adjusted group-hover:pr-14 to accommodate the longer arrow
-                className="text-[#e7c95c] flex items-center whitespace-nowrap relative group-hover:pr-10 transition-all duration-300 ease-out px-4 py-2 sm:px-6 sm:py-3"
+                // On mobile: text is centered.
+                // On sm screens and up: text is aligned to the start.
+                className="w-full justify-center sm:w-auto sm:justify-start text-[#e7c95c] flex items-center whitespace-nowrap relative group-hover:pr-10 transition-all duration-300 ease-out px-4 sm:px-4"
               >
                 See All Work
                 <span className="absolute right-0 opacity-0 group-hover:opacity-100 translate-x-full group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none h-full flex items-center">
-                  {/* Increased size for height, and added scale-x-150 for horizontal stretching */}
                   <ArrowRight
                     size={20}
                     className="transform scale-x-130 scale-y-90 sm:w-5 sm:h-5 md:w-6 md:h-6"
-                  />{" "}
-                  {/* <--- Main change here */}
+                  />
                 </span>
               </Link>
             </ShimmerButton>
@@ -218,8 +221,8 @@ const FeaturedProjects = () => {
             ))}
           </div>
 
-          {/* Right Column - Offset */}
-          <div className="space-y-4 sm:space-y-6 lg:space-y-8 lg:translate-y-4 md:translate-y-8">
+          {/* Right Column - Offset Removed */}
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
             {featuredProjects.slice(2, 4).map((project, index) => (
               <motion.div
                 key={project.id}

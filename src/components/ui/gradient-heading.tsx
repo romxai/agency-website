@@ -25,11 +25,11 @@ const headingVariants = cva("tracking-tight bg-clip-text text-transparent", {
       xs: "text-lg sm:text-xl lg:text-2xl",
       sm: "text-xl sm:text-2xl lg:text-3xl",
       md: "text-2xl sm:text-3xl lg:text-4xl",
-      lg: "text-3xl sm:text-4xl lg:text-5xl",
+      lg: "text-[3rem] sm:text-[4rem] md:text-[4rem] lg:text-[4rem]",
       xl: "text-4xl sm:text-5xl lg:text-6xl",
       xll: "text-5xl sm:text-6xl lg:text-[5.4rem] lg:leading-[0.5rem]",
       xxl: "text-5xl sm:text-6xl lg:text-[6rem]",
-      xxxl: "text-5xl sm:text-6xl lg:text-[8rem]",
+      xxxl: "text-[4rem] sm:text-[6rem] md:text-[6rem] lg:text-[7rem]",
     },
     weight: {
       default: "font-regular",

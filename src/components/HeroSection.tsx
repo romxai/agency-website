@@ -72,7 +72,7 @@ const HeroSection = () => {
     <section
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20 md:pt-24 lg:pt-16"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20 md:py-24 lg:py-16"
     >
       <div className="absolute inset-0 z-0 bg-black">
         {mounted && (
@@ -108,7 +108,7 @@ const HeroSection = () => {
           >
             <motion.div style={{ rotate }}>
               <Image
-                src="/shape-gold.png"
+                src="/shape-gold-min.png"
                 alt="Shape"
                 width={400}
                 height={400}
@@ -130,10 +130,10 @@ const HeroSection = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <GradientHeading
-                size="xl"
+                size="xxxl"
                 weight="semi"
                 variant="default"
-                className="font-monesta-semibold leading-none mb-0 text-3xl sm:text-4xl md:text-5xl lg:text-6xl"
+                className="font-monesta-semibold leading-none mb-0"
               >
                 Your Vision <br />
                 Perfected
@@ -146,7 +146,7 @@ const HeroSection = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-2 font-red-hat-display">
+              <p className="text-base sm:text-lg md:text-lg text-muted-foreground mb-2 font-red-hat-display">
                 Building great technology should be exciting, not complicated.
               </p>
               <p className="text-sm sm:text-base md:text-lg text-muted-foreground font-red-hat-display">
@@ -169,7 +169,7 @@ const HeroSection = () => {
               >
                 <Link
                   href="#contact"
-                  className="block w-full h-full text-[#eed36f] px-4 py-2 sm:px-6 sm:py-3"
+                  className="block w-full h-full text-[#eed36f] px-2 sm:px-4"
                 >
                   Contact Us
                 </Link>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   motion,
@@ -48,67 +48,31 @@ export const FloatingNav = ({
   }[];
   className?: string;
 }) => {
-  // Framer Motion hooks for scroll detection
   const { scrollYProgress } = useScroll();
-  const [visible, setVisible] = useState(true); // Start as visible
+  const [visible, setVisible] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // Event listener for scroll changes using Framer Motion
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     const previous = scrollYProgress.getPrevious();
-
-    // Check if current is a number
     if (typeof current === "number" && typeof previous === "number") {
       const direction = current - previous;
-
-      // Always show the nav when at the top of the page
       if (scrollYProgress.get() < 0.05) {
         setVisible(true);
       } else {
-        // Hide on scroll down, show on scroll up
-        if (direction < 0) {
-          setVisible(true);
-        } else {
-          setVisible(false);
-        }
+        setVisible(direction < 0);
       }
     }
   });
 
-  // State for mobile menu and shape-shifting animation
-  const [isOpen, setIsOpen] = useState(false);
-  const [headerShapeClass, setHeaderShapeClass] = useState("rounded-full");
-  const shapeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  // Logic for hiding the nav now also closes the mobile menu
   useEffect(() => {
     if (!visible) {
       setIsOpen(false);
     }
   }, [visible]);
 
-  useEffect(() => {
-    if (shapeTimeoutRef.current) {
-      clearTimeout(shapeTimeoutRef.current);
-    }
-
-    if (isOpen) {
-      setHeaderShapeClass("rounded-xl");
-    } else {
-      shapeTimeoutRef.current = setTimeout(() => {
-        setHeaderShapeClass("rounded-full");
-      }, 300);
-    }
-
-    return () => {
-      if (shapeTimeoutRef.current) {
-        clearTimeout(shapeTimeoutRef.current);
-      }
-    };
-  }, [isOpen]);
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   const logoElement = (
     <div className="relative w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
@@ -144,18 +108,18 @@ export const FloatingNav = ({
       >
         <div
           className={cn(
-            `flex flex-col items-center pl-3 pr-3 sm:pl-4 sm:pr-4 md:pl-6 md:pr-6 py-2 sm:py-3 backdrop-blur-sm
-             ${headerShapeClass}
+            `flex flex-col items-center backdrop-blur-sm
              border border-[#333] bg-[#1f1f1f57]
              transition-[border-radius] duration-300 ease-in-out
-             w-full max-w-4xl`
+             w-full max-w-4xl`,
+            isOpen ? "rounded-2xl" : "rounded-full"
           )}
         >
-          {/* The rest of your navbar's internal JSX remains unchanged */}
-          <div className="flex items-center gap-x-3 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 w-full justify-between">
+          <div className="flex items-center gap-x-3 sm:gap-x-4 w-full justify-between py-2 sm:py-3 pl-3 pr-3 sm:pl-4 sm:pr-4 md:pl-6 md:pr-6">
             <div className="flex items-center">{logoElement}</div>
 
-            <nav className="hidden sm:flex items-center space-x-3 md:space-x-4 lg:space-x-6 text-xs sm:text-sm">
+            {/* MODIFICATION: Adjusted link spacing */}
+            <nav className="hidden sm:flex flex-grow items-center justify-center space-x-34 text-xs sm:text-sm">
               {navLinks.map((link, idx) => (
                 <AnimatedNavLink key={`nav-${idx}`} href={link.link}>
                   {link.name}
@@ -172,11 +136,11 @@ export const FloatingNav = ({
                   >
                     <div
                       className="absolute inset-0 -m-2 rounded-full
-                                     hidden sm:block
-                                     bg-amber-200
-                                     opacity-40 filter blur-lg pointer-events-none
-                                     transition-all duration-300 ease-out
-                                     group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
+                                   hidden sm:block
+                                   bg-amber-200
+                                   opacity-40 filter blur-lg pointer-events-none
+                                   transition-all duration-300 ease-out
+                                   group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
                     ></div>
                     <Link href={item.link}>
                       <button className="relative z-10 px-2 py-1.5 sm:px-3 md:px-4 text-xs sm:text-sm font-semibold text-gray-900 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/80 hover:bg-amber-200">
@@ -195,90 +159,99 @@ export const FloatingNav = ({
             </div>
 
             <button
-              className="sm:hidden flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 text-gray-300 focus:outline-none"
+              className="sm:hidden flex items-center justify-center w-6 h-6 text-gray-300 focus:outline-none"
               onClick={toggleMenu}
               aria-label={isOpen ? "Close Menu" : "Open Menu"}
             >
-              {/* SVG icons for mobile menu toggle */}
               {isOpen ? (
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  {" "}
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d="M6 18L18 6M6 6l12 12"
-                  ></path>{" "}
+                  ></path>
                 </svg>
               ) : (
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  {" "}
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
                     d="M4 6h16M4 12h16M4 18h16"
-                  ></path>{" "}
+                  ></path>
                 </svg>
               )}
             </button>
           </div>
 
-          <div
-            className={`sm:hidden flex flex-col items-center w-full transition-all ease-in-out duration-300 overflow-hidden
-                         ${
-                           isOpen
-                             ? "max-h-[1000px] opacity-100 pt-4"
-                             : "max-h-0 opacity-0 pt-0 pointer-events-none"
-                         }`}
-          >
-            {/* Mobile menu content */}
-            <nav className="flex flex-col items-center space-y-4 text-base w-full">
-              {navLinks.map((link, idx) => (
-                <Link
-                  key={`mobile-nav-${idx}`}
-                  href={link.link}
-                  className="text-gray-300 hover:text-white transition-colors w-full text-center text-sm sm:text-base"
+          {/* MODIFICATION: New animation structure to fix oval effect */}
+          <div className="sm:hidden w-full overflow-hidden">
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: { duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }, // Smoother easing for height
+                    opacity: { duration: 0.2, ease: "easeIn", delay: 0.1 },
+                  }}
+                  className="flex flex-col items-center"
                 >
-                  {link.name}
-                </Link>
-              ))}
-            </nav>
-            <div className="flex flex-col items-center space-y-4 mt-4 w-full">
-              {buttonItems.map((item, idx) =>
-                item.isSignup ? (
-                  <div
-                    key={`mobile-signup-${idx}`}
-                    className="relative group w-full sm:w-auto"
-                  >
-                    <div className="absolute inset-0 -m-2 rounded-full hidden sm:block bg-amber-200 opacity-40 filter blur-lg pointer-events-none transition-all duration-300 ease-out group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"></div>
-                    <Link href={item.link}>
-                      <button className="relative z-10 px-4 py-2 sm:px-3 text-xs sm:text-sm font-semibold text-gray-900/90 rounded-full transition-colors duration-200 w-full sm:w-auto bg-amber-200/70 hover:bg-amber-200">
-                        {item.name}
-                      </button>
-                    </Link>
+                  <div className="pb-4 pt-2 w-full">
+                    <nav className="flex flex-col items-center space-y-4 text-base w-full">
+                      {navLinks.map((link, idx) => (
+                        <Link
+                          key={`mobile-nav-${idx}`}
+                          href={link.link}
+                          className="text-gray-300 hover:text-white transition-colors w-full text-center text-sm"
+                        >
+                          {link.name}
+                        </Link>
+                      ))}
+                    </nav>
+                    <div className="flex flex-col items-center space-y-4 mt-4 w-full px-4">
+                      {buttonItems.map((item, idx) =>
+                        item.isSignup ? (
+                          <Link
+                            key={`mobile-signup-${idx}`}
+                            href={item.link}
+                            className="w-full"
+                          >
+                            <button className="relative z-10 px-4 py-2 text-sm font-semibold text-gray-900/90 rounded-full transition-colors duration-200 w-full bg-amber-200/70 hover:bg-amber-200">
+                              {item.name}
+                            </button>
+                          </Link>
+                        ) : (
+                          <Link
+                            key={`mobile-button-${idx}`}
+                            href={item.link}
+                            className="w-full"
+                          >
+                            <button className="px-4 py-2 text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full">
+                              {item.name}
+                            </button>
+                          </Link>
+                        )
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <Link key={`mobile-button-${idx}`} href={item.link}>
-                    <button className="px-4 py-2 sm:px-3 text-xs sm:text-sm border border-[#333] bg-[rgba(31,31,31,0.62)] text-gray-300 rounded-full hover:border-white/50 hover:text-white transition-colors duration-200 w-full sm:w-auto">
-                      {item.name}
-                    </button>
-                  </Link>
-                )
+                </motion.div>
               )}
-            </div>
+            </AnimatePresence>
           </div>
         </div>
       </motion.header>
@@ -289,9 +262,9 @@ export const FloatingNav = ({
 // Main Navbar component that uses the FloatingNav
 const Navbar = () => {
   const navItems = [
-    { name: "Home", link: "/" },
+    { name: "Services", link: "#services" },
     { name: "Projects", link: "/portfolio" },
-    { name: "Work", link: "/about" },
+    { name: "About", link: "/about" },
     { name: "Contact Us", link: "#contact", isSignup: true },
   ];
 
