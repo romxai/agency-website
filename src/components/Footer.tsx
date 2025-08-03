@@ -69,7 +69,7 @@ const Footer = () => {
   ];
 
   return (
-    <section className="relative bg-black pt-10">
+    <section className="relative bg-black pt-5">
       {/* Container for the large interactive text */}
       <div
         ref={textContainerRef}
@@ -92,7 +92,7 @@ const Footer = () => {
           className="absolute inset-0 text-center text-[22vw] md:text-[18vw] lg:text-[15vw] leading-none font-extrabold uppercase tracking-tighter"
           style={{
             // A radial gradient centered on the mouse position creates the spotlight.
-            background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), #FFED99 0%, transparent 80%)`,
+            background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), #e7c95c 0%, transparent 80%)`,
             // Clipping the background to the text shape makes the gradient visible only through the letters.
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
@@ -124,7 +124,7 @@ const Footer = () => {
                 href="/"
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
               >
-                <Globe className="size-8 text-[#FFED99]" />
+                <Globe className="size-8 text-[#e7c95c]" />
                 <span className="text-2xl font-bold text-white font-monesta-semibold">
                   DevAgency
                 </span>

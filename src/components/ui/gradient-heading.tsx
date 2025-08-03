@@ -4,55 +4,48 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-const headingVariants = cva(
-  "tracking-tight pb-24 bg-clip-text text-transparent",
-  {
-    variants: {
-      variant: {
-        default: "bg-gradient-to-t from-text-dark from-1% to-white",
-
-        // MODIFIED: This gradient is now 90% white, with a small dark part at the top.
-        pink: "bg-gradient-to-t from-text-darker from-35% to-white",
-
-        light: "bg-gradient-to-t from-neutral-200 to-neutral-300",
-        accent1:
-          "bg-gradient-to-t from-yellow-900 from-30% via-yellow-500/30 via-10% to-white",
-        accent2:
-          "bg-gradient-to-t from-yellow-900 via-yellow-500/60 via-60% to-white",
-        accent3:
-          "bg-gradient-to-t from-yellow-900 via-yellow-600/70 via-50% to-white",
-        secondary:
-          "bg-gradient-to-t from-neutral-500 to-neutral-600 dark:from-stone-200 dark:to-neutral-200",
-      },
-      size: {
-        default: "text-2xl sm:text-3xl lg:text-4xl",
-        xxs: "text-base sm:text-lg lg:text-lg",
-        xxxs: "text-sm sm:text-base lg:text-base",
-        xs: "text-lg sm:text-xl lg:text-2xl",
-        sm: "text-xl sm:text-2xl lg:text-3xl",
-        md: "text-2xl sm:text-3xl lg:text-4xl",
-        lg: "text-3xl sm:text-4xl lg:text-5xl",
-        xl: "text-4xl sm:text-5xl lg:text-6xl",
-        xll: "text-5xl sm:text-6xl lg:text-[5.4rem]  lg:leading-[0.5rem] ",
-        xxl: "text-5xl sm:text-6xl lg:text-[6rem]",
-        xxxl: "text-5xl sm:text-6xl lg:text-[8rem]",
-      },
-      weight: {
-        default: "font-regular",
-        thin: "font-thin",
-        base: "font-base",
-        semi: "font-semibold",
-        bold: "font-bold",
-        black: "font-black",
-      },
+const headingVariants = cva("tracking-tight bg-clip-text text-transparent", {
+  variants: {
+    variant: {
+      // MODIFIED: All variants now use HEX codes
+      default: "bg-gradient-to-t from-[#342f1c] from-1% to-[#fff6ce]",
+      pink: "bg-gradient-to-t from-[#18181B] from-35% to-[#FFFFFF]",
+      light: "bg-gradient-to-t from-[#E5E5E5] to-[#D4D4D4]",
+      accent1:
+        "bg-gradient-to-t from-[#713F12] from-30% via-[#EAB3084D] via-10% to-[#FFFFFF]",
+      accent2: "bg-gradient-to-tl from-[#e7c95c] to-[#FFF4CF] from-20%",
+      accent3: "bg-gradient-to-b from-[#FFF4CF] to-[#e7c034]",
+      secondary:
+        "bg-gradient-to-t from-[#737373] to-[#525252] dark:from-[#E7E5E4] dark:to-[#E5E5E5]",
     },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-      weight: "default",
+    size: {
+      default: "text-2xl sm:text-3xl lg:text-4xl",
+      xxs: "text-base sm:text-lg lg:text-lg",
+      xxxs: "text-sm sm:text-base lg:text-base",
+      xs: "text-lg sm:text-xl lg:text-2xl",
+      sm: "text-xl sm:text-2xl lg:text-3xl",
+      md: "text-2xl sm:text-3xl lg:text-4xl",
+      lg: "text-3xl sm:text-4xl lg:text-5xl",
+      xl: "text-4xl sm:text-5xl lg:text-6xl",
+      xll: "text-5xl sm:text-6xl lg:text-[5.4rem] lg:leading-[0.5rem]",
+      xxl: "text-5xl sm:text-6xl lg:text-[6rem]",
+      xxxl: "text-5xl sm:text-6xl lg:text-[8rem]",
     },
-  }
-);
+    weight: {
+      default: "font-regular",
+      thin: "font-thin",
+      base: "font-base",
+      semi: "font-semibold",
+      bold: "font-bold",
+      black: "font-black",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+    weight: "default",
+  },
+});
 
 export interface HeadingProps extends VariantProps<typeof headingVariants> {
   asChild?: boolean;
@@ -63,11 +56,37 @@ export interface HeadingProps extends VariantProps<typeof headingVariants> {
 const GradientHeading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
   ({ asChild, variant, weight, size, className, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "h3"; // default to 'h3' if not a child
+
+    const renderLines = () => {
+      if (typeof children !== "string") {
+        return (
+          <span className={cn(headingVariants({ variant, size, weight }))}>
+            {children}
+          </span>
+        );
+      }
+
+      return children.split(/(\n|<br\s*\/?>)/g).map((part, index) => {
+        if (part.match(/(\n|<br\s*\/?>)/)) {
+          return <br key={`br-${index}`} />;
+        }
+        if (part) {
+          return (
+            <span
+              key={`line-${index}`}
+              className={cn(headingVariants({ variant, size, weight }))}
+            >
+              {part}
+            </span>
+          );
+        }
+        return null;
+      });
+    };
+
     return (
       <Comp ref={ref} {...props} className={className}>
-        <span className={cn(headingVariants({ variant, size, weight }))}>
-          {children}
-        </span>
+        {renderLines()}
       </Comp>
     );
   }
@@ -75,16 +94,25 @@ const GradientHeading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
 
 GradientHeading.displayName = "GradientHeading";
 
-// Manually define the variant types
-export type Variant = "default" | "pink" | "light" | "secondary";
+// Manually define the variant types for external use if needed
+export type Variant =
+  | "default"
+  | "pink"
+  | "light"
+  | "accent1"
+  | "accent2"
+  | "accent3"
+  | "secondary";
 export type Size =
   | "default"
   | "xxs"
+  | "xxxs"
   | "xs"
   | "sm"
   | "md"
   | "lg"
   | "xl"
+  | "xll"
   | "xxl"
   | "xxxl";
 export type Weight = "default" | "thin" | "base" | "semi" | "bold" | "black";

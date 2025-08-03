@@ -31,7 +31,7 @@ const HeroSection = () => {
             lightSpread={20}
             rayLength={1.1}
             pulsating={false}
-            fadeDistance={0.2}
+            fadeDistance={0.4}
             saturation={0.6}
             followMouse={false}
             mouseInfluence={0}
@@ -65,14 +65,7 @@ const HeroSection = () => {
                 variant="default"
                 className="font-monesta-semibold leading-none mb-0"
               >
-                Your Vision
-              </GradientHeading>
-              <GradientHeading
-                size="xxxl"
-                weight="semi"
-                variant="pink"
-                className="font-monesta-semibold leading-none mb-2"
-              >
+                Your Vision <br />
                 Perfected
               </GradientHeading>
             </motion.div>
@@ -100,13 +93,13 @@ const HeroSection = () => {
             >
               <ShimmerButton
                 className="bg-secondary text-secondary-foreground font-red-hat-display"
-                shimmerColor="#ffffff"
+                shimmerColor="#eed36f"
                 background="rgb(13, 13, 13)"
                 borderRadius="100px"
               >
                 <Link
                   href="#contact"
-                  className="block w-full h-full text-white"
+                  className="block w-full h-full text-[#eed36f]"
                 >
                   Contact Us
                 </Link>

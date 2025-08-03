@@ -143,7 +143,7 @@ const FeaturedProjects = () => {
               <Link
                 href="/portfolio"
                 // Adjusted group-hover:pr-14 to accommodate the longer arrow
-                className="text-white flex items-center whitespace-nowrap relative group-hover:pr-10 transition-all duration-300 ease-out"
+                className="text-[#e7c95c] flex items-center whitespace-nowrap relative group-hover:pr-10 transition-all duration-300 ease-out"
               >
                 See All Work
                 <span className="absolute right-0 opacity-0 group-hover:opacity-100 translate-x-full group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none h-full flex items-center">

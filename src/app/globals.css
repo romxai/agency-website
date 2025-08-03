@@ -180,7 +180,7 @@ body {
 .font-charm-bold {
   font-family: 'Charm Bold', cursive;
   /* Apply a different gradient */
-  background: linear-gradient(to bottom, #ffefc4, #646038); /* Example: a blue-green gradient */
+  background: linear-gradient(to bottom, #b3ad97, #bda348); /* Example: a blue-green gradient */
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

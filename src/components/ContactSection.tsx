@@ -250,7 +250,7 @@ const ContactSection = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-[#FFED99]/80 text-black py-3 rounded-full hover:bg-[#FFED99] transition-colors flex items-center justify-center font-semibold"
+                    className="w-full bg-[#e7c95c]/80 text-black py-3 rounded-full hover:bg-[#e7c95c] transition-colors flex items-center justify-center font-semibold"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center">

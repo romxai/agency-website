@@ -58,12 +58,12 @@ const SolutionsSection = () => {
             rayLength={1.1}
             pulsating={false}
             fadeDistance={0.2}
-            saturation={0.6}
+            saturation={0.4}
             followMouse={false}
             mouseInfluence={0}
             noiseAmount={0.05}
             distortion={0.02}
-            glowAmount={0.1}
+            glowAmount={0.01}
             className="w-full h-full"
           />
         )}
