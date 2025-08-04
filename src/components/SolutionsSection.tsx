@@ -151,15 +151,15 @@ const SolutionsSection = () => {
                     </ul>
                   </div>
 
-                  <div className="absolute inset-0 md:relative md:w-2/5 md:h-full">
-                    <div className="relative w-full h-full">
+                  <div className="absolute inset-0 md:relative md:w-2/5 md:h-full p-1">
+                    {/* MODIFIED: Added responsive padding to push image down on mobile */}
+                    <div className="relative w-full h-full pt-16 md:pt-0">
                       <Image
                         src="/flow3.png"
                         alt="AI Automation"
                         fill
                         className="object-contain"
                       />
-                      {/* CHANGED: Combined overlays into one for a consistent dark effect */}
                       <div className="absolute inset-0 md:bg-black/50 bg-black/80"></div>
                     </div>
                   </div>
@@ -197,7 +197,8 @@ const SolutionsSection = () => {
                       </p>
                     </div>
 
-                    <div className="w-full flex-1 relative">
+                    {/* MODIFIED: Added responsive padding above the image for mobile screens */}
+                    <div className="w-full flex-1 relative pt-8 sm:pt-0">
                       <Image
                         src="/web-mock.png"
                         alt="Web Development"
@@ -243,7 +244,6 @@ const SolutionsSection = () => {
                     }}
                   />
 
-                  {/* CHANGED: Content layout updated to move button to the top-left */}
                   <div className="relative z-20 flex h-full flex-col p-4 sm:p-6">
                     <div>
                       <GradientHeading
@@ -259,7 +259,6 @@ const SolutionsSection = () => {
                         business, featuring robust architecture and
                         comprehensive support.
                       </p>
-                      {/* Button is now here */}
                       <ShimmerButton
                         className="bg-secondary text-[#FFED99] font-red-hat-display text-xs sm:text-sm mt-4"
                         shimmerColor="#FFED99"
