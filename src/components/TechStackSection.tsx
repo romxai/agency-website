@@ -1,11 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useMotionTemplate,
+} from "framer-motion";
 import { Marquee } from "@/components/magicui/marquee";
 import { GradientHeading } from "@/components/ui/gradient-heading";
 
-// NEW: A component for the cursor-following tooltip
+// A component for the cursor-following tooltip
 const CursorTooltip = ({
   content,
   visible,
@@ -14,27 +20,25 @@ const CursorTooltip = ({
   content: string;
   visible: boolean;
   position: { x: number; y: number };
-}) => {
-  return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.15, ease: "easeInOut" }}
-          style={{
-            top: position.y + 10, // Offset a bit from the cursor
-            left: position.x + 10,
-          }}
-          className="pointer-events-none fixed z-50 rounded-md bg-black px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-white shadow-lg"
-        >
-          {content}
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
+}) => (
+  <AnimatePresence>
+    {visible && (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.15, ease: "easeInOut" }}
+        style={{
+          top: position.y + 10,
+          left: position.x + 10,
+        }}
+        className="pointer-events-none fixed z-50 rounded-md bg-black px-2 py-1 sm:px-3 sm:py-1.5 text-xs sm:text-sm font-medium text-white shadow-lg"
+      >
+        {content}
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
 
 const techStack = [
   { name: "React", logo: "/svgs/react-svgrepo-com.svg", category: "service" },
@@ -81,16 +85,67 @@ const techStack = [
   },
 ];
 
+// --- NEW COMPONENT FOR ICONS ---
+// This component manages its own mobile scroll-based animation.
+const TechIcon = ({
+  tech,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  tech: { name: string; logo: string };
+  onMouseEnter: (name: string) => void;
+  onMouseLeave: () => void;
+}) => {
+  const [isMobile, setIsMobile] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Check for mobile device on component mount
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Scroll-triggered animation for mobile
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Transform scroll progress into filter values
+  const grayscale = useTransform(scrollYProgress, [0.2, 0.6], [1, 0]);
+  const brightness = useTransform(scrollYProgress, [0.2, 0.6], [0.5, 1]);
+  const filter = useMotionTemplate`grayscale(${grayscale}) brightness(${brightness})`;
+
+  return (
+    <div
+      ref={ref}
+      className="flex items-center justify-center p-2 sm:p-4 mx-4 sm:mx-8"
+      onMouseEnter={() => onMouseEnter(tech.name)}
+      onMouseLeave={onMouseLeave}
+    >
+      <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-black rounded-lg p-2 sm:p-3 transition-transform duration-300 group-hover:scale-110">
+        <motion.img
+          src={tech.logo}
+          alt={tech.name}
+          // On desktop, use Tailwind classes for hover. On mobile, use animated style.
+          className="w-full h-full object-contain filter grayscale brightness-50 transition-all duration-300 sm:group-hover:filter-none"
+          style={isMobile ? { filter } : {}}
+        />
+      </div>
+    </div>
+  );
+};
+
 const TechStackSection = () => {
   const languages = techStack.filter((tech) => tech.category === "language");
   const services = techStack.filter((tech) => tech.category === "service");
 
-  // NEW: State for tooltip visibility, content, and position
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipContent, setTooltipContent] = useState("");
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
 
-  // Effect to track mouse position globally
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
       setTooltipPosition({ x: event.clientX, y: event.clientY });
@@ -116,7 +171,6 @@ const TechStackSection = () => {
       id="tech-stack-section"
       className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black"
     >
-      {/* Render the tooltip component */}
       <CursorTooltip
         content={tooltipContent}
         visible={tooltipVisible}
@@ -151,45 +205,33 @@ const TechStackSection = () => {
         </motion.div>
 
         <div className="w-full relative z-10">
-          <Marquee className="w-full [--duration:30s]" pauseOnHover={true}>
-            {languages.map((tech, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-center p-2 sm:p-4 mx-4 sm:mx-8"
-                onMouseEnter={() => handleMouseEnter(tech.name)}
+          {/* Using a 'group' for desktop hover effects */}
+          <Marquee
+            className="group w-full [--duration:30s]"
+            pauseOnHover={true}
+          >
+            {languages.map((tech) => (
+              <TechIcon
+                key={tech.name}
+                tech={tech}
+                onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-              >
-                <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-2 sm:p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
-                  <img
-                    src={tech.logo}
-                    alt={tech.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
+              />
             ))}
           </Marquee>
 
           <Marquee
-            className="w-full [--duration:35s] mt-6 sm:mt-8"
+            className="group w-full [--duration:35s] mt-6 sm:mt-8"
             reverse={true}
             pauseOnHover={true}
           >
-            {services.map((tech, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-center p-2 sm:p-4 mx-4 sm:mx-8"
-                onMouseEnter={() => handleMouseEnter(tech.name)}
+            {services.map((tech) => (
+              <TechIcon
+                key={tech.name}
+                tech={tech}
+                onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-              >
-                <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-secondary/20 rounded-lg p-2 sm:p-3 hover:bg-secondary/30 transition-all duration-300 hover:scale-110">
-                  <img
-                    src={tech.logo}
-                    alt={tech.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
+              />
             ))}
           </Marquee>
         </div>
