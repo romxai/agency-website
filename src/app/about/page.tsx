@@ -178,7 +178,7 @@ export default function AboutPage() {
                 variant="default"
                 className="font-monesta-semibold leading-none mb-6"
               >
-                About <span className="font-charm-bold">Us</span>
+                About Us
               </GradientHeading>
             </motion.div>
 
@@ -250,7 +250,7 @@ export default function AboutPage() {
 
           {/* Orbit column - 1/3 on desktop */}
           <motion.div
-            className="group relative w-full lg:w-1/3 h-80 sm:h-96 lg:h-[650px] flex items-center justify-center flex-shrink-0"
+            className="group relative w-full lg:w-1/3 h-80 sm:h-96 lg:h-[650px] flex items-center justify-center flex-shrink-0 p-10"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
