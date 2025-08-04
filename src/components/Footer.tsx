@@ -86,7 +86,8 @@ const Footer = () => {
     <section className="relative bg-black pt-5">
       <div
         ref={textContainerRef}
-        className="relative w-full select-none mb-5 overflow-hidden"
+        // MODIFIED: Removed mb-5 for consistent scaling
+        className="relative w-full select-none overflow-hidden"
         style={
           {
             "--mouse-x": `${mousePosition.x}px`,
@@ -94,12 +95,10 @@ const Footer = () => {
           } as React.CSSProperties
         }
       >
-        {/* MODIFIED: Adjusted vw font size to prevent overflow on small screens */}
         <h1 className="text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tight md:tracking-tighter">
           DevAgency
         </h1>
         <motion.h1
-          // MODIFIED: Matched the adjusted vw font size here as well
           className="absolute inset-0 text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase tracking-tight md:tracking-tighter"
           style={highlightTextStyle}
         >
@@ -107,7 +106,8 @@ const Footer = () => {
         </motion.h1>
       </div>
 
-      <footer className="relative z-10 bg-black -mt-[1vw] sm:-mt-[3vw] md:-mt-[5vw] lg:-mt-[4vw] pt-6 sm:pt-8 pb-6 sm:pb-8 md:pb-16">
+      {/* MODIFIED: Adjusted negative margins for consistent overlap */}
+      <footer className="relative z-10 bg-black -mt-[5.5vw] sm:-mt-[6vw] md:-mt-[5vw] lg:-mt-[4vw] pt-6 sm:pt-8 pb-6 sm:pb-8 md:pb-16">
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
         <div className="container relative z-10 mx-auto px-4">
           <motion.div

@@ -14,7 +14,6 @@ const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
 });
 
 // A reusable card wrapper for consistent hover effects.
-// It only provides the motion and hover glow, preserving the children's layout.
 const InteractiveCard = ({
   children,
   className,
@@ -27,9 +26,7 @@ const InteractiveCard = ({
     whileHover={{ scale: 1.02, y: -5 }}
     transition={{ duration: 0.2, ease: "easeOut" }}
   >
-    {/* Animated gradient border glow that appears on hover.
-        It uses multiple radial gradients to create a glow from the center of each side,
-        which fades towards the corners, as requested. */}
+    {/* Animated gradient border glow that appears on hover. */}
     <div
       className="pointer-events-none absolute -inset-px rounded-xl sm:rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
       style={{
@@ -80,7 +77,7 @@ const SolutionsSection = () => {
 
       {/* Content */}
       <div className="container relative z-10">
-        {/* Header - No changes needed here */}
+        {/* Header */}
         <motion.div
           className="text-center mb-12 sm:mb-16"
           initial={{ opacity: 0, y: 20 }}
@@ -111,12 +108,13 @@ const SolutionsSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <InteractiveCard className="w-full">
-              <div className="bg-black border border-[#FFED99]/20 rounded-xl sm:rounded-2xl h-64 sm:h-80 md:h-96 relative overflow-hidden">
-                {/* Golden accent line (This one is for the card, keep it) */}
+              <div className="bg-black border border-[#FFED99]/20 rounded-xl sm:rounded-2xl md:h-96 relative overflow-hidden">
+                {/* Golden accent line */}
                 <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
 
-                <div className="flex flex-col lg:flex-row h-full">
-                  <div className="w-full lg:w-2/5 p-4 sm:p-6 lg:p-8">
+                <div className="relative flex h-full flex-col md:flex-row">
+                  {/* Text content container */}
+                  <div className="relative z-10 flex w-full flex-col justify-center p-6 md:h-full md:w-3/5 md:p-8">
                     <GradientHeading
                       size="sm"
                       weight="semi"
@@ -153,24 +151,17 @@ const SolutionsSection = () => {
                     </ul>
                   </div>
 
-                  <div className="w-full lg:w-3/5 h-full relative p-4 sm:p-6 lg:p-10 mt-1">
-                    <Image
-                      src="/flow2.png"
-                      alt="AI Automation"
-                      fill
-                      className="object-contain scale-105"
-                    />
-                    {/* Vignette effect overlay - Customized for left fade */}
-                    <div
-                      className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none"
-                      style={{
-                        background:
-                          "radial-gradient(circle at right center, transparent 0%, rgba(0,0,0,0.85) 70%), linear-gradient(to left, rgba(0,0,0,0.85) 0%, transparent 30%)",
-                        maskImage:
-                          "radial-gradient(circle at right center, transparent 0%, black 70%), linear-gradient(to left, black 0%, transparent 30%)",
-                        mixBlendMode: "multiply",
-                      }}
-                    ></div>
+                  <div className="absolute inset-0 md:relative md:w-2/5 md:h-full">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src="/flow3.png"
+                        alt="AI Automation"
+                        fill
+                        className="object-contain"
+                      />
+                      {/* CHANGED: Combined overlays into one for a consistent dark effect */}
+                      <div className="absolute inset-0 md:bg-black/50 bg-black/80"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -188,11 +179,9 @@ const SolutionsSection = () => {
             >
               <InteractiveCard className="w-full">
                 <div className="bg-black border border-[#FFED99]/20 rounded-xl sm:rounded-2xl h-64 sm:h-80 md:h-96 relative overflow-hidden">
-                  {/* Golden accent line */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
-
                   <div className="flex flex-col h-full">
-                    <div className="flex-1 px-4 sm:px-6 pt-6 sm:pt-10">
+                    <div className="flex-none md:flex-1 px-4 sm:px-6 pt-6 sm:pt-10">
                       <GradientHeading
                         size="xs"
                         weight="semi"
@@ -215,7 +204,6 @@ const SolutionsSection = () => {
                         fill
                         className="object-cover"
                       />
-                      {/* Vignette effect overlay */}
                       <div
                         className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none"
                         style={{
@@ -240,11 +228,24 @@ const SolutionsSection = () => {
             >
               <InteractiveCard className="w-full">
                 <div className="bg-black border border-[#FFED99]/20 rounded-xl sm:rounded-2xl h-64 sm:h-80 md:h-96 relative overflow-hidden">
-                  {/* Golden accent line */}
-                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent"></div>
+                  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFED99]/50 to-transparent z-30"></div>
+                  <Image
+                    src="/2bespoke.png"
+                    alt="Enterprise Solutions"
+                    fill
+                    className="object-contain"
+                  />
+                  <div
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background:
+                        "radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.95) 80%)",
+                    }}
+                  />
 
-                  <div className="flex flex-col h-full">
-                    <div className="flex-1 p-4 sm:p-6">
+                  {/* CHANGED: Content layout updated to move button to the top-left */}
+                  <div className="relative z-20 flex h-full flex-col p-4 sm:p-6">
+                    <div>
                       <GradientHeading
                         size="xs"
                         weight="semi"
@@ -253,42 +254,23 @@ const SolutionsSection = () => {
                       >
                         Bespoke enterprise ready solution
                       </GradientHeading>
-                      <p className="text-zinc-400 text-xs sm:text-sm mb-3 sm:mb-4 font-red-hat-display">
+                      <p className="text-zinc-400 text-xs sm:text-sm font-red-hat-display">
                         Custom enterprise solutions designed to scale with your
                         business, featuring robust architecture and
                         comprehensive support.
                       </p>
-
+                      {/* Button is now here */}
                       <ShimmerButton
-                        className="bg-secondary text-[#FFED99] font-red-hat-display text-xs sm:text-sm"
+                        className="bg-secondary text-[#FFED99] font-red-hat-display text-xs sm:text-sm mt-4"
                         shimmerColor="#FFED99"
                         background="rgb(13, 13, 13)"
                         borderRadius="100px"
                       >
-                        <div className="flex items-center gap-1 sm:gap-2 text-[#FFED99]/60 px-3 py-1.5 sm:px-4 sm:py-2">
+                        <div className="flex items-center gap-1 sm:gap-2 text-[#FFED99]/60">
                           <Calendar size={14} className="sm:w-4 sm:h-4" />
                           Schedule a Call
                         </div>
                       </ShimmerButton>
-                    </div>
-
-                    <div className="w-full flex-1 relative mt-2 sm:mt-4">
-                      <Image
-                        src="/shape-min.png"
-                        alt="Enterprise Solutions"
-                        fill
-                        className="object-cover"
-                      />
-                      {/* Vignette effect overlay */}
-                      <div
-                        className="absolute inset-0 rounded-xl sm:rounded-2xl pointer-events-none"
-                        style={{
-                          background:
-                            "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.85) 85%)",
-                          maskImage:
-                            "radial-gradient(circle at center, transparent 0%, black 85%)",
-                        }}
-                      ></div>
                     </div>
                   </div>
                 </div>
