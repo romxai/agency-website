@@ -30,7 +30,6 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-red-hat-display);
-  --font-mono: var(--font-geist-mono);
   --font-red-hat-display: var(--font-red-hat-display);
   --font-monesta-semibold: var(--font-monesta-semibold);
   --animate-marquee: marquee var(--duration) infinite linear;

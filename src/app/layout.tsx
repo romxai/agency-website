@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 const redHatDisplay = localFont({
   src: "../../public/RedHatDisplay-VariableFont_wght.ttf",
@@ -68,7 +58,7 @@ export default function RootLayout({
         <meta name="color-scheme" content="dark" />
       </head>
       <body
-        className={`${redHatDisplay.variable} ${monestaSemibold.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-[#030712] text-white font-red-hat-display`}
+        className={`${redHatDisplay.variable} ${monestaSemibold.variable} antialiased bg-[#030712] text-white font-red-hat-display`}
       >
         <Navbar />
         <main className="min-h-screen">{children}</main>

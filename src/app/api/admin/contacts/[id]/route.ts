@@ -20,7 +20,7 @@ export async function PATCH(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
     const collection = db.collection(
-      process.env.MONGODB_COLLECTION_NAME || "client-contact"
+      process.env.MONGODB_COLLECTION_NAME as string
     );
 
     const updateData: any = {};
@@ -67,7 +67,7 @@ export async function DELETE(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
     const collection = db.collection(
-      process.env.MONGODB_COLLECTION_NAME || "client-contact"
+      process.env.MONGODB_COLLECTION_NAME as string
     );
 
     const result = await collection.deleteOne({ _id: new ObjectId(params.id) });

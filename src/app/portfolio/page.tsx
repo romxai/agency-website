@@ -5,8 +5,9 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { GradientHeading } from "@/components/ui/gradient-heading";
 import { ShimmerButton } from "@/components/magicui/shimmer-button";
-import { ArrowRight, Calendar } from "lucide-react";
+import { X, Globe, Github } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Import LightRays with SSR disabled
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
@@ -33,7 +34,9 @@ const itemVariants: Variants = {
 };
 // --- END ANIMATION LOGIC ---
 
-// Sample portfolio data (placeholder)
+// --- UPDATED PORTFOLIO DATA ---
+// Added liveLink and githubLink for new buttons
+// Added 'images' array for the new carousel
 const portfolioItems = [
   {
     id: 1,
@@ -41,9 +44,12 @@ const portfolioItems = [
     category: "AI Agent",
     tech: ["Next.js", "React", "Node.js", "MongoDB"],
     description:
-      "AI-powered workflow automation platform for enterprise teams with advanced filtering and intelligent processing.",
-    image: "/shape-min.png",
+      "A sophisticated AI-powered workflow automation platform for enterprise teams. It features advanced natural language processing for intelligent task delegation, real-time analytics dashboards, and a modular architecture that allows for seamless integration with existing business tools. The platform streamlines complex processes, reduces manual effort, and provides actionable insights to improve operational efficiency. This project highlights our expertise in developing scalable and secure AI solutions for demanding corporate environments.",
+    images: ["/shape-min.png", "/about/dwayne.jpg"],
     tags: ["Agentic AI", "Web App", "Enterprise"],
+    isLive: true,
+    liveLink: "#",
+    githubLink: "#",
   },
   {
     id: 2,
@@ -51,9 +57,12 @@ const portfolioItems = [
     category: "Mobile App",
     tech: ["React Native", "Firebase", "GraphQL"],
     description:
-      "Comprehensive mobile application for rural development with cross-platform capabilities.",
-    image: "/shape-min.png",
+      "A comprehensive cross-platform mobile application designed to empower rural communities. It integrates essential services like agricultural information, weather forecasts, financial literacy modules, and local marketplace access. The app is optimized for low-bandwidth environments and features an intuitive, multilingual interface. Saarthi demonstrates our commitment to creating technology with social impact and our proficiency in building robust and accessible mobile solutions.",
+    images: ["/shape-min.png"],
     tags: ["Mobile App", "PWA", "Social Impact"],
+    isLive: true,
+    liveLink: "#",
+    githubLink: null,
   },
   {
     id: 3,
@@ -61,9 +70,12 @@ const portfolioItems = [
     category: "AI/ML",
     tech: ["Python", "TensorFlow", "AWS"],
     description:
-      "Advanced neural network visualization and training platform for data scientists.",
-    image: "/shape-min.png",
+      "An advanced neural network visualization and training platform for data scientists. Users can build, train, and visualize complex neural networks through an interactive GUI. The platform provides real-time performance metrics, hyperparameter tuning, and seamless deployment to cloud environments. Neural Nexus showcases our deep knowledge of machine learning frameworks and our ability to build powerful tools for the data science community.",
+    images: ["/shape-min.png"],
     tags: ["AI/ML", "Data Science", "Web App"],
+    isLive: false,
+    liveLink: null,
+    githubLink: "#",
   },
   {
     id: 4,
@@ -71,9 +83,12 @@ const portfolioItems = [
     category: "Research",
     tech: ["React", "D3.js", "Express", "PostgreSQL"],
     description:
-      "Real-time quantum computing simulation and analysis tool for researchers.",
-    image: "/shape-min.png",
+      "A real-time quantum computing simulation and analysis tool for researchers and academics. The platform simulates quantum circuits, visualizes qubit states, and provides detailed analytical outputs. Built with a focus on performance and accuracy, Quantum Flow is an invaluable resource for exploring quantum mechanics without the need for specialized hardware.",
+    images: ["/about/dwayne.jpg"],
     tags: ["Quantum Computing", "Research", "Web App"],
+    isLive: false,
+    liveLink: null,
+    githubLink: "#",
   },
   {
     id: 5,
@@ -81,9 +96,12 @@ const portfolioItems = [
     category: "Web App",
     tech: ["Next.js", "React", "Node.js", "MongoDB"],
     description:
-      "Interactive learning platform with video courses, quizzes, and real-time collaboration.",
-    image: "/shape-min.png",
+      "An interactive e-learning platform featuring video courses, engaging quizzes, and real-time collaboration tools. The platform offers personalized learning paths, progress tracking, and a community forum. It's designed to provide a rich and engaging educational experience for students and professionals alike, demonstrating our ability to build comprehensive and user-friendly web applications.",
+    images: ["/shape-min.png"],
     tags: ["Education", "Web App", "Interactive"],
+    isLive: false,
+    liveLink: "#",
+    githubLink: "#",
   },
   {
     id: 6,
@@ -91,11 +109,15 @@ const portfolioItems = [
     category: "Web App",
     tech: ["React", "D3.js", "Express", "PostgreSQL"],
     description:
-      "Real-time analytics dashboard for financial data visualization and reporting.",
-    image: "/shape-min.png",
+      "A real-time analytics dashboard for visualizing and reporting on complex financial data. It features customizable charts, predictive analysis models, and secure user authentication. The dashboard provides a clear, concise overview of key financial metrics, helping businesses make data-driven decisions. This project exemplifies our skill in building secure, performant, and data-intensive web applications.",
+    images: ["/shape-min.png"],
     tags: ["Finance", "Analytics", "Dashboard"],
+    isLive: true,
+    liveLink: "#",
+    githubLink: null,
   },
 ];
+// --- END OF UPDATED PORTFOLIO DATA ---
 
 // Extract unique categories and technologies for filters
 const categories = Array.from(
@@ -109,24 +131,27 @@ const technologies = Array.from(
 const InteractiveCard = ({
   children,
   className,
+  onClick,
 }: {
   children: React.ReactNode;
   className: string;
+  onClick: () => void;
 }) => (
   <motion.div
     className={`group relative ${className}`}
     whileHover={{ scale: 1.02, y: -5 }}
     transition={{ duration: 0.2, ease: "easeOut" }}
+    onClick={onClick}
   >
     {/* Animated gradient border glow that appears on hover */}
     <div
       className="pointer-events-none absolute -inset-px rounded-xl sm:rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
       style={{
         background: `
-          radial-gradient(400px circle at 50% 0%, rgba(255, 237, 153, 0.3), transparent 40%),
-          radial-gradient(400px circle at 50% 100%, rgba(255, 237, 153, 0.3), transparent 40%),
-          radial-gradient(400px circle at 0% 50%, rgba(255, 237, 153, 0.3), transparent 40%),
-          radial-gradient(400px circle at 100% 50%, rgba(255, 237, 153, 0.3), transparent 40%)
+          radial-gradient(400px circle at 50% 0%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 50% 100%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 0% 50%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 100% 50%, rgba(255, 237, 153, 0.2), transparent 40%)
         `,
       }}
       aria-hidden="true"
@@ -135,11 +160,178 @@ const InteractiveCard = ({
   </motion.div>
 );
 
+// --- NEW COMPONENT: PROJECT DETAILS MODAL ---
+const ProjectDetailsModal = ({
+  project,
+  onClose,
+}: {
+  project: (typeof portfolioItems)[0];
+  onClose: () => void;
+}) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-looping logic
+  useEffect(() => {
+    if (project.images.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === project.images.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000); // Change image every 5 seconds
+      return () => clearInterval(timer);
+    }
+  }, [project.images.length]);
+
+  return (
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <motion.div
+        className="bg-[#050505] border border-white/10 rounded-xl sm:rounded-2xl max-w-4xl w-full flex flex-col shadow-lg relative my-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 text-white/60 hover:text-white transition-colors"
+          aria-label="Close modal"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Image Carousel Section (Auto-looping, no controls) */}
+        <div className="relative h-64 sm:h-80 md:h-96 flex-shrink-0 bg-zinc-900 rounded-t-xl overflow-hidden">
+          <Image
+            src={project.images[currentImageIndex]}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 ease-in-out"
+            priority
+          />
+          {/* Dots */}
+          {project.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {project.images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentImageIndex ? "bg-white" : "bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <GradientHeading
+              size="sm"
+              weight="semi"
+              variant="accent2"
+              className="font-red-hat-display"
+            >
+              {project.title}
+            </GradientHeading>
+            {project.isLive && (
+              <span className="ml-4 px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-400/50 flex-shrink-0">
+                Live
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-zinc-400 font-red-hat-display mb-6">
+            {project.description}
+          </p>
+
+          <div className="space-y-4 mb-6">
+            <div>
+              <h4 className="text-sm font-medium text-white/80 mb-2">
+                Project Type
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium text-white/80 mb-2">
+                Technologies
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.tech.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-4">
+            {project.liveLink && (
+              <Link
+                href={project.liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ShimmerButton
+                  className="bg-[#050505] text-[#FFED99] font-red-hat-display text-xs sm:text-sm"
+                  shimmerColor="#FFED99"
+                  background="rgb(13, 13, 13)"
+                  borderRadius="100px"
+                >
+                  <div className="flex items-center gap-2 text-[#FFED99]">
+                    <Globe size={14} className="sm:w-4 sm:h-4" />
+                    Check it out
+                  </div>
+                </ShimmerButton>
+              </Link>
+            )}
+            {project.githubLink && (
+              <Link
+                href={project.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <ShimmerButton
+                  className="bg-[#050505] text-white/60 font-red-hat-display text-xs sm:text-sm"
+                  shimmerColor="#FFED99"
+                  background="rgb(13, 13, 13)"
+                  borderRadius="100px"
+                >
+                  <div className="flex items-center gap-2 text-white/60">
+                    <Github size={14} className="sm:w-4 sm:h-4" />
+                    View Source
+                  </div>
+                </ShimmerButton>
+              </Link>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+// --- END OF NEW COMPONENT ---
+
 export default function PortfolioPage() {
   const [mounted, setMounted] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
-  const [activeItem, setActiveItem] = useState<number | null>(null);
+  const [activeItem, setActiveItem] = useState<
+    (typeof portfolioItems)[0] | null
+  >(null);
 
   useEffect(() => {
     setMounted(true);
@@ -162,9 +354,17 @@ export default function PortfolioPage() {
     setSelectedTech(tech === selectedTech ? null : tech);
   };
 
+  // Truncate description for the main cards
+  const truncateDescription = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength).trim() + "...";
+  };
+
   return (
     <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black top-fading-border">
-      {/* LightRays Background */}
+      {/* LightRays Backgrounds */}
       <div className="absolute inset-0 z-0">
         {mounted && (
           <LightRays
@@ -313,19 +513,24 @@ export default function PortfolioPage() {
               variants={itemVariants}
               transition={{ duration: 0.4 }}
             >
-              <InteractiveCard className="w-full">
+              <InteractiveCard
+                className="w-full cursor-pointer"
+                onClick={() => setActiveItem(project)}
+              >
                 <div className="bg-black border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
-                  {/* MODIFIED: Increased gold glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent from-50% to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
                   {/* Image Section */}
                   <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden">
                     <Image
-                      src={project.image}
+                      src={project.images[0]}
                       alt={project.title}
                       fill
                       className="object-cover rounded-t-xl sm:rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
                     />
+                    {project.isLive && (
+                      <div className="absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-400/50 z-10">
+                        Live
+                      </div>
+                    )}
                   </div>
 
                   {/* Content Section */}
@@ -348,31 +553,9 @@ export default function PortfolioPage() {
                     >
                       {project.title}
                     </GradientHeading>
-                    <p className="text-xs sm:text-sm text-zinc-500 font-red-hat-display mb-4">
-                      {project.description}
+                    <p className="text-xs sm:text-sm text-zinc-500 font-red-hat-display">
+                      {truncateDescription(project.description, 120)}
                     </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.tech.map((tech) => (
-                        <span
-                          key={tech}
-                          className="text-xs px-2 py-1 bg-white/5 text-white/60 rounded-full border border-white/10"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <ShimmerButton
-                      className="bg-secondary text-[#FFED99] font-red-hat-display text-xs sm:text-sm"
-                      shimmerColor="#FFED99"
-                      background="rgb(13, 13, 13)"
-                      borderRadius="100px"
-                      onClick={() => setActiveItem(project.id)}
-                    >
-                      <div className="flex items-center gap-1 sm:gap-2 text-[#FFED99]/60">
-                        <ArrowRight size={14} className="sm:w-4 sm:h-4" />
-                        View Details
-                      </div>
-                    </ShimmerButton>
                   </div>
                 </div>
               </InteractiveCard>
@@ -395,62 +578,15 @@ export default function PortfolioPage() {
             </p>
           </motion.div>
         )}
-
-        {/* Project Modal */}
-        {activeItem && (
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <motion.div
-              className="bg-black border border-white/20 rounded-xl sm:rounded-2xl p-6 max-w-2xl w-full"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="flex justify-between items-start mb-4">
-                <GradientHeading
-                  size="sm"
-                  weight="semi"
-                  variant="accent2"
-                  className="font-red-hat-display"
-                >
-                  {portfolioItems.find((p) => p.id === activeItem)?.title}
-                </GradientHeading>
-                <button
-                  onClick={() => setActiveItem(null)}
-                  className="text-white/60 hover:text-white transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-              <p className="text-zinc-400 font-red-hat-display mb-4">
-                {portfolioItems.find((p) => p.id === activeItem)?.description}
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {portfolioItems
-                  .find((p) => p.id === activeItem)
-                  ?.tech.map((tech) => (
-                    <span
-                      key={tech}
-                      className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-              </div>
-              <ShimmerButton
-                className="bg-secondary text-[#FFED99] font-red-hat-display text-sm"
-                shimmerColor="#FFED99"
-                background="rgb(13, 13, 13)"
-                borderRadius="100px"
-              >
-                <div className="flex items-center gap-2 text-[#FFED99]/60">
-                  <Calendar size={16} />
-                  Schedule a Call
-                </div>
-              </ShimmerButton>
-            </motion.div>
-          </div>
-        )}
       </div>
+
+      {/* Project Modal */}
+      {activeItem && (
+        <ProjectDetailsModal
+          project={activeItem}
+          onClose={() => setActiveItem(null)}
+        />
+      )}
     </section>
   );
 }
