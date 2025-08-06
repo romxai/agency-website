@@ -1,3 +1,5 @@
+// app/api/admin/tags/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 

@@ -1,3 +1,5 @@
+// File: components/ProjectModal.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -7,10 +9,12 @@ import { SimpleButton } from "@/components/ui/simple-button";
 
 interface Project {
   _id: string;
-  name: string;
+  title: string;
   description: string;
-  tags: string[];
   images: string[];
+  projectTags: string[];
+  techTags: string[];
+  isLive: boolean;
   liveLink?: string;
   githubLink?: string;
   isHidden: boolean;
@@ -22,12 +26,14 @@ interface Tag {
   _id: string;
   name: string;
   color: string;
+  createdAt: string;
 }
 
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  onNewTagCreated: (newTag: Tag) => void;
   project?: Project | null;
   tags: Tag[];
 }
@@ -36,37 +42,45 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   isOpen,
   onClose,
   onSave,
+  onNewTagCreated,
   project,
   tags,
 }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
-    tags: [] as string[],
     images: [] as string[],
+    projectTags: [] as string[],
+    techTags: [] as string[],
+    isLive: false,
     liveLink: "",
     githubLink: "",
   });
-  const [newTag, setNewTag] = useState("");
+  const [newProjectTag, setNewProjectTag] = useState("");
+  const [newTechTag, setNewTechTag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (project) {
       setFormData({
-        name: project.name,
+        title: project.title,
         description: project.description,
-        tags: project.tags,
         images: project.images,
+        projectTags: project.projectTags,
+        techTags: project.techTags,
+        isLive: project.isLive,
         liveLink: project.liveLink || "",
         githubLink: project.githubLink || "",
       });
     } else {
       setFormData({
-        name: "",
+        title: "",
         description: "",
-        tags: [],
         images: [],
+        projectTags: [],
+        techTags: [],
+        isLive: false,
         liveLink: "",
         githubLink: "",
       });
@@ -77,61 +91,71 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Project name is required";
-    }
-
-    if (!formData.description.trim()) {
+    if (!formData.title.trim()) newErrors.title = "Project title is required";
+    if (!formData.description.trim())
       newErrors.description = "Project description is required";
-    }
-
-    if (formData.tags.length === 0) {
-      newErrors.tags = "At least one tag is required";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (
+    field: string,
+    value: string | string[] | boolean
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
+    if (errors[field as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
-  const handleTagToggle = (tagName: string) => {
+  const handleProjectTagToggle = (tagName: string) => {
     setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tagName)
-        ? prev.tags.filter((t) => t !== tagName)
-        : [...prev.tags, tagName],
+      projectTags: prev.projectTags.includes(tagName)
+        ? prev.projectTags.filter((t) => t !== tagName)
+        : [...prev.projectTags, tagName],
     }));
-    if (errors.tags) {
-      setErrors((prev) => ({ ...prev, tags: "" }));
-    }
   };
 
-  const handleAddNewTag = async () => {
-    if (!newTag.trim()) return;
+  const handleTechTagToggle = (tagName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      techTags: prev.techTags.includes(tagName)
+        ? prev.techTags.filter((t) => t !== tagName)
+        : [...prev.techTags, tagName],
+    }));
+  };
+
+  const handleAddNewTag = async (type: "project" | "tech") => {
+    const newTagName = type === "project" ? newProjectTag : newTechTag;
+    if (!newTagName.trim()) return;
 
     try {
       const response = await fetch("/api/admin/tags", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newTag.trim() }),
+        body: JSON.stringify({ name: newTagName.trim() }),
       });
 
       if (response.ok) {
         const newTagData = await response.json();
-        setFormData((prev) => ({
-          ...prev,
-          tags: [...prev.tags, newTagData.name],
-        }));
-        setNewTag("");
-        if (errors.tags) {
-          setErrors((prev) => ({ ...prev, tags: "" }));
+        // Update local state in the modal to automatically select the new tag
+        if (type === "project") {
+          setFormData((prev) => ({
+            ...prev,
+            projectTags: [...prev.projectTags, newTagData.name],
+          }));
+          setNewProjectTag("");
+        } else {
+          setFormData((prev) => ({
+            ...prev,
+            techTags: [...prev.techTags, newTagData.name],
+          }));
+          setNewTechTag("");
         }
+        // Call the parent function to update the available tags list
+        onNewTagCreated(newTagData);
       }
     } catch (error) {
       console.error("Error creating tag:", error);
@@ -194,12 +218,16 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       if (response.ok) {
         onSave();
       } else {
-        const data = await response.json();
-        alert(data.message || "Error saving project");
+        try {
+          const data = await response.json();
+          alert(data.message || "Error saving project");
+        } catch (jsonError) {
+          alert(`Server error: ${response.statusText}`);
+        }
       }
     } catch (error) {
       console.error("Error saving project:", error);
-      alert("Error saving project");
+      alert("An unexpected error occurred while saving the project.");
     } finally {
       setIsSubmitting(false);
     }
@@ -226,22 +254,22 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Project Name */}
+          {/* Project Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Project Name *
+              Project Title *
             </label>
             <input
               type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
+              value={formData.title}
+              onChange={(e) => handleInputChange("title", e.target.value)}
               className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.name ? "border-red-300" : "border-gray-300"
+                errors.title ? "border-red-300" : "border-gray-300"
               }`}
-              placeholder="Enter project name"
+              placeholder="Enter project title"
             />
-            {errors.name && (
-              <p className="text-red-600 text-sm mt-1">{errors.name}</p>
+            {errors.title && (
+              <p className="text-red-600 text-sm mt-1">{errors.title}</p>
             )}
           </div>
 
@@ -264,25 +292,20 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             )}
           </div>
 
-          {/* Tags */}
+          {/* Project Tags */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Project Tags *
+              Project Tags
             </label>
-
-            {/* Existing Tags */}
             <div className="mb-3">
-              <p className="text-sm text-gray-600 mb-2">
-                Select existing tags:
-              </p>
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <button
                     key={tag._id}
                     type="button"
-                    onClick={() => handleTagToggle(tag.name)}
+                    onClick={() => handleProjectTagToggle(tag.name)}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      formData.tags.includes(tag.name)
+                      formData.projectTags.includes(tag.name)
                         ? "bg-blue-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
@@ -292,19 +315,17 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 ))}
               </div>
             </div>
-
-            {/* Add New Tag */}
             <div className="flex gap-2">
               <input
                 type="text"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
+                value={newProjectTag}
+                onChange={(e) => setNewProjectTag(e.target.value)}
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Add new tag"
+                placeholder="Add new project tag"
               />
               <SimpleButton
                 type="button"
-                onClick={handleAddNewTag}
+                onClick={() => handleAddNewTag("project")}
                 variant="secondary"
                 size="sm"
                 className="flex items-center gap-1"
@@ -313,34 +334,50 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 Add
               </SimpleButton>
             </div>
+          </div>
 
-            {/* Selected Tags */}
-            {formData.tags.length > 0 && (
-              <div className="mt-3">
-                <p className="text-sm text-gray-600 mb-2">Selected tags:</p>
-                <div className="flex flex-wrap gap-2">
-                  {formData.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1"
-                    >
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleTagToggle(tag)}
-                        className="text-green-600 hover:text-green-800"
-                      >
-                        <X size={14} />
-                      </button>
-                    </span>
-                  ))}
-                </div>
+          {/* Tech Tags */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tech Stack Tags
+            </label>
+            <div className="mb-3">
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag._id}
+                    type="button"
+                    onClick={() => handleTechTagToggle(tag.name)}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      formData.techTags.includes(tag.name)
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {tag.name}
+                  </button>
+                ))}
               </div>
-            )}
-
-            {errors.tags && (
-              <p className="text-red-600 text-sm mt-1">{errors.tags}</p>
-            )}
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTechTag}
+                onChange={(e) => setNewTechTag(e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Add new tech stack tag"
+              />
+              <SimpleButton
+                type="button"
+                onClick={() => handleAddNewTag("tech")}
+                variant="secondary"
+                size="sm"
+                className="flex items-center gap-1"
+              >
+                <Plus size={16} />
+                Add
+              </SimpleButton>
+            </div>
           </div>
 
           {/* Project Images */}
@@ -348,15 +385,18 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Project Images (Max 5)
             </label>
-
-            {/* Image Upload */}
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleImageUpload(file);
+                  const files = e.target.files;
+                  if (files) {
+                    Array.from(files).forEach((file) =>
+                      handleImageUpload(file)
+                    );
+                  }
                 }}
                 className="hidden"
                 id="image-upload"
@@ -371,8 +411,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 </span>
               </label>
             </div>
-
-            {/* Uploaded Images */}
             {formData.images.length > 0 && (
               <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3">
                 {formData.images.map((image, index) => (
@@ -417,7 +455,6 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 />
               </div>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 GitHub Link
@@ -438,6 +475,23 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
                 />
               </div>
             </div>
+          </div>
+
+          {/* isLive Checkbox */}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isLive"
+              checked={formData.isLive}
+              onChange={(e) => handleInputChange("isLive", e.target.checked)}
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <label
+              htmlFor="isLive"
+              className="text-sm font-medium text-gray-700"
+            >
+              Is this project live?
+            </label>
           </div>
 
           {/* Form Actions */}

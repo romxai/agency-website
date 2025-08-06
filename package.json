@@ -17,6 +17,7 @@
     "@shadcn/ui": "^0.0.4",
     "@tabler/icons-react": "^3.34.1",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.11",
     "gsap": "^3.13.0",

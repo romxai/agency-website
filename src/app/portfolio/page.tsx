@@ -34,98 +34,29 @@ const itemVariants: Variants = {
 };
 // --- END ANIMATION LOGIC ---
 
-// --- UPDATED PORTFOLIO DATA ---
-// Added liveLink and githubLink for new buttons
-// Added 'images' array for the new carousel
-const portfolioItems = [
-  {
-    id: 1,
-    title: "Orchestrator",
-    category: "AI Agent",
-    tech: ["Next.js", "React", "Node.js", "MongoDB"],
-    description:
-      "A sophisticated AI-powered workflow automation platform for enterprise teams. It features advanced natural language processing for intelligent task delegation, real-time analytics dashboards, and a modular architecture that allows for seamless integration with existing business tools. The platform streamlines complex processes, reduces manual effort, and provides actionable insights to improve operational efficiency. This project highlights our expertise in developing scalable and secure AI solutions for demanding corporate environments.",
-    images: ["/shape-min.png", "/about/dwayne.jpg"],
-    tags: ["Agentic AI", "Web App", "Enterprise"],
-    isLive: true,
-    liveLink: "#",
-    githubLink: "#",
-  },
-  {
-    id: 2,
-    title: "Saarthi Super App",
-    category: "Mobile App",
-    tech: ["React Native", "Firebase", "GraphQL"],
-    description:
-      "A comprehensive cross-platform mobile application designed to empower rural communities. It integrates essential services like agricultural information, weather forecasts, financial literacy modules, and local marketplace access. The app is optimized for low-bandwidth environments and features an intuitive, multilingual interface. Saarthi demonstrates our commitment to creating technology with social impact and our proficiency in building robust and accessible mobile solutions.",
-    images: ["/shape-min.png"],
-    tags: ["Mobile App", "PWA", "Social Impact"],
-    isLive: true,
-    liveLink: "#",
-    githubLink: null,
-  },
-  {
-    id: 3,
-    title: "Neural Nexus",
-    category: "AI/ML",
-    tech: ["Python", "TensorFlow", "AWS"],
-    description:
-      "An advanced neural network visualization and training platform for data scientists. Users can build, train, and visualize complex neural networks through an interactive GUI. The platform provides real-time performance metrics, hyperparameter tuning, and seamless deployment to cloud environments. Neural Nexus showcases our deep knowledge of machine learning frameworks and our ability to build powerful tools for the data science community.",
-    images: ["/shape-min.png"],
-    tags: ["AI/ML", "Data Science", "Web App"],
-    isLive: false,
-    liveLink: null,
-    githubLink: "#",
-  },
-  {
-    id: 4,
-    title: "Quantum Flow",
-    category: "Research",
-    tech: ["React", "D3.js", "Express", "PostgreSQL"],
-    description:
-      "A real-time quantum computing simulation and analysis tool for researchers and academics. The platform simulates quantum circuits, visualizes qubit states, and provides detailed analytical outputs. Built with a focus on performance and accuracy, Quantum Flow is an invaluable resource for exploring quantum mechanics without the need for specialized hardware.",
-    images: ["/about/dwayne.jpg"],
-    tags: ["Quantum Computing", "Research", "Web App"],
-    isLive: false,
-    liveLink: null,
-    githubLink: "#",
-  },
-  {
-    id: 5,
-    title: "E-Learning Platform",
-    category: "Web App",
-    tech: ["Next.js", "React", "Node.js", "MongoDB"],
-    description:
-      "An interactive e-learning platform featuring video courses, engaging quizzes, and real-time collaboration tools. The platform offers personalized learning paths, progress tracking, and a community forum. It's designed to provide a rich and engaging educational experience for students and professionals alike, demonstrating our ability to build comprehensive and user-friendly web applications.",
-    images: ["/shape-min.png"],
-    tags: ["Education", "Web App", "Interactive"],
-    isLive: false,
-    liveLink: "#",
-    githubLink: "#",
-  },
-  {
-    id: 6,
-    title: "Financial Dashboard",
-    category: "Web App",
-    tech: ["React", "D3.js", "Express", "PostgreSQL"],
-    description:
-      "A real-time analytics dashboard for visualizing and reporting on complex financial data. It features customizable charts, predictive analysis models, and secure user authentication. The dashboard provides a clear, concise overview of key financial metrics, helping businesses make data-driven decisions. This project exemplifies our skill in building secure, performant, and data-intensive web applications.",
-    images: ["/shape-min.png"],
-    tags: ["Finance", "Analytics", "Dashboard"],
-    isLive: true,
-    liveLink: "#",
-    githubLink: null,
-  },
-];
-// --- END OF UPDATED PORTFOLIO DATA ---
+// Interface for projects from database
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  images: string[];
+  projectTags: string[];
+  techTags: string[];
+  isLive: boolean;
+  liveLink?: string;
+  githubLink?: string;
+  isHidden: boolean;
+  isStarred: boolean;
+  createdAt: string;
+}
 
-// Extract unique categories and technologies for filters
-const categories = Array.from(
-  new Set(portfolioItems.map((item) => item.category))
-);
-const technologies = Array.from(
-  new Set(portfolioItems.flatMap((item) => item.tech))
-);
+// Interface for tags from database
+interface Tag {
+  _id: string;
+  name: string;
+  color: string;
+  createdAt: string;
+}
 
 // A reusable card wrapper for consistent hover effects
 const InteractiveCard = ({
@@ -165,7 +96,7 @@ const ProjectDetailsModal = ({
   project,
   onClose,
 }: {
-  project: (typeof portfolioItems)[0];
+  project: Project;
   onClose: () => void;
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -202,7 +133,7 @@ const ProjectDetailsModal = ({
         {/* Image Carousel Section (Auto-looping, no controls) */}
         <div className="relative h-64 sm:h-80 md:h-96 flex-shrink-0 bg-zinc-900 rounded-t-xl overflow-hidden">
           <Image
-            src={project.images[currentImageIndex]}
+            src={project.images[currentImageIndex] || "/shape-min.png"}
             alt={project.title}
             fill
             className="object-cover transition-transform duration-500 ease-in-out"
@@ -250,7 +181,7 @@ const ProjectDetailsModal = ({
                 Project Type
               </h4>
               <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag, index) => (
+                {project.projectTags.map((tag, index) => (
                   <span
                     key={index}
                     className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
@@ -266,7 +197,7 @@ const ProjectDetailsModal = ({
                 Technologies
               </h4>
               <div className="flex flex-wrap gap-2">
-                {project.tech.map((tech, index) => (
+                {project.techTags.map((tech, index) => (
                   <span
                     key={index}
                     className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
@@ -327,22 +258,58 @@ const ProjectDetailsModal = ({
 
 export default function PortfolioPage() {
   const [mounted, setMounted] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTech, setSelectedTech] = useState<string | null>(null);
-  const [activeItem, setActiveItem] = useState<
-    (typeof portfolioItems)[0] | null
-  >(null);
+  const [activeItem, setActiveItem] = useState<Project | null>(null);
 
   useEffect(() => {
     setMounted(true);
+    fetchData();
   }, []);
 
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [projectsResponse, tagsResponse] = await Promise.all([
+        fetch("/api/projects"),
+        fetch("/api/tags"),
+      ]);
+
+      if (projectsResponse.ok) {
+        const projectsData = await projectsResponse.json();
+        setProjects(projectsData);
+      }
+
+      if (tagsResponse.ok) {
+        const tagsData = await tagsResponse.json();
+        setTags(tagsData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Extract unique categories and technologies for filters
+  const categories = Array.from(
+    new Set(projects.flatMap((project) => project.projectTags))
+  );
+  const technologies = Array.from(
+    new Set(projects.flatMap((project) => project.techTags))
+  );
+
   // Filter projects based on selected filters
-  const filteredProjects = portfolioItems.filter((item) => {
+  const filteredProjects = projects.filter((item) => {
     const categoryMatch = selectedCategory
-      ? item.category === selectedCategory
+      ? item.projectTags.includes(selectedCategory)
       : true;
-    const techMatch = selectedTech ? item.tech.includes(selectedTech) : true;
+    const techMatch = selectedTech
+      ? item.techTags.includes(selectedTech)
+      : true;
     return categoryMatch && techMatch;
   });
 
@@ -361,6 +328,18 @@ export default function PortfolioPage() {
     }
     return text.substring(0, maxLength).trim() + "...";
   };
+
+  if (loading) {
+    return (
+      <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black top-fading-border">
+        <div className="container relative z-10">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-gray-500">Loading portfolio...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black top-fading-border">
@@ -509,7 +488,7 @@ export default function PortfolioPage() {
         >
           {filteredProjects.map((project) => (
             <motion.div
-              key={project.id}
+              key={project._id}
               variants={itemVariants}
               transition={{ duration: 0.4 }}
             >
@@ -521,7 +500,7 @@ export default function PortfolioPage() {
                   {/* Image Section */}
                   <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden">
                     <Image
-                      src={project.images[0]}
+                      src={project.images[0] || "/shape-min.png"}
                       alt={project.title}
                       fill
                       className="object-cover rounded-t-xl sm:rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
@@ -536,7 +515,7 @@ export default function PortfolioPage() {
                   {/* Content Section */}
                   <div className="p-4 sm:p-6">
                     <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
-                      {project.tags.map((tag, tagIndex) => (
+                      {project.projectTags?.slice(0, 3).map((tag, tagIndex) => (
                         <span
                           key={tagIndex}
                           className="px-2 py-1 text-xs font-medium bg-white/10 text-white/80 rounded-full border border-white/20"

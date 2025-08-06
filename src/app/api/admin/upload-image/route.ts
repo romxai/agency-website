@@ -1,4 +1,14 @@
+// app/api/admin/upload-image/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,31 +46,12 @@ export async function POST(request: NextRequest) {
     const dataURI = `data:${file.type};base64,${base64}`;
 
     // Upload to Cloudinary
-    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`;
-
-    const uploadFormData = new FormData();
-    uploadFormData.append("file", dataURI);
-    uploadFormData.append("upload_preset", "ml_default"); // You can create a specific upload preset
-
-    const response = await fetch(cloudinaryUrl, {
-      method: "POST",
-      body: uploadFormData,
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "portfolio-projects", // Optional: a folder to store your images
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Cloudinary upload error:", errorData);
-      return NextResponse.json(
-        { message: "Failed to upload image to Cloudinary" },
-        { status: 500 }
-      );
-    }
-
-    const cloudinaryData = await response.json();
-    const imageUrl = cloudinaryData.secure_url;
-
     return NextResponse.json(
-      { message: "Image uploaded successfully", url: imageUrl },
+      { message: "Image uploaded successfully", url: result.secure_url },
       { status: 200 }
     );
   } catch (error) {

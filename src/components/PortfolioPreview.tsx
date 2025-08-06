@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -9,54 +9,47 @@ import { GradientHeading } from "./ui/gradient-heading";
 import { ShimmerButton } from "./magicui/shimmer-button";
 import { ShinyButton } from "./magicui/shiny-button";
 
-// Sample portfolio data (placeholder)
-// Moved 'All Projects' to the end of the array
-const portfolioItems = [
-  {
-    id: 1,
-    title: "E-commerce Platform",
-    category: "Web App",
-    domain: "E-commerce",
-    description:
-      "A modern e-commerce solution with advanced filtering and payment processing. Built with Next.js and a headless CMS, this platform offers seamless shopping experiences with instant search and personalized recommendations.",
-    image:
-      "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop&crop:center",
-    technologies: ["Next.js", "React", "Node.js", "MongoDB"],
-  },
-  {
-    id: 2,
-    title: "Health & Fitness App",
-    category: "Mobile App",
-    domain: "Health & Fitness",
-    description:
-      "Cross-platform mobile application for tracking workouts and nutrition. Features include personalized workout plans, meal tracking, progress visualization, and social sharing capabilities.",
-    image: "/placeholder-portfolio-2.jpg",
-    technologies: ["React Native", "Firebase", "GraphQL"],
-  },
-  {
-    id: 3,
-    title: "AI-Powered Assistant",
-    category: "AI Agent",
-    domain: "AI & Automation",
-    description:
-      "Intelligent virtual assistant for customer service automation. Leveraging natural language processing and machine learning to provide instant responses and route complex queries to human agents.",
-    image: "/placeholder-portfolio-3.jpg",
-    technologies: ["Python", "TensorFlow", "AWS"],
-  },
-  {
-    // 'All Projects' is now the last item
-    id: 99, // Unique ID for 'All Projects'
-    title: "All Projects",
-    category: "Navigation", // A distinct category if needed
-    domain: "All Projects", // Text to display on the chip
-    // No description or image needed for direct navigation
-  },
-];
+// Interface for projects from database
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  images: string[];
+  projectTags: string[];
+  techTags: string[];
+  isLive: boolean;
+  liveLink?: string;
+  githubLink?: string;
+  isHidden: boolean;
+  isStarred: boolean;
+  createdAt: string;
+}
 
 const PortfolioPreview = () => {
-  // Initialize currentIndex to 0 to show the first project by default
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showOverlay, setShowOverlay] = useState(false);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/projects");
+      if (response.ok) {
+        const projectsData = await response.json();
+        // Take only the first 3 projects for the preview
+        setProjects(projectsData.slice(0, 3));
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProjectSelect = (index: number) => {
     setCurrentIndex(index);
@@ -71,12 +64,28 @@ const PortfolioPreview = () => {
     setShowOverlay(false);
   };
 
+  // Add "All Projects" option to the projects array
+  const portfolioItems = [
+    ...projects,
+    {
+      _id: "all-projects",
+      title: "All Projects",
+      description: "",
+      images: [],
+      projectTags: [],
+      techTags: [],
+      isLive: false,
+      isHidden: false,
+      isStarred: false,
+      createdAt: "",
+    },
+  ];
+
   const currentProject = portfolioItems[currentIndex];
 
   // Determine the index of the 'All Projects' chip
-  // This helps us identify it dynamically if the order changes later (less fragile)
   const allProjectsChipIndex = portfolioItems.findIndex(
-    (item) => item.id === 99
+    (item) => item._id === "all-projects"
   );
 
   const titleComponent = (
@@ -97,18 +106,18 @@ const PortfolioPreview = () => {
       <div className="flex justify-center gap-4 mb-8">
         {portfolioItems.map((project, index) => {
           // Check if this is the 'All Projects' chip using its unique ID
-          const isAllProjectsChip = project.id === 99;
+          const isAllProjectsChip = project._id === "all-projects";
 
           if (isAllProjectsChip) {
             // Render the 'All Projects' chip as a direct Link
             return (
               <ShinyButton
-                key={project.id}
+                key={project._id}
                 onClick={() => handleProjectSelect(index)}
                 className="text-white"
               >
                 <span className="underline mt-1 text-gray-200/70">
-                  {project.domain}
+                  All Projects
                 </span>
               </ShinyButton>
             );
@@ -116,7 +125,7 @@ const PortfolioPreview = () => {
             // Render regular project chips
             return (
               <ShimmerButton
-                key={project.id}
+                key={project._id}
                 onClick={() => handleProjectSelect(index)}
                 shimmerColor={currentIndex === index ? "#fbbf24" : "#ffffff"}
                 background={"rgba(0, 0, 0, 1)"}
@@ -128,7 +137,7 @@ const PortfolioPreview = () => {
                 shimmerDuration="2s"
                 borderRadius="50px"
               >
-                {project.domain}
+                {project.projectTags[0] || "Project"}
               </ShimmerButton>
             );
           }
@@ -138,6 +147,36 @@ const PortfolioPreview = () => {
   );
 
   const PAGE_BACKGROUND_COLOR = "#000000"; // <--- CHANGE THIS TO YOUR ACTUAL PAGE BACKGROUND COLOR
+
+  if (loading) {
+    return (
+      <section
+        id="portfolio-preview"
+        className="relative"
+        style={{
+          background: `
+            linear-gradient(to bottom,
+              ${PAGE_BACKGROUND_COLOR} 0%,
+              rgba(10, 10, 10, 0) 5%,
+              rgba(10, 10, 10, 0) 95%,
+              ${PAGE_BACKGROUND_COLOR} 100%
+            ),
+            url('/polygon-scatter-haikei.svg')
+          `,
+          backgroundSize: "cover, cover",
+          backgroundPosition: "center, center",
+          backgroundRepeat: "no-repeat, no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-background/40"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-gray-500">Loading featured projects...</div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -179,14 +218,16 @@ const PortfolioPreview = () => {
                     <div
                       className="w-full h-full bg-cover bg-center transition-all duration-700 ease-in-out grayscale group-hover:grayscale-0"
                       style={{
-                        backgroundImage: `url(${currentProject.image})`,
+                        backgroundImage: `url(${
+                          currentProject.images[0] || "/shape-min.png"
+                        })`,
                       }}
                     >
                       {/* Fallback gradient when image is not available */}
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                         <div className="text-center">
                           <span className="text-lg font-medium px-4 py-1 rounded-full bg-background/20 backdrop-blur-sm">
-                            {currentProject.category}
+                            {currentProject.projectTags[0] || "Project"}
                           </span>
                         </div>
                       </div>
@@ -200,7 +241,7 @@ const PortfolioPreview = () => {
                         {currentProject.title}
                       </h3>
                       <p className="text-muted-foreground mt-2">
-                        {currentProject.category}
+                        {currentProject.projectTags[0] || "Project"}
                       </p>
                     </div>
                   </div>
@@ -210,7 +251,7 @@ const PortfolioPreview = () => {
                 <div className="w-1/2 p-6 md:p-8 flex flex-col justify-center">
                   <div className="mb-6">
                     <span className="text-sm font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">
-                      {currentProject.category}
+                      {currentProject.projectTags[0] || "Project"}
                     </span>
                   </div>
 
@@ -227,7 +268,7 @@ const PortfolioPreview = () => {
                       Technologies:
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {currentProject.technologies?.map((tech) => (
+                      {currentProject.techTags?.slice(0, 4).map((tech) => (
                         <span
                           key={tech}
                           className="text-sm px-3 py-1 bg-secondary rounded-full text-secondary-foreground"
@@ -284,7 +325,7 @@ const PortfolioPreview = () => {
                       Learn More
                     </motion.button>
                     <Link
-                      href={`/portfolio/${currentProject.id}`}
+                      href="/portfolio"
                       className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground px-6 py-3 rounded-full hover:bg-secondary/80 transition-colors font-medium shadow-lg"
                     >
                       View Full Project <ArrowRight className="h-4 w-4" />

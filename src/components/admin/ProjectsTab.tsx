@@ -1,3 +1,5 @@
+// File: components/ProjectsTab.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,20 +11,24 @@ import {
   Eye,
   EyeOff,
   FolderOpen,
-  Tag,
+  Tag as TagIcon,
   Link,
   Github,
 } from "lucide-react";
 import { SimpleCard } from "@/components/ui/simple-card";
 import { SimpleButton } from "@/components/ui/simple-button";
 import ProjectModal from "./ProjectModal";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Project {
   _id: string;
-  name: string;
+  title: string;
   description: string;
-  tags: string[];
   images: string[];
+  projectTags: string[];
+  techTags: string[];
+  isLive: boolean;
   liveLink?: string;
   githubLink?: string;
   isHidden: boolean;
@@ -34,7 +40,60 @@ interface Tag {
   _id: string;
   name: string;
   color: string;
+  createdAt: string;
 }
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+};
+
+// Interactive card wrapper for consistent hover effects
+const InteractiveCard = ({
+  children,
+  className,
+  onClick,
+}: {
+  children: React.ReactNode;
+  className: string;
+  onClick: () => void;
+}) => (
+  <motion.div
+    className={`group relative ${className}`}
+    whileHover={{ scale: 1.02, y: -5 }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
+    onClick={onClick}
+  >
+    {/* Animated gradient border glow that appears on hover */}
+    <div
+      className="pointer-events-none absolute -inset-px rounded-xl sm:rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      style={{
+        background: `
+          radial-gradient(400px circle at 50% 0%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 50% 100%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 0% 50%, rgba(255, 237, 153, 0.2), transparent 40%),
+          radial-gradient(400px circle at 100% 50%, rgba(255, 237, 153, 0.2), transparent 40%)
+        `,
+      }}
+      aria-hidden="true"
+    />
+    {children}
+  </motion.div>
+);
 
 const ProjectsTab = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -45,9 +104,14 @@ const ProjectsTab = () => {
   const [filter, setFilter] = useState<"all" | "hidden" | "starred">("all");
 
   useEffect(() => {
-    fetchProjects();
-    fetchTags();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    await Promise.all([fetchProjects(), fetchTags()]);
+    setLoading(false);
+  };
 
   const fetchProjects = async () => {
     try {
@@ -58,8 +122,6 @@ const ProjectsTab = () => {
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -146,9 +208,14 @@ const ProjectsTab = () => {
   };
 
   const handleProjectSaved = () => {
-    fetchProjects();
-    fetchTags();
+    fetchData();
     handleModalClose();
+  };
+
+  const handleNewTagCreated = (newTag: Tag) => {
+    setTags((prevTags) =>
+      [...prevTags, newTag].sort((a, b) => a.name.localeCompare(b.name))
+    );
   };
 
   const filteredProjects = projects.filter((project) => {
@@ -165,6 +232,14 @@ const ProjectsTab = () => {
     });
   };
 
+  // Truncate description for the main cards
+  const truncateDescription = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.substring(0, maxLength).trim() + "...";
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -175,7 +250,6 @@ const ProjectsTab = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">
           Portfolio Projects
@@ -203,139 +277,160 @@ const ProjectsTab = () => {
         </div>
       </div>
 
-      {/* Projects List */}
-      <div className="space-y-3">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        viewport={{ once: true, amount: 0.2 }}
+      >
         {filteredProjects.length === 0 ? (
-          <SimpleCard variant="secondary" className="text-center py-8">
-            <div className="text-gray-500">No projects found</div>
-          </SimpleCard>
+          <div className="col-span-full">
+            <SimpleCard variant="secondary" className="text-center py-8">
+              <div className="text-gray-500">No projects found</div>
+            </SimpleCard>
+          </div>
         ) : (
           filteredProjects.map((project) => (
-            <SimpleCard
+            <motion.div
               key={project._id}
-              variant={project.isHidden ? "secondary" : "default"}
-              className="transition-all duration-200"
+              variants={itemVariants}
+              transition={{ duration: 0.4 }}
             >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex items-center gap-2">
-                      <FolderOpen size={16} className="text-blue-600" />
-                      <span className="font-medium text-gray-800">
-                        {project.name}
-                      </span>
-                      {project.isHidden && (
-                        <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                          Hidden
+              <InteractiveCard
+                className="w-full cursor-pointer"
+                onClick={() => handleEditProject(project)}
+              >
+                <div className="bg-black border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
+                  {/* Image Section */}
+                  <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden">
+                    <Image
+                      src={project.images[0] || "/shape-min.png"}
+                      alt={project.title}
+                      fill
+                      className="object-cover rounded-t-xl sm:rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
+                    />
+                    {project.isLive && (
+                      <div className="absolute top-3 right-3 px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-400/50 z-10">
+                        Live
+                      </div>
+                    )}
+                    {project.isHidden && (
+                      <div className="absolute top-3 left-3 px-3 py-1 text-xs font-semibold rounded-full bg-gray-500/20 text-gray-400 border border-gray-400/50 z-10">
+                        Hidden
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-4 sm:p-6">
+                    <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
+                      {project.projectTags?.slice(0, 3).map((tag, tagIndex) => (
+                        <span
+                          key={tagIndex}
+                          className="px-2 py-1 text-xs font-medium bg-blue-500/20 text-blue-400 rounded-full border border-blue-400/50"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {project.projectTags &&
+                        project.projectTags.length > 3 && (
+                          <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full border border-gray-200">
+                            +{project.projectTags.length - 3}
+                          </span>
+                        )}
+                    </div>
+                    <h3 className="font-semibold text-gray-800 mb-2 sm:mb-4 text-sm sm:text-base">
+                      {project.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-3">
+                      {truncateDescription(project.description, 120)}
+                    </p>
+
+                    {/* Tech Tags */}
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {project.techTags?.slice(0, 3).map((tech, techIndex) => (
+                        <span
+                          key={techIndex}
+                          className="px-2 py-1 text-xs font-medium bg-green-500/20 text-green-600 rounded-full border border-green-400/50"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                      {project.techTags && project.techTags.length > 3 && (
+                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full border border-gray-200">
+                          +{project.techTags.length - 3}
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Tag size={16} className="text-green-600" />
-                      <div className="flex gap-1">
-                        {project.tags.slice(0, 3).map((tag, index) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                        {project.tags.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                            +{project.tags.length - 3}
-                          </span>
+
+                    {/* Action Buttons */}
+                    <div
+                      className="flex items-center gap-2 mt-4"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <SimpleButton
+                        onClick={() =>
+                          toggleHidden(project._id, project.isHidden)
+                        }
+                        variant={project.isHidden ? "primary" : "ghost"}
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        {project.isHidden ? (
+                          <Eye size={14} />
+                        ) : (
+                          <EyeOff size={14} />
                         )}
-                      </div>
+                        {project.isHidden ? "Show" : "Hide"}
+                      </SimpleButton>
+                      <SimpleButton
+                        onClick={() =>
+                          toggleStar(project._id, project.isStarred)
+                        }
+                        variant={project.isStarred ? "warning" : "ghost"}
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Star
+                          size={14}
+                          fill={project.isStarred ? "currentColor" : "none"}
+                        />
+                        {project.isStarred ? "Unstar" : "Star"}
+                      </SimpleButton>
+                      <SimpleButton
+                        onClick={() => handleEditProject(project)}
+                        variant="secondary"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Edit size={14} />
+                        Edit
+                      </SimpleButton>
+                      <SimpleButton
+                        onClick={() => deleteProject(project._id)}
+                        variant="danger"
+                        size="sm"
+                        className="flex items-center gap-1"
+                      >
+                        <Trash2 size={14} />
+                        Delete
+                      </SimpleButton>
                     </div>
                   </div>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">
-                    {project.description}
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-gray-500">
-                    <span>Created: {formatDate(project.createdAt)}</span>
-                    {project.images.length > 0 && (
-                      <span>
-                        {project.images.length} image
-                        {project.images.length !== 1 ? "s" : ""}
-                      </span>
-                    )}
-                    {project.liveLink && (
-                      <div className="flex items-center gap-1">
-                        <Link size={12} />
-                        <span>Live</span>
-                      </div>
-                    )}
-                    {project.githubLink && (
-                      <div className="flex items-center gap-1">
-                        <Github size={12} />
-                        <span>GitHub</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2 ml-4">
-                  <SimpleButton
-                    onClick={() => toggleHidden(project._id, project.isHidden)}
-                    variant={project.isHidden ? "primary" : "ghost"}
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    {project.isHidden ? (
-                      <Eye size={14} />
-                    ) : (
-                      <EyeOff size={14} />
-                    )}
-                    {project.isHidden ? "Show" : "Hide"}
-                  </SimpleButton>
-
-                  <SimpleButton
-                    onClick={() => toggleStar(project._id, project.isStarred)}
-                    variant={project.isStarred ? "warning" : "ghost"}
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    <Star
-                      size={14}
-                      fill={project.isStarred ? "currentColor" : "none"}
-                    />
-                    {project.isStarred ? "Unstar" : "Star"}
-                  </SimpleButton>
-
-                  <SimpleButton
-                    onClick={() => handleEditProject(project)}
-                    variant="secondary"
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    <Edit size={14} />
-                    Edit
-                  </SimpleButton>
-
-                  <SimpleButton
-                    onClick={() => deleteProject(project._id)}
-                    variant="danger"
-                    size="sm"
-                    className="flex items-center gap-1"
-                  >
-                    <Trash2 size={14} />
-                    Delete
-                  </SimpleButton>
-                </div>
-              </div>
-            </SimpleCard>
+              </InteractiveCard>
+            </motion.div>
           ))
         )}
-      </div>
+      </motion.div>
 
-      {/* Project Modal */}
       {showModal && (
         <ProjectModal
           isOpen={showModal}
           onClose={handleModalClose}
           onSave={handleProjectSaved}
+          onNewTagCreated={handleNewTagCreated}
           project={editingProject}
           tags={tags}
         />

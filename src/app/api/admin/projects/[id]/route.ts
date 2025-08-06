@@ -1,7 +1,10 @@
+// app/api/admin/projects/[id]/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 
+// PUT handler to update a project
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -15,49 +18,37 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, description, tags, images = [], liveLink, githubLink } = body;
+    const {
+      title,
+      description,
+      images = [],
+      projectTags = [],
+      techTags = [],
+      isLive,
+      liveLink,
+      githubLink,
+    } = body;
 
-    // Validation
-    if (!name || !name.trim()) {
-      return NextResponse.json(
-        { message: "Project name is required" },
-        { status: 400 }
+    // Validation - only title, description, and images are required
+    const validationErrors = [];
+    if (!title || !title.trim())
+      validationErrors.push("Project title is required.");
+    if (!description || !description.trim())
+      validationErrors.push("Project description is required.");
+
+    const validateUrl = (url: string) => /^(https?:\/\/|www\.)/.test(url);
+    if (liveLink && !validateUrl(liveLink))
+      validationErrors.push(
+        "Live link must start with http://, https://, or www."
       );
-    }
-
-    if (!description || !description.trim()) {
-      return NextResponse.json(
-        { message: "Project description is required" },
-        { status: 400 }
+    if (githubLink && !validateUrl(githubLink))
+      validationErrors.push(
+        "GitHub link must start with http://, https://, or www."
       );
-    }
 
-    if (!tags || !Array.isArray(tags) || tags.length === 0) {
+    if (validationErrors.length > 0) {
       return NextResponse.json(
-        { message: "At least one tag is required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate links if provided
-    const validateUrl = (url: string) => {
-      if (!url) return true; // Optional field
-
-      // Accept http, https, or www starting URLs
-      const urlPattern = /^(https?:\/\/|www\.)/;
-      return urlPattern.test(url);
-    };
-
-    if (liveLink && !validateUrl(liveLink)) {
-      return NextResponse.json(
-        { message: "Live link must start with http://, https://, or www." },
-        { status: 400 }
-      );
-    }
-
-    if (githubLink && !validateUrl(githubLink)) {
-      return NextResponse.json(
-        { message: "GitHub link must start with http://, https://, or www." },
+        { message: validationErrors.join(" ") },
         { status: 400 }
       );
     }
@@ -69,10 +60,12 @@ export async function PUT(
     );
 
     const updateData = {
-      name: name.trim(),
+      title: title.trim(),
       description: description.trim(),
-      tags: tags,
       images: images,
+      projectTags: projectTags,
+      techTags: techTags,
+      isLive: isLive ?? false,
       liveLink: liveLink?.trim() || "",
       githubLink: githubLink?.trim() || "",
     };
@@ -102,6 +95,7 @@ export async function PUT(
   }
 }
 
+// PATCH handler to update partial project data (e.g., isHidden or isStarred)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -126,6 +120,13 @@ export async function PATCH(
     const updateData: any = {};
     if (typeof isHidden === "boolean") updateData.isHidden = isHidden;
     if (typeof isStarred === "boolean") updateData.isStarred = isStarred;
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        { message: "No valid fields to update" },
+        { status: 400 }
+      );
+    }
 
     const result = await collection.updateOne(
       { _id: new ObjectId(params.id) },
@@ -152,6 +153,7 @@ export async function PATCH(
   }
 }
 
+// DELETE handler to delete a project
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

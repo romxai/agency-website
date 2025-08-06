@@ -1,6 +1,9 @@
+// app/api/admin/projects/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
+// GET handler to fetch all projects
 export async function GET() {
   try {
     const client = await clientPromise;
@@ -14,7 +17,7 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return NextResponse.json(projects);
+    return NextResponse.json(projects, { status: 200 });
   } catch (error) {
     console.error("Error fetching projects:", error);
     return NextResponse.json(
@@ -24,67 +27,79 @@ export async function GET() {
   }
 }
 
+// POST handler to create a new project
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, description, tags, images = [], liveLink, githubLink } = body;
+    const {
+      title,
+      description,
+      images = [],
+      projectTags = [],
+      techTags = [],
+      isLive,
+      liveLink,
+      githubLink,
+    } = body;
 
-    // Validation
-    if (!name || !name.trim()) {
-      return NextResponse.json(
-        { message: "Project name is required" },
-        { status: 400 }
+    // Validation - only title, description, and images are required
+    const validationErrors = [];
+    if (!title || !title.trim())
+      validationErrors.push("Project title is required.");
+    if (!description || !description.trim())
+      validationErrors.push("Project description is required.");
+
+    const validateUrl = (url: string) => /^(https?:\/\/|www\.)/.test(url);
+    if (liveLink && !validateUrl(liveLink))
+      validationErrors.push(
+        "Live link must start with http://, https://, or www."
       );
-    }
-
-    if (!description || !description.trim()) {
-      return NextResponse.json(
-        { message: "Project description is required" },
-        { status: 400 }
+    if (githubLink && !validateUrl(githubLink))
+      validationErrors.push(
+        "GitHub link must start with http://, https://, or www."
       );
-    }
 
-    if (!tags || !Array.isArray(tags) || tags.length === 0) {
+    if (validationErrors.length > 0) {
       return NextResponse.json(
-        { message: "At least one tag is required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate links if provided
-    const validateUrl = (url: string) => {
-      if (!url) return true; // Optional field
-
-      // Accept http, https, or www starting URLs
-      const urlPattern = /^(https?:\/\/|www\.)/;
-      return urlPattern.test(url);
-    };
-
-    if (liveLink && !validateUrl(liveLink)) {
-      return NextResponse.json(
-        { message: "Live link must start with http://, https://, or www." },
-        { status: 400 }
-      );
-    }
-
-    if (githubLink && !validateUrl(githubLink)) {
-      return NextResponse.json(
-        { message: "GitHub link must start with http://, https://, or www." },
+        { message: validationErrors.join(" ") },
         { status: 400 }
       );
     }
 
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
-    const collection = db.collection(
+    const projectsCollection = db.collection(
       process.env.PROJECTS_COLLECTION || "projects"
     );
+    const tagsCollection = db.collection(process.env.TAGS_COLLECTION || "tags");
+
+    // Automated Tag Management - handle project tags and tech tags separately
+    const allTags = [...projectTags, ...techTags];
+    const newTagsToCreate = [];
+
+    for (const tagName of allTags) {
+      const existingTag = await tagsCollection.findOne({
+        name: { $regex: new RegExp(`^${tagName.trim()}$`, "i") },
+      });
+      if (!existingTag) {
+        newTagsToCreate.push({
+          name: tagName.trim(),
+          color: getRandomColor(),
+          createdAt: new Date().toISOString(),
+        });
+      }
+    }
+    if (newTagsToCreate.length > 0) {
+      await tagsCollection.insertMany(newTagsToCreate);
+    }
 
     const project = {
-      name: name.trim(),
+      title: title.trim(),
       description: description.trim(),
-      tags: tags,
       images: images,
+      projectTags: projectTags,
+      techTags: techTags,
+      isLive: isLive ?? false,
       liveLink: liveLink?.trim() || "",
       githubLink: githubLink?.trim() || "",
       isHidden: false,
@@ -92,7 +107,7 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString(),
     };
 
-    const result = await collection.insertOne(project);
+    const result = await projectsCollection.insertOne(project);
 
     return NextResponse.json(
       { message: "Project created successfully", id: result.insertedId },
@@ -106,3 +121,19 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+const getRandomColor = () => {
+  const colors = [
+    "#3B82F6",
+    "#8B5CF6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#06B6D4",
+    "#84CC16",
+    "#F97316",
+    "#EC4899",
+    "#6366F1",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
