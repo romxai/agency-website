@@ -24,7 +24,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name } = body;
+    const { name, isTech = false } = body;
 
     if (!name || !name.trim()) {
       return NextResponse.json(
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
     const tag = {
       name: name.trim(),
       color: randomColor,
+      isTech: Boolean(isTech),
       createdAt: new Date().toISOString(),
     };
 

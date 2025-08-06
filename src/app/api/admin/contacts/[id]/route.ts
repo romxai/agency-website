@@ -4,10 +4,12 @@ import clientPromise from "@/lib/mongodb";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: "Invalid contact ID" },
         { status: 400 }
@@ -28,7 +30,7 @@ export async function PATCH(
     if (typeof isStarred === "boolean") updateData.isStarred = isStarred;
 
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
 
@@ -54,10 +56,12 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: "Invalid contact ID" },
         { status: 400 }
@@ -70,7 +74,7 @@ export async function DELETE(
       process.env.MONGODB_COLLECTION_NAME as string
     );
 
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(

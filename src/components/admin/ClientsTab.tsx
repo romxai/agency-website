@@ -147,9 +147,9 @@ const ClientsTab = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-semibold text-gray-800">Client Contacts</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <select
             value={filter}
             onChange={(e) =>
@@ -178,36 +178,47 @@ const ClientsTab = () => {
               className="transition-all duration-200"
             >
               {/* Main Row */}
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex items-center gap-2">
-                      <User size={16} className="text-blue-600" />
-                      <span className="font-medium text-gray-800">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <User size={16} className="text-blue-600 flex-shrink-0" />
+                      <span className="font-medium text-gray-800 truncate">
                         {contact.name}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Mail size={16} className="text-green-600" />
-                      <span className="text-gray-600">{contact.email}</span>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Mail
+                        size={16}
+                        className="text-green-600 flex-shrink-0"
+                      />
+                      <span className="text-gray-600 truncate">
+                        {contact.email}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={16} className="text-purple-600" />
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Clock
+                        size={16}
+                        className="text-purple-600 flex-shrink-0"
+                      />
                       <span className="text-gray-500 text-sm">
                         {formatDate(contact.createdAt)}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MessageSquare size={16} className="text-orange-600" />
-                    <span className="text-gray-700 line-clamp-1">
+                  <div className="flex items-start gap-2 min-w-0">
+                    <MessageSquare
+                      size={16}
+                      className="text-orange-600 flex-shrink-0 mt-0.5"
+                    />
+                    <span className="text-gray-700 break-words line-clamp-2">
                       {contact.message}
                     </span>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 ml-4">
+                <div className="flex flex-wrap items-center gap-2 lg:ml-4">
                   <SimpleButton
                     onClick={() => toggleRead(contact._id, contact.isRead)}
                     variant={contact.isRead ? "ghost" : "primary"}
@@ -215,7 +226,9 @@ const ClientsTab = () => {
                     className="flex items-center gap-1"
                   >
                     {contact.isRead ? <EyeOff size={14} /> : <Eye size={14} />}
-                    {contact.isRead ? "Mark Unread" : "Mark Read"}
+                    <span className="hidden sm:inline">
+                      {contact.isRead ? "Mark Unread" : "Mark Read"}
+                    </span>
                   </SimpleButton>
 
                   <SimpleButton
@@ -228,7 +241,9 @@ const ClientsTab = () => {
                       size={14}
                       fill={contact.isStarred ? "currentColor" : "none"}
                     />
-                    {contact.isStarred ? "Unstar" : "Star"}
+                    <span className="hidden sm:inline">
+                      {contact.isStarred ? "Unstar" : "Star"}
+                    </span>
                   </SimpleButton>
 
                   <SimpleButton
@@ -250,7 +265,7 @@ const ClientsTab = () => {
                     className="flex items-center gap-1"
                   >
                     <Trash2 size={14} />
-                    Delete
+                    <span className="hidden sm:inline">Delete</span>
                   </SimpleButton>
                 </div>
               </div>
@@ -258,12 +273,12 @@ const ClientsTab = () => {
               {/* Expanded Details */}
               {expandedRows.has(contact._id) && (
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
                     <div>
                       <h4 className="font-medium text-gray-700 mb-2">
                         Full Message
                       </h4>
-                      <p className="text-gray-600 bg-gray-50 p-3 rounded-lg">
+                      <p className="text-gray-600 bg-gray-50 p-3 rounded-lg break-words">
                         {contact.message}
                       </p>
                     </div>
@@ -272,7 +287,9 @@ const ClientsTab = () => {
                         <span className="font-medium text-gray-700">
                           IP Address:
                         </span>
-                        <span className="ml-2 text-gray-600">{contact.ip}</span>
+                        <span className="ml-2 text-gray-600 break-all">
+                          {contact.ip}
+                        </span>
                       </div>
                       <div>
                         <span className="font-medium text-gray-700">

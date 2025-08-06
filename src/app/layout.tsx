@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
 
 const redHatDisplay = localFont({
   src: "../../public/RedHatDisplay-VariableFont_wght.ttf",
@@ -21,8 +20,6 @@ export const metadata: Metadata = {
   title: "DevAgency - Modern Software Development",
   description:
     "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
-  themeColor: "#000000",
   robots: {
     index: true,
     follow: true,
@@ -42,6 +39,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#000000",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -50,11 +54,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=5"
-        />
-        <meta name="theme-color" content="#000000" />
         <meta name="color-scheme" content="dark" />
       </head>
       <body

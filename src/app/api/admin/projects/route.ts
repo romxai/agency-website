@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
     const tagsCollection = db.collection(process.env.TAGS_COLLECTION || "tags");
 
     // Automated Tag Management - handle project tags and tech tags separately
-    const allTags = [...projectTags, ...techTags];
     const newTagsToCreate = [];
 
-    for (const tagName of allTags) {
+    // Handle project tags (isTech: false)
+    for (const tagName of projectTags) {
       const existingTag = await tagsCollection.findOne({
         name: { $regex: new RegExp(`^${tagName.trim()}$`, "i") },
       });
@@ -85,10 +85,27 @@ export async function POST(request: NextRequest) {
         newTagsToCreate.push({
           name: tagName.trim(),
           color: getRandomColor(),
+          isTech: false,
           createdAt: new Date().toISOString(),
         });
       }
     }
+
+    // Handle tech tags (isTech: true)
+    for (const tagName of techTags) {
+      const existingTag = await tagsCollection.findOne({
+        name: { $regex: new RegExp(`^${tagName.trim()}$`, "i") },
+      });
+      if (!existingTag) {
+        newTagsToCreate.push({
+          name: tagName.trim(),
+          color: getRandomColor(),
+          isTech: true,
+          createdAt: new Date().toISOString(),
+        });
+      }
+    }
+
     if (newTagsToCreate.length > 0) {
       await tagsCollection.insertMany(newTagsToCreate);
     }

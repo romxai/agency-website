@@ -55,6 +55,7 @@ interface Tag {
   _id: string;
   name: string;
   color: string;
+  isTech: boolean;
   createdAt: string;
 }
 
@@ -171,7 +172,7 @@ const ProjectDetailsModal = ({
               </span>
             )}
           </div>
-          <p className="text-sm text-zinc-400 font-red-hat-display mb-6">
+          <p className="text-sm text-zinc-400 font-red-hat-display mb-6 break-words">
             {project.description}
           </p>
 
@@ -261,8 +262,8 @@ export default function PortfolioPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedTech, setSelectedTech] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTechs, setSelectedTechs] = useState<string[]>([]);
   const [activeItem, setActiveItem] = useState<Project | null>(null);
 
   useEffect(() => {
@@ -304,21 +305,34 @@ export default function PortfolioPage() {
 
   // Filter projects based on selected filters
   const filteredProjects = projects.filter((item) => {
-    const categoryMatch = selectedCategory
-      ? item.projectTags.includes(selectedCategory)
-      : true;
-    const techMatch = selectedTech
-      ? item.techTags.includes(selectedTech)
-      : true;
+    const categoryMatch =
+      selectedCategories.length === 0 ||
+      selectedCategories.some((category) =>
+        item.projectTags.includes(category)
+      );
+    const techMatch =
+      selectedTechs.length === 0 ||
+      selectedTechs.some((tech) => item.techTags.includes(tech));
     return categoryMatch && techMatch;
   });
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category === selectedCategory ? null : category);
+    setSelectedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    );
   };
 
   const handleTechChange = (tech: string) => {
-    setSelectedTech(tech === selectedTech ? null : tech);
+    setSelectedTechs((prev) =>
+      prev.includes(tech) ? prev.filter((t) => t !== tech) : [...prev, tech]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedTechs([]);
   };
 
   // Truncate description for the main cards
@@ -429,7 +443,7 @@ export default function PortfolioPage() {
                   key={category}
                   onClick={() => handleCategoryChange(category)}
                   className={`px-4 py-2 rounded-md text-sm font-red-hat-display transition-all duration-200 ${
-                    selectedCategory === category
+                    selectedCategories.includes(category)
                       ? "bg-[#FFED99] text-black font-medium"
                       : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/20"
                   }`}
@@ -437,14 +451,6 @@ export default function PortfolioPage() {
                   {category}
                 </button>
               ))}
-              {selectedCategory && (
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className="px-4 py-2 rounded-md text-sm bg-white/5 text-white/60 hover:bg-white/10 border border-white/10 font-red-hat-display"
-                >
-                  Clear
-                </button>
-              )}
             </div>
           </div>
 
@@ -458,7 +464,7 @@ export default function PortfolioPage() {
                   key={tech}
                   onClick={() => handleTechChange(tech)}
                   className={`px-4 py-2 rounded-md text-sm font-red-hat-display transition-all duration-200 ${
-                    selectedTech === tech
+                    selectedTechs.includes(tech)
                       ? "bg-[#FFED99] text-black font-medium"
                       : "bg-white/10 text-white/80 hover:bg-white/20 border border-white/20"
                   }`}
@@ -466,16 +472,19 @@ export default function PortfolioPage() {
                   {tech}
                 </button>
               ))}
-              {selectedTech && (
-                <button
-                  onClick={() => setSelectedTech(null)}
-                  className="px-4 py-2 rounded-md text-sm bg-white/5 text-white/60 hover:bg-white/10 border border-white/10 font-red-hat-display"
-                >
-                  Clear
-                </button>
-              )}
             </div>
           </div>
+
+          {(selectedCategories.length > 0 || selectedTechs.length > 0) && (
+            <div className="mt-4">
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 rounded-md text-sm bg-white/5 text-white/60 hover:bg-white/10 border border-white/10 font-red-hat-display"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          )}
         </motion.div>
 
         {/* Portfolio Grid */}
@@ -532,7 +541,7 @@ export default function PortfolioPage() {
                     >
                       {project.title}
                     </GradientHeading>
-                    <p className="text-xs sm:text-sm text-zinc-500 font-red-hat-display">
+                    <p className="text-xs sm:text-sm text-zinc-500 font-red-hat-display break-words">
                       {truncateDescription(project.description, 120)}
                     </p>
                   </div>

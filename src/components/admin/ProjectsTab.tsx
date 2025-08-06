@@ -14,6 +14,7 @@ import {
   Tag as TagIcon,
   Link,
   Github,
+  X,
 } from "lucide-react";
 import { SimpleCard } from "@/components/ui/simple-card";
 import { SimpleButton } from "@/components/ui/simple-button";
@@ -40,6 +41,7 @@ interface Tag {
   _id: string;
   name: string;
   color: string;
+  isTech: boolean;
   createdAt: string;
 }
 
@@ -95,12 +97,192 @@ const InteractiveCard = ({
   </motion.div>
 );
 
+// Project Details Modal Component
+const ProjectDetailsModal = ({
+  project,
+  onClose,
+  onEdit,
+  onToggleHidden,
+  onToggleStarred,
+  onDelete,
+}: {
+  project: Project;
+  onClose: () => void;
+  onEdit: () => void;
+  onToggleHidden: () => void;
+  onToggleStarred: () => void;
+  onDelete: () => void;
+}) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Auto-looping logic
+  useEffect(() => {
+    if (project.images.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === project.images.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000); // Change image every 5 seconds
+      return () => clearInterval(timer);
+    }
+  }, [project.images.length]);
+
+  return (
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <motion.div
+        className="bg-[#050505] border border-white/10 rounded-xl sm:rounded-2xl max-w-4xl w-full flex flex-col shadow-lg relative my-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.3 }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 text-white/60 hover:text-white transition-colors"
+          aria-label="Close modal"
+        >
+          <X size={24} />
+        </button>
+
+        {/* Image Carousel Section */}
+        <div className="relative h-64 sm:h-80 md:h-96 flex-shrink-0 bg-zinc-900 rounded-t-xl overflow-hidden">
+          <Image
+            src={project.images[currentImageIndex] || "/shape-min.png"}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 ease-in-out"
+            priority
+          />
+          {/* Dots */}
+          {project.images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {project.images.map((_, index) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    index === currentImageIndex ? "bg-white" : "bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <h2 className="text-2xl font-bold text-white">{project.title}</h2>
+            <div className="flex items-center gap-2">
+              {project.isLive && (
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-400/50">
+                  Live
+                </span>
+              )}
+              {project.isHidden && (
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-gray-500/20 text-gray-400 border border-gray-400/50">
+                  Hidden
+                </span>
+              )}
+            </div>
+          </div>
+
+          <p className="text-sm text-zinc-400 mb-6 leading-relaxed break-words">
+            {project.description}
+          </p>
+
+          <div className="space-y-4 mb-6">
+            <div>
+              <h4 className="text-sm font-medium text-white/80 mb-2">
+                Project Type
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.projectTags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium text-white/80 mb-2">
+                Technologies
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {project.techTags.map((tech, index) => (
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2">
+            <SimpleButton
+              onClick={onToggleHidden}
+              variant={project.isHidden ? "primary" : "ghost"}
+              size="sm"
+              className="flex items-center gap-1"
+            >
+              {project.isHidden ? <Eye size={14} /> : <EyeOff size={14} />}
+              {project.isHidden ? "Show" : "Hide"}
+            </SimpleButton>
+
+            <SimpleButton
+              onClick={onToggleStarred}
+              variant={project.isStarred ? "warning" : "ghost"}
+              size="sm"
+              className="flex items-center gap-1"
+            >
+              <Star
+                size={14}
+                fill={project.isStarred ? "currentColor" : "none"}
+              />
+              {project.isStarred ? "Unstar" : "Star"}
+            </SimpleButton>
+
+            <SimpleButton
+              onClick={onEdit}
+              variant="secondary"
+              size="sm"
+              className="flex items-center gap-1"
+            >
+              <Edit size={14} />
+              Edit
+            </SimpleButton>
+
+            <SimpleButton
+              onClick={onDelete}
+              variant="danger"
+              size="sm"
+              className="flex items-center gap-1"
+            >
+              <Trash2 size={14} />
+              Delete
+            </SimpleButton>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 const ProjectsTab = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [filter, setFilter] = useState<"all" | "hidden" | "starred">("all");
 
   useEffect(() => {
@@ -153,6 +335,12 @@ const ProjectsTab = () => {
               : project
           )
         );
+        if (selectedProject?._id === id) {
+          setSelectedProject({
+            ...selectedProject,
+            isStarred: !currentStarred,
+          });
+        }
       }
     } catch (error) {
       console.error("Error updating star status:", error);
@@ -175,6 +363,12 @@ const ProjectsTab = () => {
               : project
           )
         );
+        if (selectedProject?._id === id) {
+          setSelectedProject({
+            ...selectedProject,
+            isHidden: !currentHidden,
+          });
+        }
       }
     } catch (error) {
       console.error("Error updating hidden status:", error);
@@ -191,6 +385,8 @@ const ProjectsTab = () => {
 
       if (response.ok) {
         setProjects(projects.filter((project) => project._id !== id));
+        setShowDetailsModal(false);
+        setSelectedProject(null);
       }
     } catch (error) {
       console.error("Error deleting project:", error);
@@ -200,11 +396,22 @@ const ProjectsTab = () => {
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setShowModal(true);
+    setShowDetailsModal(false);
+  };
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setShowDetailsModal(true);
   };
 
   const handleModalClose = () => {
     setShowModal(false);
     setEditingProject(null);
+  };
+
+  const handleDetailsModalClose = () => {
+    setShowDetailsModal(false);
+    setSelectedProject(null);
   };
 
   const handleProjectSaved = () => {
@@ -250,11 +457,11 @@ const ProjectsTab = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-semibold text-gray-800">
           Portfolio Projects
         </h2>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <select
             value={filter}
             onChange={(e) =>
@@ -278,7 +485,7 @@ const ProjectsTab = () => {
       </div>
 
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -299,7 +506,7 @@ const ProjectsTab = () => {
             >
               <InteractiveCard
                 className="w-full cursor-pointer"
-                onClick={() => handleEditProject(project)}
+                onClick={() => handleProjectClick(project)}
               >
                 <div className="bg-black border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden">
                   {/* Image Section */}
@@ -343,7 +550,7 @@ const ProjectsTab = () => {
                     <h3 className="font-semibold text-gray-800 mb-2 sm:mb-4 text-sm sm:text-base">
                       {project.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-3">
+                    <p className="text-xs sm:text-sm text-gray-600 mb-3 break-words">
                       {truncateDescription(project.description, 120)}
                     </p>
 
@@ -363,60 +570,6 @@ const ProjectsTab = () => {
                         </span>
                       )}
                     </div>
-
-                    {/* Action Buttons */}
-                    <div
-                      className="flex items-center gap-2 mt-4"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <SimpleButton
-                        onClick={() =>
-                          toggleHidden(project._id, project.isHidden)
-                        }
-                        variant={project.isHidden ? "primary" : "ghost"}
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        {project.isHidden ? (
-                          <Eye size={14} />
-                        ) : (
-                          <EyeOff size={14} />
-                        )}
-                        {project.isHidden ? "Show" : "Hide"}
-                      </SimpleButton>
-                      <SimpleButton
-                        onClick={() =>
-                          toggleStar(project._id, project.isStarred)
-                        }
-                        variant={project.isStarred ? "warning" : "ghost"}
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Star
-                          size={14}
-                          fill={project.isStarred ? "currentColor" : "none"}
-                        />
-                        {project.isStarred ? "Unstar" : "Star"}
-                      </SimpleButton>
-                      <SimpleButton
-                        onClick={() => handleEditProject(project)}
-                        variant="secondary"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Edit size={14} />
-                        Edit
-                      </SimpleButton>
-                      <SimpleButton
-                        onClick={() => deleteProject(project._id)}
-                        variant="danger"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Trash2 size={14} />
-                        Delete
-                      </SimpleButton>
-                    </div>
                   </div>
                 </div>
               </InteractiveCard>
@@ -433,6 +586,21 @@ const ProjectsTab = () => {
           onNewTagCreated={handleNewTagCreated}
           project={editingProject}
           tags={tags}
+        />
+      )}
+
+      {showDetailsModal && selectedProject && (
+        <ProjectDetailsModal
+          project={selectedProject}
+          onClose={handleDetailsModalClose}
+          onEdit={() => handleEditProject(selectedProject)}
+          onToggleHidden={() =>
+            toggleHidden(selectedProject._id, selectedProject.isHidden)
+          }
+          onToggleStarred={() =>
+            toggleStar(selectedProject._id, selectedProject.isStarred)
+          }
+          onDelete={() => deleteProject(selectedProject._id)}
         />
       )}
     </div>

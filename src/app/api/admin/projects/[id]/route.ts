@@ -7,10 +7,12 @@ import clientPromise from "@/lib/mongodb";
 // PUT handler to update a project
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: "Invalid project ID" },
         { status: 400 }
@@ -58,6 +60,44 @@ export async function PUT(
     const collection = db.collection(
       process.env.PROJECTS_COLLECTION || "projects"
     );
+    const tagsCollection = db.collection(process.env.TAGS_COLLECTION || "tags");
+
+    // Automated Tag Management - handle project tags and tech tags separately
+    const newTagsToCreate = [];
+
+    // Handle project tags (isTech: false)
+    for (const tagName of projectTags) {
+      const existingTag = await tagsCollection.findOne({
+        name: { $regex: new RegExp(`^${tagName.trim()}$`, "i") },
+      });
+      if (!existingTag) {
+        newTagsToCreate.push({
+          name: tagName.trim(),
+          color: getRandomColor(),
+          isTech: false,
+          createdAt: new Date().toISOString(),
+        });
+      }
+    }
+
+    // Handle tech tags (isTech: true)
+    for (const tagName of techTags) {
+      const existingTag = await tagsCollection.findOne({
+        name: { $regex: new RegExp(`^${tagName.trim()}$`, "i") },
+      });
+      if (!existingTag) {
+        newTagsToCreate.push({
+          name: tagName.trim(),
+          color: getRandomColor(),
+          isTech: true,
+          createdAt: new Date().toISOString(),
+        });
+      }
+    }
+
+    if (newTagsToCreate.length > 0) {
+      await tagsCollection.insertMany(newTagsToCreate);
+    }
 
     const updateData = {
       title: title.trim(),
@@ -71,7 +111,7 @@ export async function PUT(
     };
 
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
 
@@ -98,10 +138,12 @@ export async function PUT(
 // PATCH handler to update partial project data (e.g., isHidden or isStarred)
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: "Invalid project ID" },
         { status: 400 }
@@ -129,7 +171,7 @@ export async function PATCH(
     }
 
     const result = await collection.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
 
@@ -156,10 +198,12 @@ export async function PATCH(
 // DELETE handler to delete a project
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!ObjectId.isValid(params.id)) {
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { message: "Invalid project ID" },
         { status: 400 }
@@ -172,7 +216,7 @@ export async function DELETE(
       process.env.PROJECTS_COLLECTION || "projects"
     );
 
-    const result = await collection.deleteOne({ _id: new ObjectId(params.id) });
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
@@ -193,3 +237,19 @@ export async function DELETE(
     );
   }
 }
+
+const getRandomColor = () => {
+  const colors = [
+    "#3B82F6",
+    "#8B5CF6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#06B6D4",
+    "#84CC16",
+    "#F97316",
+    "#EC4899",
+    "#6366F1",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};

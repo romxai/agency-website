@@ -26,6 +26,7 @@ interface Tag {
   _id: string;
   name: string;
   color: string;
+  isTech: boolean;
   createdAt: string;
 }
 
@@ -60,6 +61,10 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
   const [newTechTag, setNewTechTag] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Separate tags by type
+  const projectTags = tags.filter((tag) => !tag.isTech);
+  const techTags = tags.filter((tag) => tag.isTech);
 
   useEffect(() => {
     if (project) {
@@ -135,7 +140,10 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
       const response = await fetch("/api/admin/tags", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newTagName.trim() }),
+        body: JSON.stringify({
+          name: newTagName.trim(),
+          isTech: type === "tech",
+        }),
       });
 
       if (response.ok) {
@@ -299,7 +307,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             </label>
             <div className="mb-3">
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
+                {projectTags.map((tag) => (
                   <button
                     key={tag._id}
                     type="button"
@@ -343,7 +351,7 @@ const ProjectModal: React.FC<ProjectModalProps> = ({
             </label>
             <div className="mb-3">
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
+                {techTags.map((tag) => (
                   <button
                     key={tag._id}
                     type="button"
