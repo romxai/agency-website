@@ -40,7 +40,7 @@ const featuredProjects = [
     id: 1,
     title: "Orchestrator",
     description: "AI-powered workflow automation platform for enterprise teams",
-    image: "/shape-min.png",
+    image: "/fp1.png",
     tags: ["Agentic AI", "Web App", "Enterprise"],
   },
   {
@@ -206,7 +206,7 @@ const FeaturedProjects = () => {
                   src={project.image}
                   alt={project.title}
                   fill
-                  className="object-cover rounded-t-xl sm:rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
+                  className="object-cover  rounded-t-xl sm:rounded-t-2xl group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
 

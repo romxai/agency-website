@@ -119,7 +119,11 @@ export const FloatingNav = ({
               isOpen ? "rounded-2xl" : "rounded-full"
             )}
           >
-            <div className="flex items-center">{logoElement}</div>
+            <div className="flex items-center hover:cursor-pointer">
+              <Link href="/">
+                <div className="flex items-center">{logoElement}</div>
+              </Link>
+            </div>
             <nav className="hidden sm:flex flex-grow items-center justify-center space-x-34 text-xs sm:text-sm">
               {navLinks.map((link, idx) => (
                 <AnimatedNavLink key={`nav-${idx}`} href={link.link}>

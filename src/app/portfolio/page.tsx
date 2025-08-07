@@ -345,7 +345,7 @@ export default function PortfolioPage() {
 
   if (loading) {
     return (
-      <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black top-fading-border">
+      <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black">
         <div className="container relative z-10">
           <div className="flex items-center justify-center h-64">
             <div className="text-gray-500">Loading portfolio...</div>
@@ -356,7 +356,7 @@ export default function PortfolioPage() {
   }
 
   return (
-    <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black top-fading-border">
+    <section className="relative py-12 sm:py-16 md:py-20 overflow-hidden bg-black">
       {/* LightRays Backgrounds */}
       <div className="absolute inset-0 z-0">
         {mounted && (
@@ -418,7 +418,7 @@ export default function PortfolioPage() {
             variant="accent3"
             className="font-monesta-semibold leading-none mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
           >
-            Our <span className="font-charm-bold">Portfolio</span>
+            Our Portfolio
           </GradientHeading>
           <p className="text-base sm:text-lg text-zinc-500 font-red-hat-display max-w-2xl mx-auto px-4">
             Explore our diverse collection of projects that showcase our
