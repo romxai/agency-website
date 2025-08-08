@@ -12,32 +12,37 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Linkedin } from "lucide-react";
+import Link from "next/link";
 
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
   ssr: false,
 });
 
-// Team members data with responsive sizing
+// Team members data with responsive sizing and new LinkedIn links
 const teamMembers = [
   {
     name: "Dwayne Silvapinto",
     src: "/about/dwayne.jpg",
-    radius: { mobile: 120, tablet: 160, desktop: 240 },
+    linkedin: "https://www.linkedin.com/in/dwaynesilvapinto145",
+    radius: { mobile: 145, tablet: 190, desktop: 240 },
     duration: 25,
     reverse: false,
   },
   {
     name: "Ishwari Birje",
     src: "/about/ishwari.png",
-    radius: { mobile: 90, tablet: 120, desktop: 180 },
+    linkedin: "https://www.linkedin.com/in/ishwaribirje/",
+    radius: { mobile: 115, tablet: 150, desktop: 180 },
     duration: 30,
     reverse: true,
   },
   {
     name: "Harsh Kamdar",
     src: "/about/harsh.png",
-    radius: { mobile: 60, tablet: 80, desktop: 120 },
-    duration: 20,
+    linkedin: "https://www.linkedin.com/in/harsh-kamdar/",
+    radius: { mobile: 85, tablet: 110, desktop: 120 },
+    duration: 35,
     reverse: false,
   },
 ];
@@ -46,58 +51,132 @@ const teamMembers = [
 const OrbitingIcon = ({
   member,
   size,
+  radius,
   isMobile,
-  onIconClick,
+  isRotationPaused,
+  onInteractionStart,
+  onInteractionEnd,
 }: {
   member: (typeof teamMembers)[0];
   size: number;
+  radius: number;
   isMobile: boolean;
-  onIconClick: () => void;
+  isRotationPaused: boolean;
+  onInteractionStart: () => void;
+  onInteractionEnd: () => void;
 }) => {
-  const [isClicked, setIsClicked] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
-  const handleInteraction = () => {
+  const handleMouseEnter = () => {
+    if (!isMobile) {
+      setIsFlipped(true);
+      onInteractionStart();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setIsFlipped(false);
+      onInteractionEnd();
+    }
+  };
+
+  const handleClick = () => {
     if (isMobile) {
-      setIsClicked(!isClicked);
-      onIconClick(); // Trigger the rotation pause
+      setIsFlipped(!isFlipped);
+      onInteractionStart();
+      if (!isFlipped) {
+        setTimeout(() => {
+          setIsFlipped(false);
+          onInteractionEnd();
+        }, 4000);
+      }
     }
   };
 
   return (
     <OrbitingCircles
       key={member.name}
-      radius={member.radius.desktop}
+      radius={radius}
       duration={member.duration}
       reverse={member.reverse}
       iconSize={size}
+      isRotationPaused={isRotationPaused}
     >
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <motion.div
-            className="flex items-center justify-center rounded-full border-2 border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden cursor-pointer"
-            style={{
-              width: `${size}px`,
-              height: `${size}px`,
-            }}
-            whileHover={
-              !isMobile ? { scale: 1.2, transition: { duration: 0.2 } } : {}
-            }
-            animate={isMobile && isClicked ? { scale: 1.2 } : { scale: 1 }}
-            onClick={handleInteraction}
-          >
-            <Image
-              src={member.src}
-              alt={member.name}
-              width={size}
-              height={size}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{member.name}</p>
-        </TooltipContent>
-      </Tooltip>
+      <div className="relative group">
+        {/* Name displayed above the orbiting icon with no hover effect */}
+        <motion.div
+          className="absolute text-center px-2 py-1 bg-white/10 backdrop-blur-sm rounded-md transition-colors duration-300"
+          style={{
+            top: `-${size / 2 - 10}px`,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "max-content",
+          }}
+        >
+          <p className="text-white text-xs md:text-sm font-semibold font-red-hat-display transition-colors duration-300">
+            {member.name}
+          </p>
+        </motion.div>
+
+        {/* The orbiting image card */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.div
+                className="flex items-center justify-center rounded-full border-2 border-white/10 bg-white/5 backdrop-blur-sm overflow-hidden cursor-pointer"
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  position: "relative",
+                }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+              >
+                {/* Front of the card (Image) */}
+                <motion.div
+                  className="absolute inset-0 backface-hidden"
+                  initial={{ rotateY: 0 }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Image
+                    src={member.src}
+                    alt={member.name}
+                    width={size}
+                    height={size}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+
+                {/* Back of the card (LinkedIn) */}
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center backface-hidden"
+                  initial={{ rotateY: -180 }}
+                  animate={{ rotateY: isFlipped ? 0 : -180 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <Link
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Visit ${member.name}'s LinkedIn profile`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="p-3 rounded-full bg-white/10 group-hover:bg-[#FFED99] transition-colors">
+                      <Linkedin
+                        size={size * 0.5}
+                        className="text-[#FFED99] group-hover:text-black transition-colors"
+                      />
+                    </div>
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </TooltipTrigger>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
     </OrbitingCircles>
   );
 };
@@ -119,18 +198,27 @@ export default function AboutPage() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Handle rotation pause on mobile icon click
-  const handleIconClick = () => {
-    if (isMobile) {
-      setIsRotationPaused(true);
-      setTimeout(() => {
-        setIsRotationPaused(false);
-      }, 4000); // 4 seconds
-    }
+  const handleInteractionStart = () => {
+    setIsRotationPaused(true);
   };
 
-  // Responsive icon size
-  const UNIFORM_ICON_SIZE = isMobile ? 60 : 100;
+  const handleInteractionEnd = () => {
+    setIsRotationPaused(false);
+  };
+
+  const getRadius = (member: (typeof teamMembers)[0]) => {
+    if (window.innerWidth < 768) return member.radius.mobile;
+    if (window.innerWidth >= 768 && window.innerWidth < 1024)
+      return member.radius.tablet;
+    return member.radius.desktop;
+  };
+
+  const getIconSize = () => {
+    if (window.innerWidth < 768) return 65;
+    if (window.innerWidth >= 768 && window.innerWidth < 1024) return 80;
+    return 90;
+  };
+  const UNIFORM_ICON_SIZE = getIconSize();
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-16 sm:py-20 md:py-24 lg:py-16">
@@ -159,10 +247,10 @@ export default function AboutPage() {
       </div>
 
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12 lg:gap-16">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-12 lg:gap-10 md:gap-16">
           {/* Text column - 2/3 on desktop */}
           <motion.div
-            className="w-full lg:w-2/3 text-center lg:text-left"
+            className="w-full lg:w-[50%] text-left"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -250,7 +338,7 @@ export default function AboutPage() {
 
           {/* Orbit column - 1/3 on desktop */}
           <motion.div
-            className="group relative w-full lg:w-1/3 h-80 sm:h-96 lg:h-[650px] flex items-center justify-center flex-shrink-0 p-10"
+            className="group relative w-full lg:w-[50%] h-80 sm:h-96 lg:h-[650px] flex items-center justify-center flex-shrink-0 p-10"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -270,18 +358,19 @@ export default function AboutPage() {
               />
             </div>
 
-            <TooltipProvider>
-              {/* Map over team members and pass the uniform size */}
-              {teamMembers.map((member) => (
-                <OrbitingIcon
-                  key={member.name}
-                  member={member}
-                  size={UNIFORM_ICON_SIZE}
-                  isMobile={isMobile}
-                  onIconClick={handleIconClick}
-                />
-              ))}
-            </TooltipProvider>
+            {/* Map over team members and pass the uniform size */}
+            {teamMembers.map((member) => (
+              <OrbitingIcon
+                key={member.name}
+                member={member}
+                size={UNIFORM_ICON_SIZE}
+                radius={getRadius(member)}
+                isMobile={isMobile}
+                isRotationPaused={isRotationPaused}
+                onInteractionStart={handleInteractionStart}
+                onInteractionEnd={handleInteractionEnd}
+              />
+            ))}
           </motion.div>
         </div>
       </div>

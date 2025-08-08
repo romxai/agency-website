@@ -12,6 +12,7 @@ export interface OrbitingCirclesProps
   path?: boolean;
   iconSize?: number;
   speed?: number;
+  isRotationPaused?: boolean;
 }
 
 export function OrbitingCircles({
@@ -23,6 +24,7 @@ export function OrbitingCircles({
   path = true,
   iconSize = 30,
   speed = 1,
+  isRotationPaused = false,
   ...props
 }: OrbitingCirclesProps) {
   const calculatedDuration = duration / speed;
@@ -35,7 +37,8 @@ export function OrbitingCircles({
           className="pointer-events-none absolute inset-0 size-full"
         >
           <circle
-            className="stroke-black/10 stroke-1 dark:stroke-white/10"
+            // Increased stroke width for better visibility
+            className="stroke-white/20 stroke-2 dark:stroke-white/20"
             cx="50%"
             cy="50%"
             r={radius}
@@ -57,9 +60,10 @@ export function OrbitingCircles({
             }
             className={cn(
               `absolute flex size-[var(--icon-size)] transform-gpu animate-orbit items-center justify-center rounded-full`,
-              // Add this class to pause animation on group hover
-              "group-hover:[animation-play-state:paused]",
-              { "[animation-direction:reverse]": reverse },
+              {
+                "[animation-play-state:paused]": isRotationPaused,
+                "[animation-direction:reverse]": reverse,
+              },
               className
             )}
             {...props}
