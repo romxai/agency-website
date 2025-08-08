@@ -1,6 +1,8 @@
+// src/app/portfolio/page.tsx
+
 "use client";
 
-import { motion, Variants } from "framer-motion";
+import { motion, Variants, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { GradientHeading } from "@/components/ui/gradient-heading";
@@ -8,6 +10,7 @@ import { ShimmerButton } from "@/components/magicui/shimmer-button";
 import { X, Globe, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ProjectDetailsModal } from "@/components/ProjectDetailsModal";
 
 // Import LightRays with SSR disabled
 const LightRays = dynamic(() => import("@/components/ui/light-rays"), {
@@ -91,171 +94,6 @@ const InteractiveCard = ({
     {children}
   </motion.div>
 );
-
-// --- NEW COMPONENT: PROJECT DETAILS MODAL ---
-const ProjectDetailsModal = ({
-  project,
-  onClose,
-}: {
-  project: Project;
-  onClose: () => void;
-}) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  // Auto-looping logic
-  useEffect(() => {
-    if (project.images.length > 1) {
-      const timer = setInterval(() => {
-        setCurrentImageIndex((prevIndex) =>
-          prevIndex === project.images.length - 1 ? 0 : prevIndex + 1
-        );
-      }, 5000); // Change image every 5 seconds
-      return () => clearInterval(timer);
-    }
-  }, [project.images.length]);
-
-  return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <motion.div
-        className="bg-[#050505] border border-white/10 rounded-xl sm:rounded-2xl max-w-4xl w-full flex flex-col shadow-lg relative my-8"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.3 }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 text-white/60 hover:text-white transition-colors"
-          aria-label="Close modal"
-        >
-          <X size={24} />
-        </button>
-
-        {/* Image Carousel Section (Auto-looping, no controls) */}
-        <div className="relative h-64 sm:h-80 md:h-96 flex-shrink-0 bg-zinc-900 rounded-t-xl overflow-hidden">
-          <Image
-            src={project.images[currentImageIndex] || "/shape-min.png"}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-500 ease-in-out"
-            priority
-          />
-          {/* Dots */}
-          {project.images.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-              {project.images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentImageIndex ? "bg-white" : "bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Content Section */}
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <GradientHeading
-              size="sm"
-              weight="semi"
-              variant="accent2"
-              className="font-red-hat-display"
-            >
-              {project.title}
-            </GradientHeading>
-            {project.isLive && (
-              <span className="ml-4 px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400 border border-green-400/50 flex-shrink-0">
-                Live
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-zinc-400 font-red-hat-display mb-6 break-words">
-            {project.description}
-          </p>
-
-          <div className="space-y-4 mb-6">
-            <div>
-              <h4 className="text-sm font-medium text-white/80 mb-2">
-                Project Type
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {project.projectTags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-sm font-medium text-white/80 mb-2">
-                Technologies
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {project.techTags.map((tech, index) => (
-                  <span
-                    key={index}
-                    className="text-xs px-2 py-1 bg-white/10 text-white/80 rounded-full border border-white/20"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-4">
-            {project.liveLink && (
-              <Link
-                href={project.liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ShimmerButton
-                  className="bg-[#050505] text-[#FFED99] font-red-hat-display text-xs sm:text-sm"
-                  shimmerColor="#FFED99"
-                  background="rgb(13, 13, 13)"
-                  borderRadius="100px"
-                >
-                  <div className="flex items-center gap-2 text-[#FFED99]">
-                    <Globe size={14} className="sm:w-4 sm:h-4" />
-                    Check it out
-                  </div>
-                </ShimmerButton>
-              </Link>
-            )}
-            {project.githubLink && (
-              <Link
-                href={project.githubLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ShimmerButton
-                  className="bg-[#050505] text-white/60 font-red-hat-display text-xs sm:text-sm"
-                  shimmerColor="#FFED99"
-                  background="rgb(13, 13, 13)"
-                  borderRadius="100px"
-                >
-                  <div className="flex items-center gap-2 text-white/60">
-                    <Github size={14} className="sm:w-4 sm:h-4" />
-                    View Source
-                  </div>
-                </ShimmerButton>
-              </Link>
-            )}
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
-// --- END OF NEW COMPONENT ---
 
 export default function PortfolioPage() {
   const [mounted, setMounted] = useState(false);
@@ -548,7 +386,7 @@ export default function PortfolioPage() {
                 </div>
               </InteractiveCard>
             </motion.div>
-          ))}
+          ))} 
         </motion.div>
 
         {filteredProjects.length === 0 && (
@@ -569,12 +407,14 @@ export default function PortfolioPage() {
       </div>
 
       {/* Project Modal */}
-      {activeItem && (
-        <ProjectDetailsModal
-          project={activeItem}
-          onClose={() => setActiveItem(null)}
-        />
-      )}
+      <AnimatePresence>
+        {activeItem && (
+          <ProjectDetailsModal
+            project={activeItem}
+            onClose={() => setActiveItem(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
