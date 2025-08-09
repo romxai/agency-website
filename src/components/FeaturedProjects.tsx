@@ -40,7 +40,7 @@ const featuredProjects = [
     id: 1,
     title: "Orchestrator",
     description: "AI-powered workflow automation platform for enterprise teams",
-    image: "/fp1.png",
+    image: "/shape-min.png",
     tags: ["Agentic AI", "Web App", "Enterprise"],
   },
   {

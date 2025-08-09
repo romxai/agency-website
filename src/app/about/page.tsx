@@ -193,9 +193,11 @@ export default function AboutPage() {
       setIsMobile(window.innerWidth < 768);
     };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    if (typeof window !== "undefined") {
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+      return () => window.removeEventListener("resize", checkMobile);
+    }
   }, []);
 
   const handleInteractionStart = () => {
@@ -207,15 +209,20 @@ export default function AboutPage() {
   };
 
   const getRadius = (member: (typeof teamMembers)[0]) => {
-    if (window.innerWidth < 768) return member.radius.mobile;
-    if (window.innerWidth >= 768 && window.innerWidth < 1024)
-      return member.radius.tablet;
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 768) return member.radius.mobile;
+      if (window.innerWidth >= 768 && window.innerWidth < 1024)
+        return member.radius.tablet;
+      return member.radius.desktop;
+    }
     return member.radius.desktop;
   };
 
   const getIconSize = () => {
-    if (window.innerWidth < 768) return 65;
-    if (window.innerWidth >= 768 && window.innerWidth < 1024) return 80;
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 768) return 65;
+      if (window.innerWidth >= 768 && window.innerWidth < 1024) return 80;
+    }
     return 90;
   };
   const UNIFORM_ICON_SIZE = getIconSize();

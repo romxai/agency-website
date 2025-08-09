@@ -18,21 +18,21 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "CEO, TechCorp",
     content:
-      "Working with DevAgency transformed our digital presence. Their team delivered a stunning website and mobile app that exceeded our expectations.",
+      "Working with BRNKLABS transformed our digital presence. Their team delivered a stunning website and mobile app that exceeded our expectations.",
   },
   {
     id: 2,
     name: "Michael Chen",
     role: "CTO, InnovateSoft",
     content:
-      "The AI solution developed by DevAgency has automated our customer service operations, reducing costs by 40% while improving customer satisfaction.",
+      "The AI solution developed by BRNKLABS has automated our customer service operations, reducing costs by 40% while improving customer satisfaction.",
   },
   {
     id: 3,
     name: "Emily Rodriguez",
     role: "Product Manager, DataSystems",
     content:
-      "DevAgency's attention to detail and commitment to quality is unmatched. They're true partners in our digital journey.",
+      "BRNKLABS's attention to detail and commitment to quality is unmatched. They're true partners in our digital journey.",
   },
 ];
 

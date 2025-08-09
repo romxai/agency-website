@@ -17,7 +17,7 @@ const monestaSemibold = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "DevAgency - Modern Software Development",
+  title: "BRNKLABS - Modern Software Development",
   description:
     "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
   robots: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "DevAgency - Modern Software Development",
+    title: "BRNKLABS - Modern Software Development",
     description:
       "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
     type: "website",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "DevAgency - Modern Software Development",
+    title: "BRNKLABS - Modern Software Development",
     description:
       "Premium software development agency specializing in web applications, mobile apps, AI agents, and UX/UI design.",
   },

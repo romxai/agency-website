@@ -234,7 +234,7 @@ const ContactSection = () => {
                       variant="accent2"
                       className="font-red-hat-display mb-2 sm:mb-3 text-xs sm:text-sm"
                     >
-                      contact@devagency.com
+                      dwaynesilvapinto@gmail.com
                     </GradientHeading>
                   </div>
                 </div>

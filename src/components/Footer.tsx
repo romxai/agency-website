@@ -18,29 +18,31 @@ const Footer = () => {
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+    if (typeof window !== "undefined") {
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
 
-    const handleMouseMove = (event: MouseEvent) => {
-      if (textContainerRef.current) {
-        const rect = textContainerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top,
-        });
-      }
-    };
+      const handleMouseMove = (event: MouseEvent) => {
+        if (textContainerRef.current) {
+          const rect = textContainerRef.current.getBoundingClientRect();
+          setMousePosition({
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top,
+          });
+        }
+      };
 
-    if (!isMobile) {
-      window.addEventListener("mousemove", handleMouseMove);
-    }
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
       if (!isMobile) {
-        window.removeEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mousemove", handleMouseMove);
       }
-    };
+
+      return () => {
+        window.removeEventListener("resize", checkMobile);
+        if (!isMobile) {
+          window.removeEventListener("mousemove", handleMouseMove);
+        }
+      };
+    }
   }, [isMobile]);
 
   const spotlightSize = isMobile ? 150 : 400;
@@ -96,13 +98,13 @@ const Footer = () => {
         }
       >
         <h1 className="text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase text-zinc-900 tracking-tight md:tracking-tighter">
-          DevAgency
+          BRNKLABS
         </h1>
         <motion.h1
           className="absolute inset-0 text-center text-[16vw] sm:text-[18vw] md:text-[15vw] lg:text-[12vw] leading-none font-extrabold uppercase tracking-tight md:tracking-tighter"
           style={highlightTextStyle}
         >
-          DevAgency
+          BRNKLABS
         </motion.h1>
       </div>
 
@@ -127,7 +129,7 @@ const Footer = () => {
               >
                 <Globe className="size-5 sm:size-6 md:size-8 text-[#e7c95c]" />
                 <span className="text-lg sm:text-xl md:text-2xl font-bold text-white font-monesta-semibold">
-                  DevAgency
+                  BRNKLABS
                 </span>
               </Link>
             </motion.div>
@@ -184,7 +186,7 @@ const Footer = () => {
               variants={itemVariants}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              © {new Date().getFullYear()} DevAgency. All rights reserved.
+              © {new Date().getFullYear()} BRNKLABS. All rights reserved.
             </motion.p>
           </motion.div>
         </div>
